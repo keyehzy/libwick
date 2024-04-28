@@ -92,3 +92,19 @@ TEST(ExpressionTest, InequalityOperator) {
   EXPECT_FALSE(expression1 != expression3);
   EXPECT_TRUE(expression1 != expression4);
 }
+
+TEST(NormalOrderTest, ExpressionResultingInZero) {
+  std::vector<Term> terms = {
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 1)}),
+      Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                  Operator(OperatorType::ANNIHILATION, Spin::UP, 1)})};
+  Expression expression(terms);
+
+  std::vector<Term> normal_terms = {
+      Term(0.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 1)})};
+  Expression expected(normal_terms);
+
+  EXPECT_EQ(expression, expected);
+}

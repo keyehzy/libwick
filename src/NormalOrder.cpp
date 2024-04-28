@@ -78,3 +78,14 @@ Expression normalOrder(const Term& term) {
   }
   return Expression(terms);
 }
+
+Expression normalOrder(const Expression& expression) {
+  Expression::ExpressionMap terms;
+  for (const auto& [term, coefficient] : expression.terms()) {
+    Expression result = normalOrder(Term(coefficient, term));
+    for (const auto& [newTerm, newCoefficient] : result.terms()) {
+      terms[newTerm] += coefficient * newCoefficient;
+    }
+  }
+  return Expression(terms);
+}

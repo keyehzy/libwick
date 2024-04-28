@@ -161,3 +161,58 @@ TEST(NormalOrderTest,
 
   EXPECT_EQ(normal_ordered, expected);
 }
+
+TEST(NormalOrderTest, NormalOrderExpression) {
+  std::vector<Term> terms = {
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 1)}),
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 0)})};
+  Expression expression(terms);
+  Expression normal_ordered = normalOrder(expression);
+
+  std::vector<Term> normal_terms = {
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 1)}),
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 0)})};
+  Expression expected(normal_terms);
+
+  EXPECT_EQ(normal_ordered, expected);
+}
+
+TEST(NormalOrderTest, NormalOrderExpressionWrongOrder) {
+  std::vector<Term> terms = {
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
+                 Operator(OperatorType::CREATION, Spin::UP, 0)}),
+      Term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 1)})};
+  Expression expression(terms);
+  Expression normal_ordered = normalOrder(expression);
+
+  std::vector<Term> normal_terms = {
+      Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                  Operator(OperatorType::CREATION, Spin::UP, 1)}),
+      Term(-1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 1),
+                  Operator(OperatorType::ANNIHILATION, Spin::UP, 0)})};
+  Expression expected(normal_terms);
+
+  EXPECT_EQ(normal_ordered, expected);
+}
+
+TEST(NormalOrderTest, NormalOrderExpressionResultingInZero) {
+  std::vector<Term> terms = {
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
+                 Operator(OperatorType::CREATION, Spin::UP, 0)}),
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::CREATION, Spin::UP, 1)})};
+  Expression expression(terms);
+  Expression normal_ordered = normalOrder(expression);
+
+  std::vector<Term> normal_terms = {
+      Term(0.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::CREATION, Spin::UP, 1)})};
+  Expression expected(normal_terms);
+
+  EXPECT_EQ(normal_ordered, expected);
+}
