@@ -58,6 +58,21 @@ TEST(OperatorTest, ToString) {
             "Operator { Type: Annihilation, Spin: Down, Orbital: 0 }");
 }
 
+// test operator<<
+TEST(OperatorTest, OutputOperator) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 15);
+
+  std::ostringstream os1;
+  os1 << op1;
+  EXPECT_EQ(os1.str(), "Operator { Type: Creation, Spin: Up, Orbital: 15 }");
+
+  std::ostringstream os2;
+  os2 << op2;
+  EXPECT_EQ(os2.str(),
+            "Operator { Type: Annihilation, Spin: Down, Orbital: 15 }");
+}
+
 TEST(OperatorTest, Swap) {
   Operator op1(OperatorType::CREATION, Spin::UP, 15);
   Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 15);

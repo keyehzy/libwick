@@ -58,6 +58,10 @@ class Operator {
            ", Orbital: " + std::to_string(orbital()) + " }";
   }
 
+  friend std::ostream& operator<<(std::ostream& os, const Operator& op) {
+    return os << op.toString();
+  }
+
   void swap(Operator& other) { std::swap(m_data, other.m_data); }
 
  private:
