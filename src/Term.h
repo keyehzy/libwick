@@ -33,6 +33,10 @@ class Term {
     return result;
   }
 
+  friend std::ostream& operator<<(std::ostream& os, const Term& term) {
+    return os << term.toString();
+  }
+
  private:
   double m_coefficient;
   std::vector<Operator> m_operators;

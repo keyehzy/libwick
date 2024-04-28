@@ -73,3 +73,18 @@ TEST(TermTest, ToString) {
             "Creation, Spin: Up, Orbital: 0 }, Operator { Type: Annihilation, "
             "Spin: Down, Orbital: 1 }, ] }");
 }
+
+TEST(TermTest, OutputOperator) {
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+  Term term(2.5, operators);
+
+  std::ostringstream os;
+  os << term;
+
+  EXPECT_EQ(os.str(),
+            "Term { Coefficient: 2.500000, Operators: [Operator { Type: "
+            "Creation, Spin: Up, Orbital: 0 }, Operator { Type: Annihilation, "
+            "Spin: Down, Orbital: 1 }, ] }");
+}
