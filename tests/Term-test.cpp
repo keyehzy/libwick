@@ -88,3 +88,53 @@ TEST(TermTest, OutputOperator) {
             "Creation, Spin: Up, Orbital: 0 }, Operator { Type: Annihilation, "
             "Spin: Down, Orbital: 1 }, ] }");
 }
+
+TEST(TermTest, Product) {
+  std::vector<Operator> operators1 = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+  Term term1(2.5, operators1);
+
+  std::vector<Operator> operators2 = {
+      Operator(OperatorType::CREATION, Spin::DOWN, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+  Term term2(3.0, operators2);
+
+  Term product = term1.product(term2);
+
+  std::vector<Operator> expected_operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
+      Operator(OperatorType::CREATION, Spin::DOWN, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+  Term expected_product(7.5, expected_operators);
+
+  EXPECT_EQ(product, expected_product);
+}
+
+TEST(TermTest, ProductWithVector) {
+  std::vector<Operator> operators1 = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+  Term term1(2.5, operators1);
+
+  std::vector<Operator> operators2 = {
+      Operator(OperatorType::CREATION, Spin::DOWN, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+  Term term2(3.0, operators2);
+
+  std::vector<Term> terms = {term1, term2};
+
+  Term product = term1.product(terms);
+
+  std::vector<Operator> expected_operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
+      Operator(OperatorType::CREATION, Spin::DOWN, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+  Term expected_product(18.75, expected_operators);
+
+  EXPECT_EQ(product, expected_product);
+}

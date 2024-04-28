@@ -37,6 +37,21 @@ class Term {
     return os << term.toString();
   }
 
+  Term product(const Term& other) const {
+    std::vector<Operator> new_operators = m_operators;
+    new_operators.insert(new_operators.end(), other.m_operators.begin(),
+                         other.m_operators.end());
+    return Term(m_coefficient * other.m_coefficient, new_operators);
+  }
+
+  Term product(const std::vector<Term>& terms) const {
+    Term result = *this;
+    for (const auto& term : terms) {
+      result = result.product(term);
+    }
+    return result;
+  }
+
  private:
   double m_coefficient;
   std::vector<Operator> m_operators;
