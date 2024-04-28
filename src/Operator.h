@@ -1,13 +1,13 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
-
 // We encode a single creation/annihilation operator as a byte.
 // 0b00000000
 //          ^ 0 = creation operator, 1 = annihilation operator
 //         ^  0 = spin up, 1 = spin down
 //   ^^^^^^     = orbital index (0-63)
+
+#include <cstdint>
+#include <string>
 
 constexpr std::uint8_t OPERATOR_MASK = 0x1;  // 0b00000001
 constexpr std::uint8_t SPIN_MASK = 0x2;      // 0b00000010

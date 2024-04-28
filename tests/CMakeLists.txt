@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 add_executable(
     libwick-test
     Operator-test.cpp
+    Term-test.cpp
 )
 
 target_include_directories(

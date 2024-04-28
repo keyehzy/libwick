@@ -1,8 +1,5 @@
 #include "Operator.h"
 
-#include <gmock/gmock-matchers.h>
-#include <gmock/gmock-more-matchers.h>
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 TEST(OperatorTest, ConstructorAndGetter) {
