@@ -1,19 +1,62 @@
+#include "Operator.h"
+
 #include <gmock/gmock-matchers.h>
 #include <gmock/gmock-more-matchers.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "Operator.h"
+TEST(OperatorTest, ConstructorAndGetter) {
+  // Test creation operator with spin up and orbital 5
+  Operator op1(OperatorType::CREATION, Spin::UP, 5);
+  EXPECT_EQ(op1.type(), OperatorType::CREATION);
+  EXPECT_EQ(op1.spin(), Spin::UP);
+  EXPECT_EQ(op1.orbital(), 5);
 
-// Test the Operator class
-TEST(OperatorTest, TypeReturnsCorrectValue) {
-  {
-    Operator op(OperatorType::CREATION, Spin::UP, 3);
-    EXPECT_EQ(OperatorType::CREATION, op.type());
-  }
-  {
-    Operator op(OperatorType::ANNIHILATION, Spin::DOWN, 3);
-    EXPECT_EQ(OperatorType::ANNIHILATION, op.type());
-  }
+  // Test annihilation operator with spin down and orbital 63
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 63);
+  EXPECT_EQ(op2.type(), OperatorType::ANNIHILATION);
+  EXPECT_EQ(op2.spin(), Spin::DOWN);
+  EXPECT_EQ(op2.orbital(), 63);
+
+  // Test raw data access
+  EXPECT_EQ(op1.raw(), 0b00010100);  // Creation, Up, Orbital 5
+  EXPECT_EQ(op2.raw(), 0b11111111);  // Annihilation, Down, Orbital 63
 }
- 
+
+TEST(OperatorTest, CopyConstructorAndAssignment) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 10);
+
+  // Test copy constructor
+  Operator op2(op1);
+  EXPECT_EQ(op1.type(), op2.type());
+  EXPECT_EQ(op1.spin(), op2.spin());
+  EXPECT_EQ(op1.orbital(), op2.orbital());
+
+  // Test assignment operator
+  Operator op3(OperatorType::ANNIHILATION, Spin::DOWN, 20);
+  op3 = op1;
+  EXPECT_EQ(op1.type(), op3.type());
+  EXPECT_EQ(op1.spin(), op3.spin());
+  EXPECT_EQ(op1.orbital(), op3.orbital());
+}
+
+TEST(OperatorTest, EqualityAndInequality) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(op1);
+  Operator op3(OperatorType::ANNIHILATION, Spin::DOWN, 15);
+
+  EXPECT_TRUE(op1 == op2);
+  EXPECT_FALSE(op1 == op3);
+  EXPECT_TRUE(op1 != op3);
+  EXPECT_FALSE(op1 != op2);
+}
+
+TEST(OperatorTest, ToString) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 31);
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 0);
+
+  EXPECT_EQ(op1.toString(),
+            "Operator { Type: Creation, Spin: Up, Orbital: 31 }");
+  EXPECT_EQ(op2.toString(),
+            "Operator { Type: Annihilation, Spin: Down, Orbital: 0 }");
+}
