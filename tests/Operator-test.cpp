@@ -18,6 +18,10 @@ TEST(OperatorTest, ConstructorAndGetter) {
   // Test raw data access
   EXPECT_EQ(op1.raw(), 0b00010100);  // Creation, Up, Orbital 5
   EXPECT_EQ(op2.raw(), 0b11111111);  // Annihilation, Down, Orbital 63
+
+  // Test identifier
+  EXPECT_EQ(op1.identifier(), 0b00001010);  // Creation, Up, Orbital 5
+  EXPECT_EQ(op2.identifier(), 0b01111111);  // Annihilation, Down, Orbital 63
 }
 
 TEST(OperatorTest, CopyConstructorAndAssignment) {

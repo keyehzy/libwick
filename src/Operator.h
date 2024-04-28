@@ -9,9 +9,10 @@
 #include <cstdint>
 #include <string>
 
-constexpr std::uint8_t OPERATOR_MASK = 0x1;  // 0b00000001
-constexpr std::uint8_t SPIN_MASK = 0x2;      // 0b00000010
-constexpr std::uint8_t ORBITAL_MASK = 0xFC;  // 0b11111100
+constexpr std::uint8_t OPERATOR_MASK = 0x1;       // 0b00000001
+constexpr std::uint8_t SPIN_MASK = 0x2;           // 0b00000010
+constexpr std::uint8_t ORBITAL_MASK = 0xFC;       // 0b11111100
+constexpr std::uint8_t SPIN_ORBITAL_MASK = 0xFE;  // 0b11111110
 
 enum class OperatorType { CREATION = 0, ANNIHILATION = 1 };
 
@@ -41,6 +42,8 @@ class Operator {
   std::uint8_t orbital() const { return (m_data & ORBITAL_MASK) >> 2; }
 
   std::uint8_t raw() const { return m_data; }
+
+  std::uint8_t identifier() const { return (m_data & SPIN_ORBITAL_MASK) >> 1; }
 
   bool operator==(const Operator& other) const {
     return m_data == other.m_data;
