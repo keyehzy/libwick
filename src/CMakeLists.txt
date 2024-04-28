@@ -13,6 +13,7 @@ target_link_libraries(
 add_library(
     libwick
     wick.cpp
+    NormalOrder.cpp
 )
 
 target_include_directories(

@@ -4,6 +4,8 @@ add_executable(
     libwick-test
     Operator-test.cpp
     Term-test.cpp
+    Expression-test.cpp
+    NormalOrder-test.cpp
 )
 
 target_include_directories(
