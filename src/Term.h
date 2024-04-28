@@ -22,6 +22,17 @@ class Term {
 
   bool operator!=(const Term& other) const { return !(*this == other); }
 
+  std::string toString() const {
+    std::string result =
+        "Term { Coefficient: " + std::to_string(m_coefficient) +
+        ", Operators: [";
+    for (const auto& op : m_operators) {
+      result += op.toString() + ", ";
+    }
+    result += "] }";
+    return result;
+  }
+
  private:
   double m_coefficient;
   std::vector<Operator> m_operators;
