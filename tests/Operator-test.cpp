@@ -90,3 +90,12 @@ TEST(OperatorTest, Swap) {
   EXPECT_EQ(op2.spin(), Spin::UP);
   EXPECT_EQ(op2.orbital(), 15);
 }
+
+TEST(OperatorTest, Hash) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 15);
+
+  std::hash<Operator> hash_fn;
+  EXPECT_EQ(hash_fn(op1), op1.raw());
+  EXPECT_EQ(hash_fn(op2), op2.raw());
+}

@@ -7,6 +7,7 @@
 //   ^^^^^^     = orbital index (0-63)
 
 #include <cstdint>
+#include <functional>
 #include <string>
 
 constexpr std::uint8_t OPERATOR_MASK = 0x1;       // 0b00000001
@@ -69,4 +70,11 @@ class Operator {
 
  private:
   std::uint8_t m_data;
+};
+
+template <>
+struct std::hash<Operator> {
+  size_t operator()(const Operator& op) const {
+    return std::hash<std::uint8_t>()(op.raw());
+  }
 };
