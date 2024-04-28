@@ -14,11 +14,6 @@ class Term {
 
   const std::vector<Operator>& operators() const { return m_operators; }
 
-  const Operator at(size_t index) const {
-    assert(index < m_operators.size());
-    return m_operators[index];
-  }
-
   bool operator==(const Term& other) const {
     return m_coefficient == other.m_coefficient &&
            m_operators == other.m_operators;
