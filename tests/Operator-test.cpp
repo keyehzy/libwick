@@ -57,3 +57,17 @@ TEST(OperatorTest, ToString) {
   EXPECT_EQ(op2.toString(),
             "Operator { Type: Annihilation, Spin: Down, Orbital: 0 }");
 }
+
+TEST(OperatorTest, Swap) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 15);
+
+  op1.swap(op2);
+  EXPECT_EQ(op1.type(), OperatorType::ANNIHILATION);
+  EXPECT_EQ(op1.spin(), Spin::DOWN);
+  EXPECT_EQ(op1.orbital(), 15);
+
+  EXPECT_EQ(op2.type(), OperatorType::CREATION);
+  EXPECT_EQ(op2.spin(), Spin::UP);
+  EXPECT_EQ(op2.orbital(), 15);
+}

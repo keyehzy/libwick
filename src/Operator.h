@@ -21,7 +21,7 @@ class Operator {
  public:
   Operator(OperatorType type, Spin spin, std::uint8_t orbital)
       : m_data{orbital << 2 | static_cast<std::uint8_t>(spin) << 1 |
-             static_cast<std::uint8_t>(type)} {}
+               static_cast<std::uint8_t>(type)} {}
 
   Operator(const Operator& other) : m_data(other.m_data) {}
 
@@ -42,9 +42,13 @@ class Operator {
 
   std::uint8_t raw() const { return m_data; }
 
-  bool operator==(const Operator& other) const { return m_data == other.m_data; }
+  bool operator==(const Operator& other) const {
+    return m_data == other.m_data;
+  }
 
-  bool operator!=(const Operator& other) const { return m_data != other.m_data; }
+  bool operator!=(const Operator& other) const {
+    return m_data != other.m_data;
+  }
 
   std::string toString() const {
     std::string typeStr =
@@ -53,6 +57,8 @@ class Operator {
     return "Operator { Type: " + typeStr + ", Spin: " + spinStr +
            ", Orbital: " + std::to_string(orbital()) + " }";
   }
+
+  void swap(Operator& other) { std::swap(m_data, other.m_data); }
 
  private:
   std::uint8_t m_data;
