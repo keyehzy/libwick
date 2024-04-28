@@ -11,9 +11,8 @@ TEST(TermTest, ConstructorAndAccessors) {
   EXPECT_DOUBLE_EQ(term.coefficient(), 2.5);
   EXPECT_EQ(term.operators(), operators);
   EXPECT_EQ(term.operators().size(), 2);
-  EXPECT_EQ(term.operators()[0], Operator(OperatorType::CREATION, Spin::UP, 0));
-  EXPECT_EQ(term.operators()[1],
-            Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1));
+  EXPECT_EQ(term.at(0), Operator(OperatorType::CREATION, Spin::UP, 0));
+  EXPECT_EQ(term.at(1), Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1));
 }
 
 TEST(TermTest, EqualityOperator) {

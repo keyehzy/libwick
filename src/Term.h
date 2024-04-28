@@ -1,7 +1,6 @@
 #pragma once
 
-// We encode a single term as list of operators and a coefficient.
-
+#include <cassert>
 #include <vector>
 
 #include "Operator.h"
@@ -14,6 +13,11 @@ class Term {
   double coefficient() const { return m_coefficient; }
 
   const std::vector<Operator>& operators() const { return m_operators; }
+
+  const Operator at(size_t index) const {
+    assert(index < m_operators.size());
+    return m_operators[index];
+  }
 
   bool operator==(const Term& other) const {
     return m_coefficient == other.m_coefficient &&
