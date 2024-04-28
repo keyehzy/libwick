@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <functional>
 #include <vector>
 
 #include "Operator.h"
@@ -54,4 +55,22 @@ class Term {
  private:
   double m_coefficient;
   std::vector<Operator> m_operators;
+};
+
+template <>
+struct std::hash<Term> {
+  size_t operator()(const Term& term) const {
+    size_t hash = 0;
+    hash_combine(hash, term.coefficient());
+    for (const auto& op : term.operators()) {
+      hash_combine(hash, std::hash<Operator>{}(op));
+    }
+    return hash;
+  }
+
+ private:
+  template <typename T>
+  void hash_combine(size_t& seed, const T& value) const {
+    seed ^= std::hash<T>{}(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+  }
 };

@@ -139,3 +139,33 @@ TEST(TermTest, ProductWithVector) {
 
   EXPECT_EQ(product, expected_product);
 }
+
+TEST(TermHashTest, SameTermsSameHash) {
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 1),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 2)};
+  Term term1(3.5, operators);
+  Term term2(3.5, operators);
+
+  EXPECT_EQ(std::hash<Term>{}(term1), std::hash<Term>{}(term2));
+}
+
+TEST(TermHashTest, DifferentTermsDifferentHash) {
+  std::vector<Operator> operators1 = {
+      Operator(OperatorType::CREATION, Spin::UP, 1)};
+  std::vector<Operator> operators2 = {
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 2)};
+  Term term1(3.5, operators1);
+  Term term2(3.5, operators2);
+
+  EXPECT_NE(std::hash<Term>{}(term1), std::hash<Term>{}(term2));
+}
+
+TEST(TermHashTest, DifferentCoefficientsDifferentHash) {
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 1)};
+  Term term1(3.5, operators);
+  Term term2(4.5, operators);
+
+  EXPECT_NE(std::hash<Term>{}(term1), std::hash<Term>{}(term2));
+}

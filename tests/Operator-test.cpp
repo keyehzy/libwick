@@ -99,3 +99,19 @@ TEST(OperatorTest, Hash) {
   EXPECT_EQ(hash_fn(op1), op1.raw());
   EXPECT_EQ(hash_fn(op2), op2.raw());
 }
+
+TEST(OperatorTest, SameHash) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(OperatorType::CREATION, Spin::UP, 15);
+
+  std::hash<Operator> hash_fn;
+  EXPECT_EQ(hash_fn(op1), hash_fn(op2));
+}
+
+TEST(OperatorTest, DifferentHash) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 15);
+
+  std::hash<Operator> hash_fn;
+  EXPECT_NE(hash_fn(op1), hash_fn(op2));
+}
