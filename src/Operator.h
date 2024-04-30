@@ -67,8 +67,6 @@ class Operator {
     return os << op.toString();
   }
 
-  void swap(Operator& other) { std::swap(m_data, other.m_data); }
-
  private:
   std::uint8_t m_data;
 };
