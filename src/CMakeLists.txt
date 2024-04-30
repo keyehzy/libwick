@@ -13,6 +13,9 @@ target_link_libraries(
 add_library(
     libwick
     wick.cpp
+    Operator.cpp
+    Term.cpp
+    Expression.cpp
     NormalOrder.cpp
 )
 
