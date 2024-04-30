@@ -6,6 +6,7 @@ add_executable(
     Term-test.cpp
     Expression-test.cpp
     NormalOrder-test.cpp
+    Basis-test.cpp
 )
 
 target_include_directories(
