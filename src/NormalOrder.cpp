@@ -12,7 +12,7 @@ std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
 
   int swaps = 0;
 
-  auto do_swap = [&](size_t i, size_t j) {
+  auto swap_and_accumulate = [&](size_t i, size_t j) {
     std::swap(term.operators().at(i), term.operators().at(j));
     swaps++;
   };
@@ -34,17 +34,17 @@ std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
       if (op1.type() == OperatorType::CREATION &&
           op2.type() == OperatorType::CREATION &&
           op1.identifier() > op2.identifier()) {
-        do_swap(j - 1, j);
+        swap_and_accumulate(j - 1, j);
       } else if (op1.type() == OperatorType::ANNIHILATION &&
                  op2.type() == OperatorType::ANNIHILATION &&
                  op1.identifier() < op2.identifier()) {
-        do_swap(j - 1, j);
+        swap_and_accumulate(j - 1, j);
       } else if (op1.type() == OperatorType::ANNIHILATION &&
                  op2.type() == OperatorType::CREATION) {
         if (op1.identifier() == op2.identifier()) {
           push_new_term(j - 1, j);
         }
-        do_swap(j - 1, j);
+        swap_and_accumulate(j - 1, j);
       }
     }
   }
