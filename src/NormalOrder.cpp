@@ -5,58 +5,46 @@
 // Sorts the term and count the number of swaps. Additionally, we need to
 // store a stack of Terms that need to be sorted in the next iteration.
 
-// 1) If two adjacent operators are of Creation type, then sort by identifier1 <
-// identifier2 If two adjacent operators are of Annihilation type, then sort by
-// identifier1 > identifier2.
-// 2) If the first operator is of Annihilation type and the second operator is
-// of Creation type, then swap.
-// 3) If the first operator is of Creation type and the second operator is of
-// Annihilation type, if the identifiers are the same, we need to push a new
-// Term to the stack with coefficient 1.0 and with the two operators removed.
-// In any case, we need to swap the operators.
-
 std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
   if (term.operators().size() < 2) {
     return {term, 0};
   }
 
   int swaps = 0;
-  bool retry = true;
 
   auto do_swap = [&](size_t i, size_t j) {
     std::swap(term.operators().at(i), term.operators().at(j));
     swaps++;
-    retry = true;
   };
 
-  while (retry) {
-    retry = false;
-    for (size_t i = 0; i < term.operators().size() - 1; i++) {
-      Operator op1 = term.operators().at(i);
-      Operator op2 = term.operators().at(i + 1);
+  auto push_new_term = [&](size_t i, size_t j) {
+    Term newTerm(swaps % 2 == 0 ? term.coefficient() : -term.coefficient(), {});
+    for (size_t k = 0; k < term.operators().size(); k++) {
+      if (k != i && k != j) {
+        newTerm.operators().push_back(term.operators().at(k));
+      }
+    }
+    stack.push_back(newTerm);
+  };
+
+  for (std::size_t i = 1; i < term.operators().size(); ++i) {
+    for (std::size_t j = i; j > 0; --j) {
+      Operator op1 = term.operators().at(j - 1);
+      Operator op2 = term.operators().at(j);
       if (op1.type() == OperatorType::CREATION &&
-          op2.type() == OperatorType::CREATION) {
-        if (op1.identifier() > op2.identifier()) {
-          do_swap(i, i + 1);
-        }
+          op2.type() == OperatorType::CREATION &&
+          op1.identifier() > op2.identifier()) {
+        do_swap(j - 1, j);
       } else if (op1.type() == OperatorType::ANNIHILATION &&
-                 op2.type() == OperatorType::ANNIHILATION) {
-        if (op1.identifier() < op2.identifier()) {
-          do_swap(i, i + 1);
-        }
+                 op2.type() == OperatorType::ANNIHILATION &&
+                 op1.identifier() < op2.identifier()) {
+        do_swap(j - 1, j);
       } else if (op1.type() == OperatorType::ANNIHILATION &&
                  op2.type() == OperatorType::CREATION) {
         if (op1.identifier() == op2.identifier()) {
-          Term newTerm(
-              swaps % 2 == 0 ? term.coefficient() : -term.coefficient(), {});
-          for (size_t j = 0; j < term.operators().size(); j++) {
-            if (j != i && j != i + 1) {
-              newTerm.operators().push_back(term.operators().at(j));
-            }
-          }
-          stack.push_back(newTerm);
+          push_new_term(j - 1, j);
         }
-        do_swap(i, i + 1);
+        do_swap(j - 1, j);
       }
     }
   }
@@ -70,11 +58,8 @@ Expression normalOrder(const Term& term) {
     Term currentTerm = stack.back();
     stack.pop_back();
     auto [result, swaps] = sortTerm(currentTerm, stack);
-    if (swaps % 2 == 0) {
-      terms[result.operators()] += result.coefficient();
-    } else {
-      terms[result.operators()] -= result.coefficient();
-    }
+    terms[result.operators()] +=
+        (swaps % 2 == 0 ? 1 : -1) * result.coefficient();
   }
   return Expression(terms);
 }
@@ -88,4 +73,11 @@ Expression normalOrder(const Expression& expression) {
     }
   }
   return Expression(terms);
+}
+
+Expression commute(const Term& term1, const Term& term2) {
+  Term t1 = term1.product(term2);
+  Term t2 = term2.product(term1);
+  t2.coefficient() *= -1;
+  return Expression(std::vector<Term>{t1, t2});
 }

@@ -13,6 +13,8 @@ class Term {
 
   double coefficient() const { return m_coefficient; }
 
+  double &coefficient() { return m_coefficient; }
+
   const std::vector<Operator>& operators() const { return m_operators; }
 
   std::vector<Operator>& operators() { return m_operators; }
