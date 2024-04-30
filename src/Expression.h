@@ -5,23 +5,6 @@
 
 #include "Term.h"
 
-template <>
-struct std::hash<std::vector<Operator>> {
-  size_t operator()(const std::vector<Operator>& operators) const {
-    size_t hash = 0;
-    for (const auto& op : operators) {
-      hash_combine(hash, std::hash<Operator>{}(op));
-    }
-    return hash;
-  }
-
- private:
-  template <typename T>
-  void hash_combine(size_t& seed, const T& value) const {
-    seed ^= std::hash<T>{}(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-  }
-};
-
 class Expression {
  public:
   Expression() = default;
