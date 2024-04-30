@@ -5,6 +5,7 @@
 
 #include <unordered_set>
 
+using testing::ElementsAre;
 using testing::UnorderedElementsAre;
 
 constexpr int binomial(int n, int k) {
@@ -61,7 +62,6 @@ TEST(BasisTest, IndexingInsideBasis) {
 
   std::vector<Operator> term = {Operator::creation(Spin::UP, 0),
                                 Operator::creation(Spin::DOWN, 1)};
-  std::size_t index = basis.index(term);
   EXPECT_TRUE(basis.contains(term));
 }
 
@@ -103,4 +103,29 @@ TEST(BasisTest, IndexingSingleTermManyBodyBasis) {
 
   std::vector<Operator> term = {Operator::creation(Spin::UP, 0)};
   EXPECT_FALSE(basis.contains(term));
+}
+
+TEST(BasisTest, SortBasis) {
+  Basis basis(2, 2);
+
+  auto sort_fn = [](const std::vector<Operator>& a,
+                    const std::vector<Operator>& b) {
+    int total_spin_a = 0;
+    for (const auto& op : a) {
+      total_spin_a += static_cast<int>(op.spin());
+    }
+    int total_spin_b = 0;
+    for (const auto& op : b) {
+      total_spin_b += static_cast<int>(op.spin());
+    }
+    return total_spin_a < total_spin_b;
+  };
+  basis.sort(sort_fn);
+
+  std::vector<Operator> first{Operator::creation(Spin::UP, 0),
+                              Operator::creation(Spin::UP, 1)};
+  std::vector<Operator> last{Operator::creation(Spin::DOWN, 0),
+                             Operator::creation(Spin::DOWN, 1)};
+  EXPECT_EQ(*basis.elements().begin(), first);
+  EXPECT_EQ(*basis.elements().rbegin(), last);
 }

@@ -33,6 +33,14 @@ class Basis {
     return m_basis_map.at(term);
   }
 
+  template <typename SortFn>
+  void sort(SortFn&& sort_fn) {
+    std::sort(m_basis.begin(), m_basis.end(), sort_fn);
+    for (std::size_t i = 0; i < m_basis.size(); i++) {
+      m_basis_map[m_basis[i]] = i;
+    }
+  }
+
  private:
   void generate_combinations(std::vector<Operator> current,
                              size_t first_orbital, size_t depth,
