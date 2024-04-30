@@ -21,9 +21,10 @@ enum class Spin { UP = 0, DOWN = 1 };
 
 class Operator {
  public:
-  Operator(OperatorType type, Spin spin, std::uint8_t orbital)
-      : m_data{orbital << 2 | static_cast<std::uint8_t>(spin) << 1 |
-               static_cast<std::uint8_t>(type)} {}
+  Operator(OperatorType type, Spin spin, std::uint8_t orbital) {
+    m_data = static_cast<std::uint8_t>(type) |
+             (static_cast<std::uint8_t>(spin) << 1) | (orbital << 2);
+  }
 
   Operator(const Operator& other) : m_data(other.m_data) {}
 
