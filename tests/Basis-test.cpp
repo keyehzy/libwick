@@ -62,7 +62,7 @@ TEST(BasisTest, IndexingInsideBasis) {
   std::vector<Operator> term = {Operator::creation(Spin::UP, 0),
                                 Operator::creation(Spin::DOWN, 1)};
   std::size_t index = basis.index(term);
-  EXPECT_EQ(basis.elements().at(index), term);
+  EXPECT_TRUE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingOutsideBasis) {
@@ -70,6 +70,37 @@ TEST(BasisTest, IndexingOutsideBasis) {
 
   std::vector<Operator> term = {Operator::creation(Spin::UP, 0),
                                 Operator::creation(Spin::UP, 2)};
-  std::size_t index = basis.index(term);
-  EXPECT_EQ(index, basis.elements().size());
+  EXPECT_FALSE(basis.contains(term));
+}
+
+TEST(BasisTest, EqualityOperator) {
+  Basis basis1(2, 2);
+  Basis basis2(2, 2);
+  Basis basis3(2, 3);
+  Basis basis4(3, 2);
+
+  EXPECT_EQ(basis1, basis2);
+  EXPECT_NE(basis1, basis3);
+  EXPECT_NE(basis1, basis4);
+}
+
+TEST(BasisTest, IndexingEmptyTerm) {
+  Basis basis(2, 2);
+
+  std::vector<Operator> term = {};
+  EXPECT_FALSE(basis.contains(term));
+}
+
+TEST(BasisTest, IndexingSingleTermSingleBodyBasis) {
+  Basis basis(1, 1);
+
+  std::vector<Operator> term = {Operator::creation(Spin::UP, 0)};
+  EXPECT_TRUE(basis.contains(term));
+}
+
+TEST(BasisTest, IndexingSingleTermManyBodyBasis) {
+  Basis basis(2, 2);
+
+  std::vector<Operator> term = {Operator::creation(Spin::UP, 0)};
+  EXPECT_FALSE(basis.contains(term));
 }

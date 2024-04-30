@@ -25,12 +25,12 @@ class Basis {
 
   bool operator!=(const Basis& other) const { return !(*this == other); }
 
+  bool contains(const std::vector<Operator>& term) const {
+    return m_basis_map.find(term) != m_basis_map.end();
+  }
+
   std::size_t index(const std::vector<Operator>& term) const {
-    BasisMap::const_iterator iter = m_basis_map.find(term);
-    if (iter != m_basis_map.end()) {
-      return iter->second;
-    }
-    return m_basis_map.size();
+    return m_basis_map.at(term);
   }
 
  private:
