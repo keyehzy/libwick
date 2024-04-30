@@ -68,6 +68,14 @@ class Operator {
     return os << op.toString();
   }
 
+  static Operator creation(Spin spin, std::uint8_t orbital) {
+    return Operator(OperatorType::CREATION, spin, orbital);
+  }
+
+  static Operator annihilation(Spin spin, std::uint8_t orbital) {
+    return Operator(OperatorType::ANNIHILATION, spin, orbital);
+  }
+
  private:
   std::uint8_t m_data;
 };
