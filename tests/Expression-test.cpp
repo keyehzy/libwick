@@ -1,6 +1,9 @@
 #include "Expression.h"
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+using testing::IsEmpty;
 
 TEST(ExpressionTest, ConstructorAndAccessors) {
   std::vector<Term> terms = {
@@ -107,4 +110,16 @@ TEST(NormalOrderTest, ExpressionResultingInZero) {
   Expression expected(normal_terms);
 
   EXPECT_EQ(expression, expected);
+}
+
+TEST(NormalOrderTest, ExpressionResultingInZeroAfterClean) {
+  std::vector<Term> terms = {
+      Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                 Operator(OperatorType::ANNIHILATION, Spin::UP, 1)}),
+      Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
+                  Operator(OperatorType::ANNIHILATION, Spin::UP, 1)})};
+  Expression expression(terms);
+  expression.clean();
+
+  EXPECT_THAT(expression.terms(), IsEmpty());
 }
