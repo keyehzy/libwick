@@ -59,8 +59,9 @@ class Operator {
     std::string typeStr =
         (type() == OperatorType::CREATION) ? "Creation" : "Annihilation";
     std::string spinStr = (spin() == Spin::UP) ? "Up" : "Down";
+    std::string orbitalStr = std::to_string(orbital());
     return "Operator { Type: " + typeStr + ", Spin: " + spinStr +
-           ", Orbital: " + std::to_string(orbital()) + " }";
+           ", Orbital: " + orbitalStr + " }";
   }
 
   friend std::ostream& operator<<(std::ostream& os, const Operator& op) {
