@@ -67,6 +67,19 @@ class Term {
     return Term(m_coefficient, adj_operators);
   }
 
+  static Term one_body(double coefficient, Spin spin1, std::uint8_t orbital1,
+                       Spin spin2, std::uint8_t orbital2) {
+    return Term(coefficient,
+                std::vector<Operator>{Operator::creation(spin1, orbital1),
+                                      Operator::annihilation(spin2, orbital2)});
+  }
+
+  template <typename... Args>
+  static Term term(double coefficient, Args... args) {
+    std::vector<Operator> operators{args...};
+    return Term(coefficient, operators);
+  }
+
  private:
   double m_coefficient;
   std::vector<Operator> m_operators;

@@ -175,3 +175,33 @@ TEST(TermTest, AdjointManyBody) {
 
   EXPECT_EQ(adjoint, expected_adjoint);
 }
+
+TEST(TermTest, OneBodyTerm) {
+  Term term = Term::one_body(2.5, Spin::UP, 0, Spin::DOWN, 1);
+
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+  Term expected(2.5, operators);
+
+  EXPECT_EQ(term, expected);
+}
+
+TEST(TermTest, ThreeBodyTermUsingNBodyTerm) {
+  Term term = Term::term(
+      2.5, Operator::creation(Spin::UP, 0), Operator::creation(Spin::DOWN, 1),
+      Operator::creation(Spin::UP, 2), Operator::annihilation(Spin::DOWN, 5),
+      Operator::annihilation(Spin::UP, 4),
+      Operator::annihilation(Spin::DOWN, 3));
+
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::CREATION, Spin::DOWN, 1),
+      Operator(OperatorType::CREATION, Spin::UP, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 5),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 4),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 3)};
+  Term expected(2.5, operators);
+
+  EXPECT_EQ(term, expected);
+}
