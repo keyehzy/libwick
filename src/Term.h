@@ -13,7 +13,7 @@ class Term {
 
   double coefficient() const { return m_coefficient; }
 
-  double &coefficient() { return m_coefficient; }
+  double& coefficient() { return m_coefficient; }
 
   const std::vector<Operator>& operators() const { return m_operators; }
 
@@ -54,6 +54,17 @@ class Term {
       result = result.product(term);
     }
     return result;
+  }
+
+  Term adjoint() const {
+    std::vector<Operator> adj_operators;
+    for (const auto& op : m_operators) {
+      adj_operators.push_back(op.adjoint());
+    }
+    std::reverse(adj_operators.begin(), adj_operators.end());
+    // TODO(m): coefficient should be a complex number
+    // and we should take the complex conjugate.
+    return Term(m_coefficient, adj_operators);
   }
 
  private:

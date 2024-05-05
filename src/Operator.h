@@ -68,6 +68,13 @@ class Operator {
     return os << op.toString();
   }
 
+  Operator adjoint() const {
+    return Operator(type() == OperatorType::CREATION
+                        ? OperatorType::ANNIHILATION
+                        : OperatorType::CREATION,
+                    spin(), orbital());
+  }
+
   static Operator creation(Spin spin, std::uint8_t orbital) {
     return Operator(OperatorType::CREATION, spin, orbital);
   }

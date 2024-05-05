@@ -139,3 +139,39 @@ TEST(TermTest, ProductWithVector) {
 
   EXPECT_EQ(product, expected_product);
 }
+
+TEST(TermTest, AdjointSingleBody) {
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+  Term term(2.5, operators);
+
+  Term adjoint = term.adjoint();
+
+  std::vector<Operator> expected_operators = {
+      Operator(OperatorType::CREATION, Spin::DOWN, 1),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 0)};
+  Term expected_adjoint(2.5, expected_operators);
+
+  EXPECT_EQ(adjoint, expected_adjoint);
+}
+
+TEST(TermTest, AdjointManyBody) {
+  std::vector<Operator> operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 0),
+      Operator(OperatorType::CREATION, Spin::DOWN, 1),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+  Term term(2.5, operators);
+
+  Term adjoint = term.adjoint();
+
+  std::vector<Operator> expected_operators = {
+      Operator(OperatorType::CREATION, Spin::UP, 3),
+      Operator(OperatorType::CREATION, Spin::DOWN, 2),
+      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
+      Operator(OperatorType::ANNIHILATION, Spin::UP, 0)};
+  Term expected_adjoint(2.5, expected_operators);
+
+  EXPECT_EQ(adjoint, expected_adjoint);
+}

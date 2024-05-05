@@ -101,3 +101,16 @@ TEST(OperatorTest, DifferentHash) {
   std::hash<Operator> hash_fn;
   EXPECT_NE(hash_fn(op1), hash_fn(op2));
 }
+
+TEST(OperatorTest, Adjoin) {
+  Operator op1(OperatorType::CREATION, Spin::UP, 15);
+  Operator op2(OperatorType::ANNIHILATION, Spin::DOWN, 15);
+
+  EXPECT_EQ(op1.adjoint().type(), OperatorType::ANNIHILATION);
+  EXPECT_EQ(op1.adjoint().spin(), Spin::UP);
+  EXPECT_EQ(op1.adjoint().orbital(), 15);
+
+  EXPECT_EQ(op2.adjoint().type(), OperatorType::CREATION);
+  EXPECT_EQ(op2.adjoint().spin(), Spin::DOWN);
+  EXPECT_EQ(op2.adjoint().orbital(), 15);
+}
