@@ -51,7 +51,7 @@ std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
   return {term, swaps};
 }
 
-Expression normalOrder(const Term& term) {
+Expression normal_order(const Term& term) {
   std::vector<Term> stack = {term};
   Expression::ExpressionMap terms;
   while (!stack.empty()) {
@@ -64,10 +64,10 @@ Expression normalOrder(const Term& term) {
   return Expression(terms);
 }
 
-Expression normalOrder(const Expression& expression) {
+Expression normal_order(const Expression& expression) {
   Expression::ExpressionMap terms;
   for (const auto& [term, coefficient] : expression.terms()) {
-    Expression result = normalOrder(Term(coefficient, term));
+    Expression result = normal_order(Term(coefficient, term));
     for (const auto& [newTerm, newCoefficient] : result.terms()) {
       terms[newTerm] += coefficient * newCoefficient;
     }

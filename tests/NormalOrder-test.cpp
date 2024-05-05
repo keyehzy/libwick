@@ -10,7 +10,7 @@ using testing::IsEmpty;
 TEST(NormalOrderTest, NormalOrderTermEqual) {
   Term term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -23,7 +23,7 @@ TEST(NormalOrderTest, NormalOrderTermEqual) {
 TEST(NormalOrderTest, NormalOrderTermCreationCreation) {
   Term term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -36,7 +36,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationCreation) {
 TEST(NormalOrderTest, NormalOrderTermAnnihilationAnnihilation) {
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::DOWN, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
@@ -49,7 +49,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationAnnihilation) {
 TEST(NormalOrderTest, NormalOrderTermCreationAnnihilation) {
   Term term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::DOWN, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -62,7 +62,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationAnnihilation) {
 TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentSpin) {
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::DOWN, 0),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -75,7 +75,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentSpin) {
 TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentOrbital) {
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 1),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -88,7 +88,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentOrbital) {
 TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationSameSpinSameOrbital) {
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -104,7 +104,7 @@ TEST(NormalOrderTest,
   Term term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
                   Operator(OperatorType::CREATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -119,7 +119,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationAnnihilationCreationSameOrbital) {
   Term term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -136,7 +136,7 @@ TEST(NormalOrderTest,
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::CREATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -153,7 +153,7 @@ TEST(NormalOrderTest,
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
 
   std::vector<Term> terms = {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -172,7 +172,7 @@ TEST(NormalOrderTest, NormalOrderExpression) {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
                  Operator(OperatorType::ANNIHILATION, Spin::UP, 0)})};
   Expression expression(terms);
-  Expression normal_ordered = normalOrder(expression);
+  Expression normal_ordered = normal_order(expression);
 
   std::vector<Term> normal_terms = {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -191,7 +191,7 @@ TEST(NormalOrderTest, NormalOrderExpressionWrongOrder) {
       Term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                  Operator(OperatorType::ANNIHILATION, Spin::UP, 1)})};
   Expression expression(terms);
-  Expression normal_ordered = normalOrder(expression);
+  Expression normal_ordered = normal_order(expression);
 
   std::vector<Term> normal_terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -210,7 +210,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZero) {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                  Operator(OperatorType::CREATION, Spin::UP, 1)})};
   Expression expression(terms);
-  Expression normal_ordered = normalOrder(expression);
+  Expression normal_ordered = normal_order(expression);
 
   std::vector<Term> normal_terms = {
       Term(0.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -225,7 +225,7 @@ TEST(NormalOrderTest,
   Term term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                   Operator(OperatorType::CREATION, Spin::UP, 0)});
-  Expression normal_ordered = normalOrder(term);
+  Expression normal_ordered = normal_order(term);
   normal_ordered.clean();
 
   std::vector<Term> terms = {
@@ -244,7 +244,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZeroAfterClean) {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                  Operator(OperatorType::CREATION, Spin::UP, 1)})};
   Expression expression(terms);
-  Expression normal_ordered = normalOrder(expression);
+  Expression normal_ordered = normal_order(expression);
   normal_ordered.clean();
   EXPECT_THAT(normal_ordered.terms(), IsEmpty());
 }
