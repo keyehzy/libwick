@@ -48,12 +48,24 @@ class Term {
     return Term(m_coefficient * other.m_coefficient, new_operators);
   }
 
+  Term product(const std::vector<Operator>& operators) const {
+    std::vector<Operator> new_operators = m_operators;
+    new_operators.insert(new_operators.end(), operators.begin(),
+                         operators.end());
+    return Term(m_coefficient, new_operators);
+  }
+
   Term product(const std::vector<Term>& terms) const {
     Term result = *this;
     for (const auto& term : terms) {
       result = result.product(term);
     }
     return result;
+  }
+
+  template <typename... Args>
+  Term product(const Term& term, Args... args) const {
+    return product(term).product(args...);
   }
 
   Term adjoint() const {

@@ -17,6 +17,7 @@ add_library(
     Term.cpp
     Expression.cpp
     NormalOrder.cpp
+    Model.cpp
 )
 
 target_include_directories(

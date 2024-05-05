@@ -6,13 +6,14 @@
 
 class Basis {
  public:
-  using BasisMap = std::unordered_map<std::vector<Operator>, std::size_t>;
+  using BasisElement = std::vector<Operator>;
+  using BasisMap = std::unordered_map<BasisElement, std::size_t>;
 
   Basis(std::size_t n, std::size_t m) : m_orbitals{m}, m_particles{n} {
     generate_basis();
   }
 
-  const std::vector<std::vector<Operator>>& elements() const { return m_basis; }
+  const std::vector<BasisElement>& elements() const { return m_basis; }
 
   std::size_t orbitals() const { return m_orbitals; }
 
@@ -25,11 +26,11 @@ class Basis {
 
   bool operator!=(const Basis& other) const { return !(*this == other); }
 
-  bool contains(const std::vector<Operator>& term) const {
+  bool contains(const BasisElement& term) const {
     return m_basis_map.find(term) != m_basis_map.end();
   }
 
-  std::size_t index(const std::vector<Operator>& term) const {
+  std::size_t index(const BasisElement& term) const {
     return m_basis_map.at(term);
   }
 
@@ -42,7 +43,7 @@ class Basis {
   }
 
  private:
-  void generate_combinations(std::vector<Operator> current,
+  void generate_combinations(BasisElement current,
                              size_t first_orbital, size_t depth,
                              size_t max_depth) {
     if (depth == max_depth) {
@@ -68,5 +69,5 @@ class Basis {
   std::size_t m_orbitals;
   std::size_t m_particles;
   BasisMap m_basis_map;
-  std::vector<std::vector<Operator>> m_basis;
+  std::vector<BasisElement> m_basis;
 };
