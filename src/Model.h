@@ -1,6 +1,6 @@
-#include "Term.h"
 #include "Basis.h"
 #include "NormalOrder.h"
+#include "Term.h"
 
 class Model {
  public:

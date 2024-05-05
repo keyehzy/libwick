@@ -43,9 +43,8 @@ class Basis {
   }
 
  private:
-  void generate_combinations(BasisElement current,
-                             size_t first_orbital, size_t depth,
-                             size_t max_depth) {
+  void generate_combinations(BasisElement current, size_t first_orbital,
+                             size_t depth, size_t max_depth) {
     if (depth == max_depth) {
       m_basis_map[current] = m_basis.size();
       m_basis.push_back(current);

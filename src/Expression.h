@@ -9,8 +9,7 @@ class Expression {
  public:
   Expression() = default;
 
-  using ExpressionMap =
-      std::unordered_map<std::vector<Operator>, double>;
+  using ExpressionMap = std::unordered_map<std::vector<Operator>, double>;
 
   Expression(const ExpressionMap& terms) : m_terms(terms) {}
 
