@@ -39,10 +39,10 @@ class LinearChain : public Model {
     for (Spin spin : {Spin::UP, Spin::DOWN}) {
       for (std::size_t i = 0; i < m_n; i++) {
         terms.push_back(Term::one_body(-m_u, spin, i, spin, i));
-        if (i + 1 < m_n) {
-          terms.push_back(Term::one_body(-m_t, spin, i, spin, i + 1));
-          terms.push_back(Term::one_body(-m_t, spin, i, spin, i + 1).adjoint());
-        }
+      }
+      for (std::size_t i = 0; i < m_n - 1; i++) {
+        terms.push_back(Term::one_body(-m_t, spin, i, spin, i + 1));
+        terms.push_back(Term::one_body(-m_t, spin, i, spin, i + 1).adjoint());
       }
       terms.push_back(Term::one_body(-m_t, spin, m_n - 1, spin, 0));
       terms.push_back(Term::one_body(-m_t, spin, m_n - 1, spin, 0).adjoint());
