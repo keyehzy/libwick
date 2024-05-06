@@ -171,8 +171,7 @@ TEST(NormalOrderTest, NormalOrderExpression) {
                  Operator(OperatorType::ANNIHILATION, Spin::UP, 1)}),
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 1),
                  Operator(OperatorType::ANNIHILATION, Spin::UP, 0)})};
-  Expression expression(terms);
-  Expression normal_ordered = normal_order(expression);
+  Expression normal_ordered = normal_order(terms);
 
   std::vector<Term> normal_terms = {
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -190,8 +189,7 @@ TEST(NormalOrderTest, NormalOrderExpressionWrongOrder) {
                  Operator(OperatorType::CREATION, Spin::UP, 0)}),
       Term(1.0, {Operator(OperatorType::ANNIHILATION, Spin::UP, 0),
                  Operator(OperatorType::ANNIHILATION, Spin::UP, 1)})};
-  Expression expression(terms);
-  Expression normal_ordered = normal_order(expression);
+  Expression normal_ordered = normal_order(terms);
 
   std::vector<Term> normal_terms = {
       Term(-1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -209,8 +207,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZero) {
                  Operator(OperatorType::CREATION, Spin::UP, 0)}),
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                  Operator(OperatorType::CREATION, Spin::UP, 1)})};
-  Expression expression(terms);
-  Expression normal_ordered = normal_order(expression);
+  Expression normal_ordered = normal_order(terms);
 
   std::vector<Term> normal_terms = {
       Term(0.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
@@ -243,8 +240,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZeroAfterClean) {
                  Operator(OperatorType::CREATION, Spin::UP, 0)}),
       Term(1.0, {Operator(OperatorType::CREATION, Spin::UP, 0),
                  Operator(OperatorType::CREATION, Spin::UP, 1)})};
-  Expression expression(terms);
-  Expression normal_ordered = normal_order(expression);
+  Expression normal_ordered = normal_order(terms);
   normal_ordered.clean();
   EXPECT_THAT(normal_ordered.terms(), IsEmpty());
 }

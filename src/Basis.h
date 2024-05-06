@@ -9,7 +9,7 @@ class Basis {
   using BasisElement = std::vector<Operator>;
   using BasisMap = std::unordered_map<BasisElement, std::size_t>;
 
-  Basis(std::size_t n, std::size_t m) : m_orbitals{m}, m_particles{n} {
+  Basis(std::size_t n, std::size_t m) : m_orbitals{n}, m_particles{m} {
     generate_basis();
   }
 
@@ -33,6 +33,8 @@ class Basis {
   std::size_t index(const BasisElement& term) const {
     return m_basis_map.at(term);
   }
+
+  std::size_t size() const { return m_basis.size(); }
 
   template <typename SortFn>
   void sort(SortFn&& sort_fn) {
