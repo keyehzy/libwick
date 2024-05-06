@@ -18,6 +18,7 @@ add_library(
     Expression.cpp
     NormalOrder.cpp
     Model.cpp
+    SparseMatrix.cpp
 )
 
 target_include_directories(

@@ -7,6 +7,7 @@ add_executable(
     Expression-test.cpp
     NormalOrder-test.cpp
     Basis-test.cpp
+    SparseMatrix-test.cpp
 )
 
 target_include_directories(
