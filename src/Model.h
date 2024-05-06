@@ -9,6 +9,7 @@ class Model {
   template <typename SpMat>
   void compute_matrix_elements(const Basis& basis, SpMat& mat) {
     std::vector<Term> hamilt = hamiltonian();
+#pragma omp parallel for
     for (const auto& basis_element : basis.elements()) {
       std::size_t basis_index = basis.index(basis_element);
       std::vector<Term> terms;
@@ -19,6 +20,7 @@ class Model {
       for (const auto& [term, coeff] : e.terms()) {
         if (basis.contains(term)) {
           std::size_t term_index = basis.index(term);
+#pragma omp critical
           mat(basis_index, term_index) = coeff;
         }
       }
