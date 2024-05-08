@@ -2,15 +2,11 @@
 
 #include <vector>
 
-// Sorts the term and count the number of swaps. Additionally, we need to
-// store a stack of Terms that need to be sorted in the next iteration.
+// TODO(m): change statistics for bosonic operators
 
-std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
-  if (term.operators().size() < 2) {
-    return {term, 0};
-  }
-
-  int swaps = 0;
+std::size_t sort_term(Term& term, std::vector<Term>& stack) {
+  std::size_t swaps = 0;
+  std::vector<Operator> elms;
 
   auto swap_and_accumulate = [&](size_t i, size_t j) {
     std::swap(term.operators().at(i), term.operators().at(j));
@@ -18,13 +14,15 @@ std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
   };
 
   auto push_new_term = [&](size_t i, size_t j) {
-    Term newTerm(swaps % 2 == 0 ? term.coefficient() : -term.coefficient(), {});
-    for (size_t k = 0; k < term.operators().size(); k++) {
-      if (k != i && k != j) {
-        newTerm.operators().push_back(term.operators().at(k));
-      }
-    }
-    stack.push_back(newTerm);
+    elms.clear();
+    elms.reserve(term.operators().size() - 2);
+    std::copy(term.operators().begin(), term.operators().begin() + j - 1,
+              std::back_inserter(elms));
+    std::copy(term.operators().begin() + j + 1, term.operators().end(),
+              std::back_inserter(elms));
+    stack.emplace_back(
+        swaps % 2 == 0 ? term.coefficient() : -term.coefficient(),
+        std::move(elms));
   };
 
   for (std::size_t i = 1; i < term.operators().size(); ++i) {
@@ -32,8 +30,11 @@ std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
       Operator op1 = term.operators().at(j - 1);
       Operator op2 = term.operators().at(j);
       if (op1.type() == OperatorType::CREATION &&
-          op2.type() == OperatorType::CREATION &&
-          op1.identifier() > op2.identifier()) {
+          op2.type() == OperatorType::ANNIHILATION) {
+        break;
+      } else if (op1.type() == OperatorType::CREATION &&
+                 op2.type() == OperatorType::CREATION &&
+                 op1.identifier() > op2.identifier()) {
         swap_and_accumulate(j - 1, j);
       } else if (op1.type() == OperatorType::ANNIHILATION &&
                  op2.type() == OperatorType::ANNIHILATION &&
@@ -48,18 +49,21 @@ std::pair<Term, int> sortTerm(Term term, std::vector<Term>& stack) {
       }
     }
   }
-  return {term, swaps};
+  return swaps;
 }
 
 Expression normal_order(const Term& term) {
   std::vector<Term> stack = {term};
   Expression::ExpressionMap terms;
   while (!stack.empty()) {
-    Term currentTerm = stack.back();
+    Term cur = stack.back();
     stack.pop_back();
-    auto [result, swaps] = sortTerm(currentTerm, stack);
-    terms[result.operators()] +=
-        (swaps % 2 == 0 ? 1 : -1) * result.coefficient();
+    if (cur.operators().empty()) {
+      terms[{}] += cur.coefficient();
+      continue;
+    }
+    std::size_t swaps = sort_term(cur, stack);
+    terms[cur.operators()] += (swaps % 2 == 0 ? 1 : -1) * cur.coefficient();
   }
   return Expression(terms);
 }
