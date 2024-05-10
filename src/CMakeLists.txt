@@ -12,7 +12,7 @@ target_link_libraries(
 
 add_library(
     libwick
-    wick.cpp
+    Basis.cpp
     Operator.cpp
     Term.cpp
     Expression.cpp
