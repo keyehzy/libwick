@@ -21,6 +21,8 @@ class Expression {
 
   const ExpressionMap& terms() const { return m_terms; }
 
+  ExpressionMap& terms() { return m_terms; }
+
   bool operator==(const Expression& other) const {
     return m_terms == other.m_terms;
   }
