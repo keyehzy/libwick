@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
 #include <functional>
 #include <vector>
@@ -9,11 +10,17 @@
 class Term {
  public:
   Term(double coefficient, const std::vector<Operator>& operators)
-      : m_coefficient{coefficient}, m_operators{operators} {}
+      : m_coefficient{coefficient}, m_operators{operators}, m_swaps{0} {}
+
+  Term(double coefficient, const std::vector<Operator>& operators,
+       std::size_t phase)
+      : m_coefficient{coefficient}, m_operators{operators}, m_swaps{phase} {}
 
   double coefficient() const { return m_coefficient; }
 
-  double& coefficient() { return m_coefficient; }
+  std::size_t swaps() const { return m_swaps; }
+
+  void increment() { m_swaps++; }
 
   const std::vector<Operator>& operators() const { return m_operators; }
 
@@ -55,14 +62,6 @@ class Term {
     return Term(m_coefficient, new_operators);
   }
 
-  Term product(const std::vector<Term>& terms) const {
-    Term result = *this;
-    for (const auto& term : terms) {
-      result = result.product(term);
-    }
-    return result;
-  }
-
   template <typename... Args>
   Term product(const Term& term, Args... args) const {
     return product(term).product(args...);
@@ -95,4 +94,5 @@ class Term {
  private:
   double m_coefficient;
   std::vector<Operator> m_operators;
+  std::size_t m_swaps;
 };
