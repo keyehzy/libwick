@@ -9,19 +9,25 @@ class Model {
   template <typename SpMat>
   void compute_matrix_elements(const Basis& basis, SpMat& mat) {
     std::vector<Term> hamilt = hamiltonian();
-#pragma omp parallel for
-    for (const auto& basis_element : basis.elements()) {
-      std::size_t basis_index = basis.index(basis_element);
+#pragma omp parallel
+    {
       std::vector<Term> terms;
-      for (const Term& hamilt_term : hamilt) {
-        terms.push_back(hamilt_term.product(basis_element));
-      }
-      Expression e = normal_order(terms);
-      for (const auto& [term, coeff] : e.terms()) {
-        if (basis.contains(term)) {
-          std::size_t term_index = basis.index(term);
+      terms.reserve(hamilt.size());
+#pragma omp for schedule(dynamic)
+      for (const auto& basis_element : basis.elements()) {
+        std::size_t basis_index = basis.index(basis_element);
+        terms.clear();
+        for (const Term& hamilt_term : hamilt) {
+          terms.push_back(hamilt_term.product(basis_element));
+        }
+        Expression e = normal_order(terms);
+        for (const auto& [term, coeff] : e.terms()) {
+          if (term.back().type() == OperatorType::CREATION &&
+              basis.contains(term)) {
+            std::size_t term_index = basis.index(term);
 #pragma omp critical
-          mat(basis_index, term_index) = coeff;
+            mat(basis_index, term_index) = coeff;
+          }
         }
       }
     }
@@ -33,26 +39,68 @@ class Model {
 
 class LinearChain : public Model {
  public:
-  LinearChain(std::size_t n, double t, double u) : m_n{n}, m_t{t}, m_u{u} {}
+  LinearChain(std::size_t n, double t, double u) : m_size{n}, m_t{t}, m_u{u} {}
 
  private:
   std::vector<Term> hamiltonian() const override {
     std::vector<Term> terms;
     for (Spin spin : {Spin::UP, Spin::DOWN}) {
-      for (std::size_t i = 0; i < m_n; i++) {
+      for (std::size_t i = 0; i < m_size; i++) {
         terms.push_back(Term::one_body(-m_u, spin, i, spin, i));
       }
-      for (std::size_t i = 0; i < m_n - 1; i++) {
+      for (std::size_t i = 0; i < m_size - 1; i++) {
         terms.push_back(Term::one_body(-m_t, spin, i, spin, i + 1));
         terms.push_back(Term::one_body(-m_t, spin, i, spin, i + 1).adjoint());
       }
-      terms.push_back(Term::one_body(-m_t, spin, m_n - 1, spin, 0));
-      terms.push_back(Term::one_body(-m_t, spin, m_n - 1, spin, 0).adjoint());
+      terms.push_back(Term::one_body(-m_t, spin, m_size - 1, spin, 0));
+      terms.push_back(
+          Term::one_body(-m_t, spin, m_size - 1, spin, 0).adjoint());
     }
     return terms;
   }
 
-  std::size_t m_n;
+  std::size_t m_size;
   double m_t;
   double m_u;
+};
+
+class HubbardChain : public Model {
+ public:
+  HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
+
+ private:
+  void hopping_term(std::vector<Term>& result) const {
+    for (Spin spin : {Spin::UP, Spin::DOWN}) {
+      for (std::size_t i = 0; i < m_size; i++) {
+        result.push_back(Term::one_body(-m_u, spin, i, spin, i));
+      }
+      for (std::size_t i = 0; i < m_size - 1; i++) {
+        result.push_back(Term::one_body(-m_t, spin, i, spin, i + 1));
+        result.push_back(Term::one_body(-m_t, spin, i, spin, i + 1).adjoint());
+      }
+      result.push_back(Term::one_body(-m_t, spin, m_size - 1, spin, 0));
+      result.push_back(
+          Term::one_body(-m_t, spin, m_size - 1, spin, 0).adjoint());
+    }
+  }
+
+  void interaction_term(std::vector<Term>& result) const {
+    for (size_t i1 = 0; i1 < m_size; i1++) {
+      result.push_back(Term::term(m_u, Operator::creation(Spin::UP, i1),
+                                  Operator::annihilation(Spin::UP, i1),
+                                  Operator::creation(Spin::DOWN, i1),
+                                  Operator::annihilation(Spin::DOWN, i1)));
+    }
+  }
+
+  std::vector<Term> hamiltonian() const override {
+    std::vector<Term> result;
+    hopping_term(result);
+    interaction_term(result);
+    return result;
+  }
+
+  double m_t;
+  double m_u;
+  size_t m_size;
 };
