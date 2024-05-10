@@ -126,7 +126,7 @@ TEST(TermTest, ProductWithVector) {
 
   std::vector<Term> terms = {term1, term2};
 
-  Term product = term1.product(terms);
+  Term product = term1.product(term1, term2);
 
   std::vector<Operator> expected_operators = {
       Operator(OperatorType::CREATION, Spin::UP, 0),
