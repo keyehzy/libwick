@@ -28,7 +28,7 @@ int main() {
   const std::size_t particles = 8;
   const std::size_t sz = 0;
 
-  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size, particles);\
+  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size, particles);
 
   // Construct a basis with total spin equal to zero
   Basis basis(size, particles, [](const Basis::BasisElement& element) {
@@ -46,6 +46,7 @@ int main() {
   // Compute ground state using, e.g. Armadillo library
   arma::vec eigval;
   arma::mat eigvec;
+  const std::size_t eigval_count = 4;
   arma::eigs_sym(eigval, eigvec, m, eigval_count, "sa");
 
   std::cout << "Eigenvalues:" << std::endl;
