@@ -8,14 +8,14 @@ void prepare_up_and_down_representation(const Basis::BasisElement& element,
                                         std::vector<int>& down) {
   for (auto it = element.rbegin(); it != element.rend(); it++) {
     const Operator& o = *it;
-    if (o.type() == OperatorType::ANNIHILATION) {
-      if (o.spin() == Spin::UP) {
+    if (o.type() == Operator::Type::ANNIHILATION) {
+      if (o.spin() == Operator::Spin::UP) {
         up[o.orbital()] += -1;
       } else {
         down[o.orbital()] += -1;
       }
     } else {
-      if (o.spin() == Spin::UP) {
+      if (o.spin() == Operator::Spin::UP) {
         up[o.orbital()] += 1;
       } else {
         down[o.orbital()] += 1;

@@ -19,7 +19,7 @@ class Model {
       }
       const Expression& e = normal_order(terms);
       for (const auto& [term, coeff] : e.terms()) {
-        if (term.back().type() == OperatorType::CREATION &&
+        if (term.back().type() == Operator::Type::CREATION &&
             basis.contains(term)) {
           std::size_t term_index = basis.index(term);
 #pragma omp critical
@@ -40,7 +40,7 @@ class LinearChain : public Model {
  private:
   std::vector<Term> hamiltonian() const override {
     std::vector<Term> terms;
-    for (Spin spin : {Spin::UP, Spin::DOWN}) {
+    for (Operator::Spin spin : {Operator::Spin::UP, Operator::Spin::DOWN}) {
       for (std::size_t i = 0; i < m_size; i++) {
         terms.push_back(Term::one_body(-m_u, spin, i, spin, i));
       }
@@ -66,7 +66,7 @@ class HubbardChain : public Model {
 
  private:
   void hopping_term(std::vector<Term>& result) const {
-    for (Spin spin : {Spin::UP, Spin::DOWN}) {
+    for (Operator::Spin spin : {Operator::Spin::UP, Operator::Spin::DOWN}) {
       for (std::size_t i = 0; i < m_size; i++) {
         result.push_back(Term::one_body(-m_u, spin, i, spin, i));
       }
@@ -82,10 +82,10 @@ class HubbardChain : public Model {
 
   void interaction_term(std::vector<Term>& result) const {
     for (size_t i1 = 0; i1 < m_size; i1++) {
-      result.push_back(Term::term(m_u, Operator::creation(Spin::UP, i1),
-                                  Operator::annihilation(Spin::UP, i1),
-                                  Operator::creation(Spin::DOWN, i1),
-                                  Operator::annihilation(Spin::DOWN, i1)));
+      result.push_back(Term::term(m_u, Operator::creation(Operator::Spin::UP, i1),
+                                  Operator::annihilation(Operator::Spin::UP, i1),
+                                  Operator::creation(Operator::Spin::DOWN, i1),
+                                  Operator::annihilation(Operator::Spin::DOWN, i1)));
     }
   }
 

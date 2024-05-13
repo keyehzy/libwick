@@ -20,7 +20,7 @@ class Term {
 
   std::size_t swaps() const { return m_swaps; }
 
-  void increment() { m_swaps++; }
+  void increment(std::size_t i) { m_swaps += i; }
 
   const std::vector<Operator>& operators() const { return m_operators; }
 
@@ -78,8 +78,9 @@ class Term {
     return Term(m_coefficient, adj_operators);
   }
 
-  static Term one_body(double coefficient, Spin spin1, std::uint8_t orbital1,
-                       Spin spin2, std::uint8_t orbital2) {
+  static Term one_body(double coefficient, Operator::Spin spin1,
+                       std::uint8_t orbital1, Operator::Spin spin2,
+                       std::uint8_t orbital2) {
     return Term(coefficient,
                 std::vector<Operator>{Operator::creation(spin1, orbital1),
                                       Operator::annihilation(spin2, orbital2)});

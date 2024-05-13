@@ -26,20 +26,21 @@ TEST(BasisTest, ConstructorAndAttributes) {
 TEST(BasisTest, BasisGeneration) {
   Basis basis(2, 2);
   EXPECT_EQ(basis.elements().size(), 6);
-  EXPECT_THAT(basis.elements(),
-              UnorderedElementsAre(
-                  std::vector<Operator>{Operator::creation(Spin::DOWN, 0),
-                                        Operator::creation(Spin::DOWN, 1)},
-                  std::vector<Operator>{Operator::creation(Spin::UP, 1),
-                                        Operator::creation(Spin::DOWN, 1)},
-                  std::vector<Operator>{Operator::creation(Spin::DOWN, 0),
-                                        Operator::creation(Spin::UP, 1)},
-                  std::vector<Operator>{Operator::creation(Spin::UP, 0),
-                                        Operator::creation(Spin::DOWN, 1)},
-                  std::vector<Operator>{Operator::creation(Spin::UP, 0),
-                                        Operator::creation(Spin::DOWN, 0)},
-                  std::vector<Operator>{Operator::creation(Spin::UP, 0),
-                                        Operator::creation(Spin::UP, 1)}));
+  EXPECT_THAT(
+      basis.elements(),
+      UnorderedElementsAre(
+          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 0),
+                                Operator::creation(Operator::Spin::DOWN, 1)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 1),
+                                Operator::creation(Operator::Spin::DOWN, 1)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 0),
+                                Operator::creation(Operator::Spin::UP, 1)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0),
+                                Operator::creation(Operator::Spin::DOWN, 1)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0),
+                                Operator::creation(Operator::Spin::DOWN, 0)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0),
+                                Operator::creation(Operator::Spin::UP, 1)}));
 }
 
 TEST(BasisTest, IndexingUnique) {
@@ -60,16 +61,16 @@ TEST(BasisTest, IndexingUnique) {
 TEST(BasisTest, IndexingInsideBasis) {
   Basis basis(2, 2);
 
-  std::vector<Operator> term = {Operator::creation(Spin::UP, 0),
-                                Operator::creation(Spin::DOWN, 1)};
+  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0),
+                                Operator::creation(Operator::Spin::DOWN, 1)};
   EXPECT_TRUE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingOutsideBasis) {
   Basis basis(2, 2);
 
-  std::vector<Operator> term = {Operator::creation(Spin::UP, 0),
-                                Operator::creation(Spin::UP, 2)};
+  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0),
+                                Operator::creation(Operator::Spin::UP, 2)};
   EXPECT_FALSE(basis.contains(term));
 }
 
@@ -94,14 +95,14 @@ TEST(BasisTest, IndexingEmptyTerm) {
 TEST(BasisTest, IndexingSingleTermSingleBodyBasis) {
   Basis basis(1, 1);
 
-  std::vector<Operator> term = {Operator::creation(Spin::UP, 0)};
+  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0)};
   EXPECT_TRUE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingSingleTermManyBodyBasis) {
   Basis basis(2, 2);
 
-  std::vector<Operator> term = {Operator::creation(Spin::UP, 0)};
+  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0)};
   EXPECT_FALSE(basis.contains(term));
 }
 
@@ -122,10 +123,10 @@ TEST(BasisTest, SortBasis) {
   };
   basis.sort(sort_fn);
 
-  std::vector<Operator> first{Operator::creation(Spin::UP, 0),
-                              Operator::creation(Spin::UP, 1)};
-  std::vector<Operator> last{Operator::creation(Spin::DOWN, 0),
-                             Operator::creation(Spin::DOWN, 1)};
+  std::vector<Operator> first{Operator::creation(Operator::Spin::UP, 0),
+                              Operator::creation(Operator::Spin::UP, 1)};
+  std::vector<Operator> last{Operator::creation(Operator::Spin::DOWN, 0),
+                             Operator::creation(Operator::Spin::DOWN, 1)};
   EXPECT_EQ(*basis.elements().begin(), first);
   EXPECT_EQ(*basis.elements().rbegin(), last);
 }

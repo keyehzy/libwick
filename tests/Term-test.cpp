@@ -4,33 +4,43 @@
 
 TEST(TermTest, ConstructorAndAccessors) {
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term(2.5, operators);
 
   EXPECT_DOUBLE_EQ(term.coefficient(), 2.5);
   EXPECT_EQ(term.operators(), operators);
   EXPECT_EQ(term.operators().size(), 2);
   EXPECT_EQ(term.operators().at(0),
-            Operator(OperatorType::CREATION, Spin::UP, 0));
+            Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+                     Operator::Spin::UP, 0));
   EXPECT_EQ(term.operators().at(1),
-            Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1));
+            Operator(Operator::Type::ANNIHILATION,
+                     Operator::Statistics::FERMION, Operator::Spin::DOWN, 1));
 }
 
 TEST(TermTest, EqualityOperator) {
   std::vector<Operator> operators1 = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term1(2.5, operators1);
 
   std::vector<Operator> operators2 = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term2(2.5, operators2);
 
   std::vector<Operator> operators3 = {
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
-      Operator(OperatorType::CREATION, Spin::UP, 0)};
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0)};
   Term term3(2.5, operators3);
 
   Term term4(3.0, operators1);
@@ -42,18 +52,24 @@ TEST(TermTest, EqualityOperator) {
 
 TEST(TermTest, InequalityOperator) {
   std::vector<Operator> operators1 = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term1(2.5, operators1);
 
   std::vector<Operator> operators2 = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term2(2.5, operators2);
 
   std::vector<Operator> operators3 = {
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
-      Operator(OperatorType::CREATION, Spin::UP, 0)};
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0)};
   Term term3(2.5, operators3);
 
   Term term4(3.0, operators1);
@@ -65,8 +81,10 @@ TEST(TermTest, InequalityOperator) {
 
 TEST(TermTest, ToString) {
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term(2.5, operators);
 
   EXPECT_EQ(term.toString(),
@@ -77,8 +95,10 @@ TEST(TermTest, ToString) {
 
 TEST(TermTest, OutputOperator) {
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term(2.5, operators);
 
   std::ostringstream os;
@@ -92,22 +112,30 @@ TEST(TermTest, OutputOperator) {
 
 TEST(TermTest, Product) {
   std::vector<Operator> operators1 = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term1(2.5, operators1);
 
   std::vector<Operator> operators2 = {
-      Operator(OperatorType::CREATION, Spin::DOWN, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 3)};
   Term term2(3.0, operators2);
 
   Term product = term1.product(term2);
 
   std::vector<Operator> expected_operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
-      Operator(OperatorType::CREATION, Spin::DOWN, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 3)};
   Term expected_product(7.5, expected_operators);
 
   EXPECT_EQ(product, expected_product);
@@ -115,13 +143,17 @@ TEST(TermTest, Product) {
 
 TEST(TermTest, ProductWithVector) {
   std::vector<Operator> operators1 = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term1(2.5, operators1);
 
   std::vector<Operator> operators2 = {
-      Operator(OperatorType::CREATION, Spin::DOWN, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 3)};
   Term term2(3.0, operators2);
 
   std::vector<Term> terms = {term1, term2};
@@ -129,12 +161,18 @@ TEST(TermTest, ProductWithVector) {
   Term product = term1.product(term1, term2);
 
   std::vector<Operator> expected_operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
-      Operator(OperatorType::CREATION, Spin::DOWN, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 3)};
   Term expected_product(18.75, expected_operators);
 
   EXPECT_EQ(product, expected_product);
@@ -142,15 +180,19 @@ TEST(TermTest, ProductWithVector) {
 
 TEST(TermTest, AdjointSingleBody) {
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term term(2.5, operators);
 
   Term adjoint = term.adjoint();
 
   std::vector<Operator> expected_operators = {
-      Operator(OperatorType::CREATION, Spin::DOWN, 1),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 0)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0)};
   Term expected_adjoint(2.5, expected_operators);
 
   EXPECT_EQ(adjoint, expected_adjoint);
@@ -158,49 +200,67 @@ TEST(TermTest, AdjointSingleBody) {
 
 TEST(TermTest, AdjointManyBody) {
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::CREATION, Spin::DOWN, 1),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 3)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 3)};
   Term term(2.5, operators);
 
   Term adjoint = term.adjoint();
 
   std::vector<Operator> expected_operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 3),
-      Operator(OperatorType::CREATION, Spin::DOWN, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 0)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 3),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0)};
   Term expected_adjoint(2.5, expected_operators);
 
   EXPECT_EQ(adjoint, expected_adjoint);
 }
 
 TEST(TermTest, OneBodyTerm) {
-  Term term = Term::one_body(2.5, Spin::UP, 0, Spin::DOWN, 1);
+  Term term =
+      Term::one_body(2.5, Operator::Spin::UP, 0, Operator::Spin::DOWN, 1);
 
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 1)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1)};
   Term expected(2.5, operators);
 
   EXPECT_EQ(term, expected);
 }
 
 TEST(TermTest, ThreeBodyTermUsingNBodyTerm) {
-  Term term = Term::term(
-      2.5, Operator::creation(Spin::UP, 0), Operator::creation(Spin::DOWN, 1),
-      Operator::creation(Spin::UP, 2), Operator::annihilation(Spin::DOWN, 5),
-      Operator::annihilation(Spin::UP, 4),
-      Operator::annihilation(Spin::DOWN, 3));
+  Term term = Term::term(2.5, Operator::creation(Operator::Spin::UP, 0),
+                         Operator::creation(Operator::Spin::DOWN, 1),
+                         Operator::creation(Operator::Spin::UP, 2),
+                         Operator::annihilation(Operator::Spin::DOWN, 5),
+                         Operator::annihilation(Operator::Spin::UP, 4),
+                         Operator::annihilation(Operator::Spin::DOWN, 3));
 
   std::vector<Operator> operators = {
-      Operator(OperatorType::CREATION, Spin::UP, 0),
-      Operator(OperatorType::CREATION, Spin::DOWN, 1),
-      Operator(OperatorType::CREATION, Spin::UP, 2),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 5),
-      Operator(OperatorType::ANNIHILATION, Spin::UP, 4),
-      Operator(OperatorType::ANNIHILATION, Spin::DOWN, 3)};
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 0),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 1),
+      Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 2),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 5),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::UP, 4),
+      Operator(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
+               Operator::Spin::DOWN, 3)};
   Term expected(2.5, operators);
 
   EXPECT_EQ(term, expected);
