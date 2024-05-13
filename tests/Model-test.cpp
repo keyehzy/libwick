@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "Models/LinearChain.h"
 #include "SparseMatrix.h"
 
 TEST(ModelTest, LinearChain) {

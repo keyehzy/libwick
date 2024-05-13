@@ -19,6 +19,10 @@ add_library(
     NormalOrder.cpp
     Model.cpp
     SparseMatrix.cpp
+    Models/LinearChain.cpp
+    Models/HubbardChain.cpp
+    Models/HubbardChainKSpace.cpp
+    Models/HubbardKagome.cpp
 )
 
 target_include_directories(
