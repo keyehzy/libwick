@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Matheus Sousa
+// SPDX-License-Identifier: BSD-2-Clause
+
 #pragma once
 
 // We encode a single creation/annihilation operator as a byte.

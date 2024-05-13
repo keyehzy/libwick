@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Matheus Sousa
+// SPDX-License-Identifier: BSD-2-Clause
+
 #include "Operator.h"
 
 #include <gtest/gtest.h>
