@@ -4,12 +4,10 @@
 #include <armadillo>
 #include <chrono>
 #include <cmath>
-#include <cstdint>
 #include <iostream>
 #include <numbers>
 
 #include "Model.h"
-#include "SparseMatrix.h"
 
 class Clock {
  private:
