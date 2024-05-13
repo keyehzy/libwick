@@ -6,8 +6,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <iostream>
-
 using testing::IsEmpty;
 
 TEST(NormalOrderTest, NormalOrderTermEqual) {
