@@ -13,6 +13,8 @@ class Expression {
 
   Expression(const ExpressionMap& terms) : m_terms(terms) {}
 
+  Expression(ExpressionMap&& terms) : m_terms(std::move(terms)) {}
+
   Expression(const std::vector<Term>& terms) {
     for (const auto& term : terms) {
       m_terms[term.operators()] += term.coefficient();

@@ -36,6 +36,10 @@ class SparseMatrix {
 
   std::size_t size() const noexcept { return m_data.size(); }
 
+  const std::unordered_map<Index, T, IndexHasher>& elements() const noexcept {
+    return m_data;
+  }
+
   bool operator==(const SparseMatrix& other) const noexcept {
     return m_data == other.m_data;
   }

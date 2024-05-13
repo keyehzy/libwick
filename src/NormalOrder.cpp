@@ -67,23 +67,23 @@ Expression normal_order(const Term& term) {
 Expression normal_order(const std::vector<Term>& terms) {
   Expression::ExpressionMap result;
   for (const Term& term : terms) {
-    Expression e = normal_order(term);
+    const Expression& e = normal_order(term);
     for (const auto& [term, coeff] : e.terms()) {
       result[term] += coeff;
     }
   }
-  return Expression(result);
+  return Expression(std::move(result));
 }
 
 Expression normal_order(const Expression& expression) {
   Expression::ExpressionMap result;
   for (const auto& [term, coeff] : expression.terms()) {
-    Expression e = normal_order(Term(coeff, term));
+    const Expression& e = normal_order(Term(coeff, term));
     for (const auto& [term, coeff] : e.terms()) {
       result[term] += coeff;
     }
   }
-  return Expression(result);
+  return Expression(std::move(result));
 }
 
 Expression commute(const Term& term1, const Term& term2) {

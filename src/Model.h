@@ -8,26 +8,22 @@ class Model {
  public:
   template <typename SpMat>
   void compute_matrix_elements(const Basis& basis, SpMat& mat) {
-    std::vector<Term> hamilt = hamiltonian();
-#pragma omp parallel
-    {
+    const std::vector<Term>& hamilt = hamiltonian();
+#pragma omp parallel for schedule(dynamic)
+    for (const auto& basis_element : basis.elements()) {
+      std::size_t basis_index = basis.index(basis_element);
       std::vector<Term> terms;
       terms.reserve(hamilt.size());
-#pragma omp for schedule(dynamic)
-      for (const auto& basis_element : basis.elements()) {
-        std::size_t basis_index = basis.index(basis_element);
-        terms.clear();
-        for (const Term& hamilt_term : hamilt) {
-          terms.push_back(hamilt_term.product(basis_element));
-        }
-        Expression e = normal_order(terms);
-        for (const auto& [term, coeff] : e.terms()) {
-          if (term.back().type() == OperatorType::CREATION &&
-              basis.contains(term)) {
-            std::size_t term_index = basis.index(term);
+      for (const Term& hamilt_term : hamilt) {
+        terms.push_back(hamilt_term.product(basis_element));
+      }
+      const Expression& e = normal_order(terms);
+      for (const auto& [term, coeff] : e.terms()) {
+        if (term.back().type() == OperatorType::CREATION &&
+            basis.contains(term)) {
+          std::size_t term_index = basis.index(term);
 #pragma omp critical
-            mat(basis_index, term_index) = coeff;
-          }
+          mat(basis_index, term_index) = coeff;
         }
       }
     }
