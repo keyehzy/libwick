@@ -82,10 +82,11 @@ class HubbardChain : public Model {
 
   void interaction_term(std::vector<Term>& result) const {
     for (size_t i1 = 0; i1 < m_size; i1++) {
-      result.push_back(Term::term(m_u, Operator::creation(Operator::Spin::UP, i1),
-                                  Operator::annihilation(Operator::Spin::UP, i1),
-                                  Operator::creation(Operator::Spin::DOWN, i1),
-                                  Operator::annihilation(Operator::Spin::DOWN, i1)));
+      result.push_back(
+          Term::term(m_u, Operator::creation(Operator::Spin::UP, i1),
+                     Operator::annihilation(Operator::Spin::UP, i1),
+                     Operator::creation(Operator::Spin::DOWN, i1),
+                     Operator::annihilation(Operator::Spin::DOWN, i1)));
     }
   }
 

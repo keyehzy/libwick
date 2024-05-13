@@ -50,7 +50,6 @@ TEST(OperatorTest, ConstructorAndGetterBoson) {
   EXPECT_EQ(op2.identifier(), 0b1111110);  // Annihilation, Down, Orbital 31
 }
 
-
 TEST(OperatorTest, CopyConstructorAndAssignment) {
   Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
                Operator::Spin::UP, 10);
@@ -94,7 +93,6 @@ TEST(OperatorTest, EqualityAndInequalityFermionBoson) {
   EXPECT_NE(op1, op3);
   EXPECT_NE(op2, op3);
 }
-
 
 TEST(OperatorTest, ToString) {
   Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
@@ -144,7 +142,7 @@ TEST(OperatorTest, SameHash) {
   Operator op3(Operator::Type::CREATION, Operator::Statistics::BOSON,
                Operator::Spin::UP, 15);
   Operator op4(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);               
+               Operator::Spin::UP, 15);
 
   std::hash<Operator> hash_fn;
   EXPECT_EQ(hash_fn(op1), hash_fn(op2));
@@ -159,7 +157,7 @@ TEST(OperatorTest, DifferentHash) {
   Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
                Operator::Spin::DOWN, 15);
   Operator op3(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);               
+               Operator::Spin::UP, 15);
 
   std::hash<Operator> hash_fn;
   EXPECT_NE(hash_fn(op1), hash_fn(op2));

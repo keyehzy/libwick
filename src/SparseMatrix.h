@@ -27,7 +27,9 @@ class SparseMatrix {
  public:
   SparseMatrix() = default;
 
-  T& operator()(std::size_t i, std::size_t j) noexcept { return m_data[{i, j}]; }
+  T& operator()(std::size_t i, std::size_t j) noexcept {
+    return m_data[{i, j}];
+  }
 
   const T& operator()(std::size_t i, std::size_t j) const noexcept {
     auto it = m_data.find({i, j});
@@ -44,7 +46,9 @@ class SparseMatrix {
     return m_data == other.m_data;
   }
 
-  bool operator!=(const SparseMatrix& other) const noexcept { return !(*this == other); }
+  bool operator!=(const SparseMatrix& other) const noexcept {
+    return !(*this == other);
+  }
 
   const std::unordered_map<Index, T, IndexHasher>& data() const noexcept {
     return m_data;

@@ -107,7 +107,8 @@ class Basis {
         Operator::Spin spin = static_cast<Operator::Spin>(spin_index);
         if (current.empty() || current.back().orbital() < i ||
             (current.back().orbital() == i && spin > current.back().spin())) {
-          current.emplace_back(Operator::Type::CREATION, Operator::Statistics::FERMION, spin, i);
+          current.emplace_back(Operator::Type::CREATION,
+                               Operator::Statistics::FERMION, spin, i);
           generate_combinations(current, i, depth + 1, max_depth);
           current.pop_back();
         }
