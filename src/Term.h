@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <functional>
 #include <vector>
 
 #include "Operator.h"
