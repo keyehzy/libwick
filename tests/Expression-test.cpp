@@ -6,6 +6,8 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <vector>
+
 using testing::IsEmpty;
 
 TEST(ExpressionTest, ConstructorAndAccessors) {
@@ -203,7 +205,8 @@ TEST(NormalOrderTest, ExpressionResultingInZeroAfterClean) {
                      Operator::Operator::Statistics::FERMION,
                      Operator::Spin::UP, 1)})};
   Expression expression(terms);
-  expression.clean();
+  std::erase_if(expression.terms(),
+                [](const auto &term) { return std::abs(term.second) < 1e-10; });
 
   EXPECT_THAT(expression.terms(), IsEmpty());
 }

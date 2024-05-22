@@ -34,17 +34,6 @@ class Expression {
 
   bool operator!=(const Expression& other) const { return !(*this == other); }
 
-  void clean() {
-    for (auto it = m_terms.begin(); it != m_terms.end();) {
-      if (std::abs(it->second) < m_tolerance) {
-        it = m_terms.erase(it);
-      } else {
-        ++it;
-      }
-    }
-  }
-
  private:
   ExpressionMap m_terms;
-  constexpr static double m_tolerance = 1e-10;
 };

@@ -682,7 +682,8 @@ TEST(NormalOrderTest,
              Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
                       Operator::Spin::UP, 0)});
   Expression normal_ordered = normal_order(term);
-  normal_ordered.clean();
+  std::erase_if(normal_ordered.terms(),
+                [](const auto &term) { return std::abs(term.second) < 1e-10; });
 
   std::vector<Term> terms = {Term(
       1.0, {Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
@@ -709,6 +710,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZeroAfterClean) {
             Operator(Operator::Type::CREATION, Operator::Statistics::FERMION,
                      Operator::Spin::UP, 1)})};
   Expression normal_ordered = normal_order(terms);
-  normal_ordered.clean();
+  std::erase_if(normal_ordered.terms(),
+                [](const auto &term) { return std::abs(term.second) < 1e-10; });
   EXPECT_THAT(normal_ordered.terms(), IsEmpty());
 }
