@@ -4,7 +4,6 @@
 #pragma once
 
 #include "Expression.h"
-#include "Term.h"
 
 Expression normal_order(const Term& term);
 Expression normal_order(const std::vector<Term>& terms);

@@ -3,9 +3,11 @@
 
 #pragma once
 
+#include <algorithm>
 #include <unordered_map>
+#include <vector>
 
-#include "Term.h"
+#include "Operator.h"
 
 template <class T>
 class IndexedVectorMap {

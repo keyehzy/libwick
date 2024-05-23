@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <functional>
 #include <vector>
 
 #include "Operator.h"
@@ -65,9 +64,11 @@ class Term {
     return Term(m_coefficient, new_operators);
   }
 
+  static Term product(const Term& a, const Term& b) { return a.product(b); }
+
   template <typename... Args>
-  Term product(const Term& term, Args... args) const {
-    return product(term).product(args...);
+  static Term product(const Term& a, const Term& b, Args... args) {
+    return a.product(b).product(args...);
   }
 
   Term adjoint() const {
@@ -81,31 +82,21 @@ class Term {
     return Term(m_coefficient, adj_operators);
   }
 
-  static Term one_body(double coefficient, Operator::Spin spin1,
-                       std::uint8_t orbital1, Operator::Spin spin2,
-                       std::uint8_t orbital2) {
-    return Term(coefficient,
-                std::vector<Operator>{Operator::creation(spin1, orbital1),
-                                      Operator::annihilation(spin2, orbital2)});
-  }
+  Term negate() const { return Term(-m_coefficient, m_operators); }
 
-  static Term density_density(double coefficient, Operator::Spin spin1,
-                              std::uint8_t orbital1, Operator::Spin spin2,
-                              std::uint8_t orbital2, Operator::Spin spin3,
-                              std::uint8_t orbital3, Operator::Spin spin4,
-                              std::uint8_t orbital4) {
-    return Term(coefficient,
-                std::vector<Operator>{Operator::creation(spin1, orbital1),
-                                      Operator::annihilation(spin2, orbital2),
-                                      Operator::creation(spin3, orbital3),
-                                      Operator::annihilation(spin4, orbital4)});
-  }
+  struct Factory {
+    Factory() = delete;
 
-  template <typename... Args>
-  static Term term(double coefficient, Args... args) {
-    std::vector<Operator> operators{args...};
-    return Term(coefficient, operators);
-  }
+    static Term one_body(double, Operator::Spin, std::uint8_t, Operator::Spin,
+                         std::uint8_t);
+
+    static Term two_body(double, Operator::Spin, std::uint8_t, Operator::Spin,
+                         std::uint8_t, Operator::Spin, std::uint8_t,
+                         Operator::Spin, std::uint8_t);
+
+    static Term density_density(double, Operator::Spin, std::uint8_t,
+                                Operator::Spin, std::uint8_t);
+  };
 
  private:
   double m_coefficient;

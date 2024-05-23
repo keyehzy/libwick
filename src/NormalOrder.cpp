@@ -92,8 +92,5 @@ Expression normal_order(const Expression& expression) {
 }
 
 Expression commute(const Term& term1, const Term& term2) {
-  Term t1 = term1.product(term2);
-  Term t2 = term2.product(term1);
-  // t2.coefficient() *= -1;
-  return Expression(std::vector<Term>{t1, t2});
+  return normal_order({term1.product(term2), term2.product(term1).negate()});
 }
