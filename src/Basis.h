@@ -101,31 +101,9 @@ class Basis {
 
  private:
   void generate_combinations(BasisElement& current, size_t first_orbital,
-                             size_t depth, size_t max_depth) {
-    if (depth == max_depth && (!m_filter || m_filter(current))) {
-      m_basis_map.insert(current);
-      return;
-    }
+                             size_t depth, size_t max_depth);
 
-    for (size_t i = first_orbital; i < m_orbitals; i++) {
-      for (int spin_index = 0; spin_index < 2; ++spin_index) {
-        Operator::Spin spin = static_cast<Operator::Spin>(spin_index);
-        if (current.empty() || current.back().orbital() < i ||
-            (current.back().orbital() == i && spin > current.back().spin())) {
-          current.emplace_back(Operator::Type::CREATION,
-                               Operator::Statistics::FERMION, spin, i);
-          generate_combinations(current, i, depth + 1, max_depth);
-          current.pop_back();
-        }
-      }
-    }
-  }
-
-  void generate_basis() {
-    BasisElement current;
-    current.reserve(m_particles);
-    generate_combinations(current, 0, 0, m_particles);
-  }
+  void generate_basis();
 
   std::size_t m_orbitals;
   std::size_t m_particles;
