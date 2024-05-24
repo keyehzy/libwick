@@ -10,8 +10,8 @@ Expression add(const Term& a, const Term& b) {
   return result;
 }
 
-Expression hopping(double t, Operator::Spin spin, std::size_t i,
-                   std::size_t j) {
+Expression Expression::Factory::hopping(double t, Operator::Spin spin,
+                                        std::size_t i, std::size_t j) {
   return add(Term::Factory::one_body(-t, spin, i, spin, j),
              Term::Factory::one_body(-t, spin, i, spin, j).adjoint());
 }

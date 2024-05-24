@@ -64,13 +64,6 @@ class Term {
     return Term(m_coefficient, new_operators);
   }
 
-  static Term product(const Term& a, const Term& b) { return a.product(b); }
-
-  template <typename... Args>
-  static Term product(const Term& a, const Term& b, Args... args) {
-    return a.product(b).product(args...);
-  }
-
   Term adjoint() const {
     std::vector<Operator> adj_operators;
     for (const auto& op : m_operators) {

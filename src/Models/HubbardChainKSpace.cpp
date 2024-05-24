@@ -23,7 +23,7 @@ void HubbardChainKSpace::hopping_term(std::vector<Term>& result) const {
                  static_cast<double>(index(i)) / static_cast<double>(m_size);
       double a = m_size == 2 ? 1 : 2;
       result.push_back(
-          Term::one_body(-a * m_t * std::cos(k), spin, i, spin, i));
+          Term::Factory::one_body(-a * m_t * std::cos(k), spin, i, spin, i));
     }
   }
 }
@@ -35,11 +35,11 @@ void HubbardChainKSpace::interaction_term(std::vector<Term>& result) const {
         for (std::size_t k4 = 0; k4 < m_size; k4++) {
           if (((k2 + k4) % m_size == (k1 + k3) % m_size)) {
             result.push_back(
-                Term::term(m_u / static_cast<double>(m_size),
-                           Operator::creation(Operator::Spin::UP, k1),
-                           Operator::annihilation(Operator::Spin::UP, k2),
-                           Operator::creation(Operator::Spin::DOWN, k3),
-                           Operator::annihilation(Operator::Spin::DOWN, k4)));
+                Term(m_u / static_cast<double>(m_size),
+                     {Operator::creation(Operator::Spin::UP, k1),
+                      Operator::annihilation(Operator::Spin::UP, k2),
+                      Operator::creation(Operator::Spin::DOWN, k3),
+                      Operator::annihilation(Operator::Spin::DOWN, k4)}));
           }
         }
       }

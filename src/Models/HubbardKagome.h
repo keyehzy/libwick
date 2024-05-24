@@ -5,7 +5,8 @@
 
 class HubbardKagome : public Model {
  public:
-  HubbardKagome(double t, double u) : m_t(t), m_u(u) {}
+  HubbardKagome(double t, double u, bool periodic)
+      : m_t(t), m_u(u), m_periodic(periodic) {}
 
   static constexpr size_t size() { return 12; }
 
@@ -31,4 +32,5 @@ class HubbardKagome : public Model {
 
   double m_t;
   double m_u;
+  bool m_periodic;
 };

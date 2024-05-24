@@ -57,8 +57,8 @@ class Expression {
     Expression result;
     for (const auto& [operators_a, coefficient_a] : terms()) {
       for (const auto& [operators_b, coefficient_b] : other.terms()) {
-        result.insert(Term::product(Term(coefficient_a, operators_a),
-                                    Term(coefficient_b, operators_b)));
+        result.insert(Term(coefficient_a, operators_a)
+                          .product(Term(coefficient_b, operators_b)));
       }
     }
     return result;
@@ -80,16 +80,20 @@ class Expression {
     return result;
   }
 
+  struct Factory {
+    Factory() = delete;
+
+    static Expression add(const Term&, const Term&);
+
+    static Expression hopping(double, Operator::Spin, std::size_t, std::size_t);
+
+    static Expression spin_x(double, std::size_t);
+
+    static Expression spin_y(double, std::size_t);
+
+    static Expression spin_z(double, std::size_t);
+  };
+
  private:
   ExpressionMap m_terms;
 };
-
-Expression add(const Term& a, const Term& b);
-
-Expression hopping(double t, Operator::Spin spin, std::size_t i, std::size_t j);
-
-Expression spin_x(double coeff, std::size_t i);
-
-Expression spin_y(double coeff, std::size_t i);
-
-Expression spin_z(double coeff, std::size_t i);
