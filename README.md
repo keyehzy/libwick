@@ -1,27 +1,75 @@
-# libwick
+# LibMB
 
-This project implements a second-quantization library in C++. It provides tools for representing and manipulating quantum many-body systems using creation and annihilation operators.
+This project provides a C++ library for second-quantization calculations, enabling the representation and manipulation of quantum many-body systems using creation and annihilation operators. 
 
-# Usage
+## Features
+
+- **Symbolic representation of second-quantized operators:** Define Hamiltonians and other operators using a flexible and intuitive syntax.
+- **Basis generation:**  Construct custom basis sets tailored to your problem, including restrictions on particle number, spin, and other quantum numbers.
+- **Matrix representation:**  Efficiently compute matrix elements of operators in the chosen basis, facilitating numerical diagonalization.
+- **Integration with external libraries:** Seamlessly interface with linear algebra libraries like Armadillo for powerful numerical computations.
+
+## Usage
 
 ```bash
 # Build the project using cmake
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_CXX_COMPILER=clang++
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 
 # Run the tests
 ./build/tests/libwick-test
 ```
 
-# Examples
+## Examples
 
 In the following example, we construct a Hubbard chain model and compute the ground state using the Armadillo library.
 
 ```cpp
-#include <armadillo> //  for eigensolver
+#include <armadillo>  //  for eigensolver
 #include <iostream>
 
 #include "Model.h"
+
+class HubbardChain : public Model {
+ public:
+  HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
+
+ private:
+  void HubbardChain::hopping_term(std::vector<Term>& result) const {
+    for (Operator::Spin spin : {Operator::Spin::UP, Operator::Spin::DOWN}) {
+      for (std::size_t i = 0; i < m_size; i++) {
+        result.push_back(Term::Factory::one_body(-m_u, spin, i, spin, i));
+      }
+      for (std::size_t i = 0; i < m_size - 1; i++) {
+        result.push_back(Term::Factory::one_body(-m_t, spin, i, spin, i + 1));
+        result.push_back(
+            Term::Factory::one_body(-m_t, spin, i, spin, i + 1).adjoint());
+      }
+      result.push_back(
+          Term::Factory::one_body(-m_t, spin, m_size - 1, spin, 0));
+      result.push_back(
+          Term::Factory::one_body(-m_t, spin, m_size - 1, spin, 0).adjoint());
+    }
+  }
+
+  void HubbardChain::interaction_term(std::vector<Term>& result) const {
+    for (size_t i = 0; i < m_size; i++) {
+      result.push_back(Term::Factory::density_density(
+          m_u, Operator::Spin::UP, i, Operator::Spin::DOWN, i));
+    }
+  }
+
+  std::vector<Term> hamiltonian() const override {
+    std::vector<Term> result;
+    hopping_term(result);
+    interaction_term(result);
+    return result;
+  }
+
+  double m_t;
+  double m_u;
+  size_t m_size;
+};
 
 int main() {
   const std::size_t size = 8;
@@ -31,17 +79,18 @@ int main() {
   HubbardChain model(/*t=*/1.0, /*u=*/2.0, size, particles);
 
   // Construct a basis with total spin equal to zero
-  Basis basis(size, particles, [](const Basis::BasisElement& element) {
-    int total_spin = 0;
-    for (const auto& op : element) {
-      total_spin += op.spin() == Operator::Spin::UP ? 1 : -1;
-    }
-    return total_spin == sz;
-  });
+  Basis basis(size, particles, /*allow_double_occupancy=*/true,
+              [](const Basis::BasisElement& element) {
+                int total_spin = 0;
+                for (const auto& op : element) {
+                  total_spin += op.spin() == Operator::Spin::UP ? 1 : -1;
+                }
+                return total_spin == sz;
+              });
 
   // Compute matrix elements
   arma::sp_mat m(basis.size(), basis.size());
-  model.compute_matrix_elements(basis, m);  
+  model.compute_matrix_elements(basis, m);
 
   // Compute ground state using, e.g. Armadillo library
   arma::vec eigval;
@@ -61,6 +110,27 @@ int main() {
 }
 ```
 
-# License
+The code defines a `HubbardChain` class, inheriting from a generic `Model`
+class, to represent the Hubbard Hamiltonian. The hopping and interaction terms
+are constructed using second-quantized operators.
+
+A `Basis` object is created, specifying the Hilbert space for the calculation.
+This example restricts the basis to states with a fixed particle number and
+total spin projection.
+
+The Hamiltonian's matrix representation in the chosen basis is computed. The
+Armadillo library's `eigs_sym` function efficiently finds the lowest eigenvalues
+and eigenvectors.
+
+The code outputs the calculated eigenvalues, representing the ground state
+energy and potentially low-lying excitations. Further analysis of the
+eigenvectors can reveal insights into the ground state properties.
+
+This example highlights LibMB's core functionalities, demonstrating its
+flexibility in tackling complex quantum many-body problems. You can easily adapt
+this code to explore different models, parameter regimes, or analysis techniques
+by modifying the model definition, basis construction, or post-processing steps.
+
+## License
 
 This project is licensed under the BSD 2-Clause License - see the [LICENSE](LICENSE) file for details.

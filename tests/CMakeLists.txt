@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 add_executable(
-    libwick-test
+    libmb-test
     Operator-test.cpp
     Term-test.cpp
     Expression-test.cpp
@@ -12,21 +12,21 @@ add_executable(
 )
 
 target_include_directories(
-    libwick-test
+    libmb-test
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(
-    libwick-test
+    libmb-test
     PRIVATE
     gmock
     gmock_main
     gtest
-    libwick
+    libmb
 )
 
 add_test(
-    NAME libwick-test
-    COMMAND libwick-test
+    NAME libmb-test
+    COMMAND libmb-test
 )

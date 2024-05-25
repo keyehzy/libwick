@@ -17,7 +17,7 @@ target_include_directories(
 
 target_link_libraries(
     wick-example
-    libwick
+    libmb
     BLAS::BLAS
     armadillo
     superlu

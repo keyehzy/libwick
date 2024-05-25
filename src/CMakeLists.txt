@@ -7,11 +7,11 @@ add_executable(
 
 target_link_libraries(
     main
-    libwick
+    libmb
 )
 
 add_library(
-    libwick
+    libmb
     Basis.cpp
     Operator.cpp
     Term.cpp
@@ -26,7 +26,7 @@ add_library(
 )
 
 target_include_directories(
-    libwick
+    libmb
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
