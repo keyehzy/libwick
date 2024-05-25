@@ -19,7 +19,7 @@ constexpr int binomial(int n, int k) {
 }
 
 TEST(BasisTest, ConstructorAndAttributes) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   EXPECT_EQ(basis.particles(), 2);
   EXPECT_EQ(basis.orbitals(), 2);
@@ -27,7 +27,7 @@ TEST(BasisTest, ConstructorAndAttributes) {
 }
 
 TEST(BasisTest, BasisGeneration) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
   EXPECT_EQ(basis.elements().size(), 6);
   EXPECT_THAT(
       basis.elements(),
@@ -46,8 +46,20 @@ TEST(BasisTest, BasisGeneration) {
                                 Operator::creation(Operator::Spin::UP, 1)}));
 }
 
+TEST(BasisTest, BasisGenerationDisallowingDoubleOccupation) {
+  Basis basis(2, 1, /*allow_double_occupancy=*/true);
+  EXPECT_EQ(basis.elements().size(), 4);
+  EXPECT_THAT(
+      basis.elements(),
+      UnorderedElementsAre(
+          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 0)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 1)},
+          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 1)}));
+}
+
 TEST(BasisTest, IndexingUnique) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   std::unordered_set<std::size_t> indices;
   for (const auto& term : basis.elements()) {
@@ -62,7 +74,7 @@ TEST(BasisTest, IndexingUnique) {
 }
 
 TEST(BasisTest, IndexingInsideBasis) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0),
                                 Operator::creation(Operator::Spin::DOWN, 1)};
@@ -70,7 +82,7 @@ TEST(BasisTest, IndexingInsideBasis) {
 }
 
 TEST(BasisTest, IndexingOutsideBasis) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0),
                                 Operator::creation(Operator::Spin::UP, 2)};
@@ -78,10 +90,10 @@ TEST(BasisTest, IndexingOutsideBasis) {
 }
 
 TEST(BasisTest, EqualityOperator) {
-  Basis basis1(2, 2);
-  Basis basis2(2, 2);
-  Basis basis3(2, 3);
-  Basis basis4(3, 2);
+  Basis basis1(2, 2, /*allow_double_occupancy=*/true);
+  Basis basis2(2, 2, /*allow_double_occupancy=*/true);
+  Basis basis3(2, 3, /*allow_double_occupancy=*/true);
+  Basis basis4(3, 2, /*allow_double_occupancy=*/true);
 
   EXPECT_EQ(basis1, basis2);
   EXPECT_NE(basis1, basis3);
@@ -89,28 +101,28 @@ TEST(BasisTest, EqualityOperator) {
 }
 
 TEST(BasisTest, IndexingEmptyTerm) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   std::vector<Operator> term = {};
   EXPECT_FALSE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingSingleTermSingleBodyBasis) {
-  Basis basis(1, 1);
+  Basis basis(1, 1, /*allow_double_occupancy=*/true);
 
   std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0)};
   EXPECT_TRUE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingSingleTermManyBodyBasis) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0)};
   EXPECT_FALSE(basis.contains(term));
 }
 
 TEST(BasisTest, SortBasis) {
-  Basis basis(2, 2);
+  Basis basis(2, 2, /*allow_double_occupancy=*/true);
 
   auto sort_fn = [](const std::vector<Operator>& a,
                     const std::vector<Operator>& b) {

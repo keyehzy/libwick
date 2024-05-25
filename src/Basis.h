@@ -56,12 +56,19 @@ class Basis {
   using BasisMap = std::unordered_map<BasisElement, std::size_t>;
   using FilterFunction = std::function<bool(const BasisElement&)>;
 
-  Basis(std::size_t n, std::size_t m) : m_orbitals{n}, m_particles{m} {
+  Basis(std::size_t n, std::size_t m, bool allow_double_occupancy)
+      : m_orbitals{n},
+        m_particles{m},
+        m_allow_double_occupancy{allow_double_occupancy} {
     generate_basis();
   }
 
-  Basis(std::size_t n, std::size_t m, FilterFunction filter)
-      : m_orbitals{n}, m_particles{m}, m_filter{filter} {
+  Basis(std::size_t n, std::size_t m, bool allow_double_occupancy,
+        FilterFunction filter)
+      : m_orbitals{n},
+        m_particles{m},
+        m_allow_double_occupancy{allow_double_occupancy},
+        m_filter{filter} {
     generate_basis();
   }
 
@@ -100,13 +107,13 @@ class Basis {
   std::string state_string(const BasisElement& element) const;
 
  private:
-  void generate_combinations(BasisElement& current, size_t first_orbital,
-                             size_t depth, size_t max_depth);
+  void generate_combinations(BasisElement&, size_t, size_t, size_t);
 
   void generate_basis();
 
   std::size_t m_orbitals;
   std::size_t m_particles;
+  bool m_allow_double_occupancy = true;
   IndexedVectorMap<BasisElement> m_basis_map;
   FilterFunction m_filter;
 };

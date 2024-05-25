@@ -62,7 +62,8 @@ void Basis::generate_combinations(BasisElement& current, size_t first_orbital,
     for (int spin_index = 0; spin_index < 2; ++spin_index) {
       Operator::Spin spin = static_cast<Operator::Spin>(spin_index);
       if (current.empty() || current.back().orbital() < i ||
-          (current.back().orbital() == i && spin > current.back().spin())) {
+          (m_allow_double_occupancy &&
+           (current.back().orbital() == i && spin > current.back().spin()))) {
         current.push_back(Operator::creation(spin, i));
         generate_combinations(current, i, depth + 1, max_depth);
         current.pop_back();
