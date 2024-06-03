@@ -1,0 +1,39 @@
+name: CMake
+on:
+  push:
+  pull_request:
+    types: [opend, syncronize]
+
+jobs:
+  build:
+    name: ${{ matrix.toolchain.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - {runs_on: ubuntu-latest, name: "GCC Sanitizers", CC: gcc, CXX: g++, CFLAGS: "-fsanitize=address,undefined -fsanitize-address-use-after-scope -fno-sanitize-recover=address,undefined -fuse-ld=gold", CMAKE_BUILD_TYPE: "Debug", WARNINGS: "-Werror;{0}", ASAN_OPTIONS: "strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1"}
+          - {runs_on: ubuntu-latest, name: "GCC Debug", CC: gcc, CXX: g++, BUILD_TYPE: "Debug", WARNINGS: "-Werror;{0}"}
+          - {runs_on: ubuntu-latest, name: "GCC Release", CC: gcc, CXX: g++, BUILD_TYPE: "Release", WARNINGS: "-Werror;{0}"}
+    runs-on: ${{ matrix.toolchain.runs_on }}
+    env:
+      ASAN_OPTIONS: ${{ matrix.toolchain.ASAN_OPTIONS }}
+      CMAKE_BUILD_TYPE: ${{ matrix.toolchain.CMAKE_BUILD_TYPE }}
+      CMAKE_CXX_COMPILER: ${{ matrix.toolchain.CXX }}
+      CMAKE_CXX_FLAGS: ${{ matrix.toolchain.CFLAGS }}
+      CMAKE_EXE_LINKER_FLAGS: ${{ matrix.toolchain.CFLAGS }}
+      CMAKE_EXTRA_FLAGS: ${{ matrix.toolchain.CMAKE_FLAGS }}
+      CMAKE_SHARED_LINKER_FLAGS: ${{ matrix.toolchain.CFLAGS }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+
+    - name: configure
+      run: |
+        sudo apt-get install -y libopenblas-dev liblapack-dev libarpack2-dev libsuperlu-dev libarmadillo-dev
+        cmake -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" -DBUILD_TESTING=YES -DCMAKE_CXX_COMPILER="${CMAKE_CXX_COMPILER}" -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}" -DCMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS}" ${CMAKE_EXTRA_FLAGS} -S . -B .
+
+    - name: Build
+      run: cmake --build . --config Debug
+
+    - name: Test
+      run: ctest --build-config Debug --verbose --rerun-failed --output-on-failure
