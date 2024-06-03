@@ -3,6 +3,7 @@
 
 #include <armadillo>
 #include <array>
+#include <iomanip>
 
 #include "Basis.h"
 #include "Models/HubbardSquare.h"
