@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 
+find_package(OpenMP REQUIRED)
+find_package(BLAS)
+find_package(Armadillo)
+
 add_executable(
     main
     main.cpp
@@ -8,6 +12,22 @@ add_executable(
 target_link_libraries(
     main
     libmb
+    BLAS::BLAS
+    armadillo
+    superlu
+    arpack
+    m
+    gfortran
+)
+
+target_compile_definitions(
+    main
+    PUBLIC
+    ARMA_DONT_USE_WRAPPER
+    ARMA_USE_ARPACK
+    ARMA_USE_SUPERLU
+    ARMA_USE_OPENMP
+    #ARMA_OPENMP_THREADS=12
 )
 
 add_library(
@@ -23,6 +43,7 @@ add_library(
     Models/HubbardChain.cpp
     Models/HubbardChainKSpace.cpp
     Models/HubbardKagome.cpp
+    Models/HubbardSquare.cpp
 )
 
 target_include_directories(
@@ -31,42 +52,9 @@ target_include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-find_package(OpenMP)
+target_link_libraries(
+    libmb
+    PUBLIC
+    OpenMP::OpenMP_CXX
+)
 
-if (OpenMP_CXX_FOUND)
-    message(STATUS "OpenMP found: ${OpenMP_CXX_LIBRARIES}")
-    target_link_libraries(
-        libwick
-        OpenMP::OpenMP_CXX
-    )
-endif()
-
-find_package(BLAS)
-
-if (BLAS_FOUND)
-    message(STATUS "BLAS found: ${BLAS_LIBRARIES}")
-endif()
-
-find_package(Armadillo)
-
-if (Armadillo_FOUND)
-    message(STATUS "Armadillo found: ${ARMADILLO_LIBRARIES}")
-    target_link_libraries(
-        libwick
-        ${ARMADILLO_LIBRARIES}
-        BLAS::BLAS
-        superlu
-        arpack
-        m
-        gfortran
-    )
-    target_compile_definitions(
-        libwick
-        PRIVATE
-        ARMA_DONT_USE_WRAPPER
-        ARMA_USE_ARPACK
-        ARMA_USE_SUPERLU
-        ARMA_USE_OPENMP
-        ARMA_OPENMP_THREADS=12
-    )
-endif()

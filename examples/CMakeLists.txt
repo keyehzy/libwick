@@ -4,19 +4,19 @@ find_package(BLAS)
 find_package(Armadillo)
 
 add_executable(
-  wick-example
+  libmb-example
   main.cpp
   HubbardSquare4x4.cpp
 )
 
 target_include_directories(
-    wick-example
+    libmb-example
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(
-    wick-example
+    libmb-example
     libmb
     BLAS::BLAS
     armadillo
@@ -27,7 +27,7 @@ target_link_libraries(
 )
 
 target_compile_definitions(
-    wick-example
+    libmb-example
     PUBLIC
     ARMA_DONT_USE_WRAPPER
     ARMA_USE_ARPACK
