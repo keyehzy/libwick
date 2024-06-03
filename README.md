@@ -1,3 +1,4 @@
+![Build Status](https://github.com/keyehzy/cctb/actions/workflows/cmake.yml/badge.svg)
 # LibMB
 
 This project provides a C++ library for second-quantization calculations, enabling the representation and manipulation of quantum many-body systems using creation and annihilation operators. 
@@ -110,26 +111,22 @@ int main() {
 }
 ```
 
-The code defines a `HubbardChain` class, inheriting from a generic `Model`
-class, to represent the Hubbard Hamiltonian. The hopping and interaction terms
-are constructed using second-quantized operators.
+1. The code defines a `HubbardChain` class, inheriting from a `Model` class, to
+represent the Hubbard Hamiltonian. The hopping and interaction terms are
+constructed using second-quantized operators.
 
-A `Basis` object is created, specifying the Hilbert space for the calculation.
+2. A `Basis` object is created, specifying the Hilbert space for the calculation.
 This example restricts the basis to states with a fixed particle number and
 total spin projection.
 
-The Hamiltonian's matrix representation in the chosen basis is computed. The
+3. The Hamiltonian's matrix representation in the chosen basis is computed. The
 Armadillo library's `eigs_sym` function efficiently finds the lowest eigenvalues
 and eigenvectors.
 
-The code outputs the calculated eigenvalues, representing the ground state
-energy and potentially low-lying excitations. Further analysis of the
-eigenvectors can reveal insights into the ground state properties.
-
 This example highlights LibMB's core functionalities, demonstrating its
-flexibility in tackling complex quantum many-body problems. You can easily adapt
-this code to explore different models, parameter regimes, or analysis techniques
-by modifying the model definition, basis construction, or post-processing steps.
+flexibility in tackling quantum many-body problems. You can easily adapt this
+code to explore different models, parameter regimes, or analysis techniques by
+modifying the model definition, basis construction, or post-processing steps.
 
 ## License
 
