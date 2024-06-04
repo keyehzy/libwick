@@ -27,6 +27,12 @@ void prepare_up_and_down_representation(const Basis::BasisElement& element,
   }
 }
 
+void Basis::generate_basis() {
+  BasisElement current;
+  current.reserve(m_particles);
+  generate_combinations(current, 0, 0, m_particles);
+}
+
 std::string Basis::state_string(const Basis::BasisElement& element) const {
   assert(contains(element));
   std::vector<int> up(m_orbitals, 0);
@@ -51,8 +57,9 @@ std::string Basis::state_string(const Basis::BasisElement& element) const {
   return out.str();
 }
 
-void Basis::generate_combinations(BasisElement& current, size_t first_orbital,
-                                  size_t depth, size_t max_depth) {
+void FermionicBasis::generate_combinations(BasisElement& current,
+                                           size_t first_orbital, size_t depth,
+                                           size_t max_depth) {
   if (depth == max_depth && (!m_filter || m_filter(current))) {
     m_basis_map.insert(current);
     return;
@@ -70,10 +77,4 @@ void Basis::generate_combinations(BasisElement& current, size_t first_orbital,
       }
     }
   }
-}
-
-void Basis::generate_basis() {
-  BasisElement current;
-  current.reserve(m_particles);
-  generate_combinations(current, 0, 0, m_particles);
 }

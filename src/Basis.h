@@ -16,21 +16,12 @@ class Basis {
   using BasisMap = std::unordered_map<BasisElement, std::size_t>;
   using FilterFunction = std::function<bool(const BasisElement&)>;
 
-  Basis(std::size_t n, std::size_t m, bool allow_double_occupancy)
-      : m_orbitals{n},
-        m_particles{m},
-        m_allow_double_occupancy{allow_double_occupancy} {
-    generate_basis();
-  }
+  virtual ~Basis() = default;
 
-  Basis(std::size_t n, std::size_t m, bool allow_double_occupancy,
-        FilterFunction filter)
-      : m_orbitals{n},
-        m_particles{m},
-        m_allow_double_occupancy{allow_double_occupancy},
-        m_filter{filter} {
-    generate_basis();
-  }
+  Basis(std::size_t n, std::size_t m) : m_orbitals{n}, m_particles{m} {}
+
+  Basis(std::size_t n, std::size_t m, FilterFunction filter)
+      : m_orbitals{n}, m_particles{m}, m_filter{filter} {}
 
   const std::vector<BasisElement>& elements() const {
     return m_basis_map.elements();
@@ -66,14 +57,12 @@ class Basis {
 
   std::string state_string(const BasisElement& element) const;
 
- private:
-  void generate_combinations(BasisElement&, size_t, size_t, size_t);
-
+ protected:
   void generate_basis();
+  virtual void generate_combinations(BasisElement&, size_t, size_t, size_t) = 0;
 
   std::size_t m_orbitals;
   std::size_t m_particles;
-  bool m_allow_double_occupancy = true;
   IndexedVectorMap<BasisElement> m_basis_map;
   FilterFunction m_filter;
 };
@@ -81,3 +70,22 @@ class Basis {
 void prepare_up_and_down_representation(const Basis::BasisElement& element,
                                         std::vector<int>& up,
                                         std::vector<int>& down);
+
+class FermionicBasis final : public Basis {
+ public:
+  FermionicBasis(std::size_t n, std::size_t m, bool allow_double_occupancy)
+      : Basis(n, m), m_allow_double_occupancy{allow_double_occupancy} {
+    generate_basis();
+  }
+
+  FermionicBasis(std::size_t n, std::size_t m, FilterFunction filter,
+                 bool allow_double_occupancy)
+      : Basis(n, m, filter), m_allow_double_occupancy{allow_double_occupancy} {
+    generate_basis();
+  }
+
+  void generate_combinations(BasisElement&, size_t, size_t, size_t) override;
+
+ private:
+  bool m_allow_double_occupancy = true;
+};
