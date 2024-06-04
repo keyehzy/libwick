@@ -145,3 +145,34 @@ TEST(BasisTest, SortBasis) {
   EXPECT_EQ(*basis.elements().begin(), first);
   EXPECT_EQ(*basis.elements().rbegin(), last);
 }
+
+TEST(PrepareUpAndDownRepresentationTest, EmptyElement) {
+  Basis::BasisElement element;
+  std::vector<int> up(5, 0);
+  std::vector<int> down(5, 0);
+  prepare_up_and_down_representation(element, up, down);
+  EXPECT_EQ(up, std::vector<int>(5, 0));
+  EXPECT_EQ(down, std::vector<int>(5, 0));
+}
+
+TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
+  Basis::BasisElement element;
+  element.push_back(Operator::annihilation(Operator::Spin::UP, 2));
+  std::vector<int> up(5, 0);
+  std::vector<int> down(5, 0);
+  prepare_up_and_down_representation(element, up, down);
+  EXPECT_EQ(up, std::vector<int>({0, 0, -1, 0, 0}));
+  EXPECT_EQ(down, std::vector<int>(5, 0));
+}
+
+TEST(PrepareUpAndDownRepresentationTest, MultipleOperators) {
+  Basis::BasisElement element;
+  element.push_back(Operator::creation(Operator::Spin::DOWN, 1));
+  element.push_back(Operator::annihilation(Operator::Spin::UP, 3));
+  element.push_back(Operator::creation(Operator::Spin::UP, 0));
+  std::vector<int> up(5, 0);
+  std::vector<int> down(5, 0);
+  prepare_up_and_down_representation(element, up, down);
+  EXPECT_EQ(up, std::vector<int>({1, 0, 0, -1, 0}));
+  EXPECT_EQ(down, std::vector<int>({0, 1, 0, 0, 0}));
+}

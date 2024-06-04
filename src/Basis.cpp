@@ -9,21 +9,12 @@
 void prepare_up_and_down_representation(const Basis::BasisElement& element,
                                         std::vector<int>& up,
                                         std::vector<int>& down) {
-  for (auto it = element.rbegin(); it != element.rend(); it++) {
-    const Operator& o = *it;
-    if (o.type() == Operator::Type::ANNIHILATION) {
-      if (o.spin() == Operator::Spin::UP) {
-        up[o.orbital()] += -1;
-      } else {
-        down[o.orbital()] += -1;
-      }
-    } else {
-      if (o.spin() == Operator::Spin::UP) {
-        up[o.orbital()] += 1;
-      } else {
-        down[o.orbital()] += 1;
-      }
-    }
+  for (const auto& o : element) {
+    (o.type() == Operator::Type::ANNIHILATION
+         ? (o.spin() == Operator::Spin::UP ? up[o.orbital()]--
+                                           : down[o.orbital()]--)
+         : (o.spin() == Operator::Spin::UP ? up[o.orbital()]++
+                                           : down[o.orbital()]++));
   }
 }
 
