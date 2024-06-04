@@ -91,6 +91,33 @@ Expression normal_order(const Expression& expression) {
   return Expression(std::move(result));
 }
 
+Expression normal_order(const std::vector<Expression>& expressions) {
+  Expression::ExpressionMap result;
+  for (const Expression& expression : expressions) {
+    const Expression& e = normal_order(expression);
+    for (const auto& [term, coeff] : e.terms()) {
+      result[term] += coeff;
+    }
+  }
+  return Expression(std::move(result));
+}
+
 Expression commute(const Term& term1, const Term& term2) {
   return normal_order({term1.product(term2), term2.product(term1).negate()});
+}
+
+Expression commute(const Expression& expression1,
+                   const Expression& expression2) {
+  return normal_order({expression1.product(expression2),
+                       expression2.product(expression1).negate()});
+}
+
+Expression anticommute(const Term& term1, const Term& term2) {
+  return normal_order({term1.product(term2), term2.product(term1)});
+}
+
+Expression anticommute(const Expression& expression1,
+                       const Expression& expression2) {
+  return normal_order(
+      {expression1.product(expression2), expression2.product(expression1)});
 }

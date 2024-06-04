@@ -714,3 +714,52 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZeroAfterClean) {
                 [](const auto &term) { return std::abs(term.second) < 1e-10; });
   EXPECT_THAT(normal_ordered.terms(), IsEmpty());
 }
+
+TEST(NormalOrderTest, NormalOrderCommuteSameResultingInZero) {
+  Term term1 = Term(1.0, {Operator::creation(Operator::Spin::UP, 0)});
+  Expression e = commute(term1, term1);
+  std::erase_if(e.terms(),
+                [](const auto &term) { return std::abs(term.second) < 1e-10; });
+  EXPECT_THAT(e.terms(), IsEmpty());
+}
+
+// The expectation value of this commutation should give just 0 and
+// reproduce the commutation relation of the fermionic operators.
+// However, since we are doing this calculation at the operator level
+// we will have an additional term.
+// In practice, when doing calcultion we define a basis where only the
+// physical states are considered, so this term will not appear. Another
+// solution is just to filter out the terms that, after normal ordering,
+// have trailing annihilation operators.
+TEST(NormalOrderTest, NormalOrderAntiCommuteSameResultingInZero) {
+  {
+    Term term1 = Term(1.0, {Operator::creation(Operator::Spin::UP, 0)});
+    Expression e = anticommute(term1, term1);
+    std::vector<Term> terms = {
+        Term(2.0, {Operator::creation(Operator::Spin::UP, 0),
+                   Operator::creation(Operator::Spin::UP, 0)})};
+    Expression expected(terms);
+    EXPECT_EQ(e, expected);
+  }
+
+  {
+    Term term1 = Term(1.0, {Operator::creation(Operator::Spin::UP, 0)});
+    Term term2 = Term(1.0, {Operator::creation(Operator::Spin::UP, 1)});
+    Expression e = anticommute(term1, term2);
+    std::vector<Term> terms = {
+        Term(2.0, {Operator::creation(Operator::Spin::UP, 0),
+                   Operator::creation(Operator::Spin::UP, 1)})};
+    Expression expected(terms);
+  }
+}
+
+TEST(NormalOrderTest, NormalOrderAntiCommuteDifferentResultingInNonZero) {
+  Term term1 = Term(1.0, {Operator::creation(Operator::Spin::UP, 0)});
+  Term term2 = Term(1.0, {Operator::annihilation(Operator::Spin::UP, 0)});
+  Expression e = anticommute(term1, term2);
+  std::erase_if(e.terms(),
+                [](const auto &term) { return std::abs(term.second) < 1e-10; });
+  std::vector<Term> terms = {Term(1.0, {})};
+  Expression expected(terms);
+  EXPECT_EQ(e, expected);
+}
