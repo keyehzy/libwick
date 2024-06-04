@@ -11,3 +11,6 @@ Expression normal_order(const std::vector<Expression>& expressions);
 Expression commute(const Term& term1, const Term& term2);
 Expression commute(const Expression& expression1,
                    const Expression& expression2);
+Expression anticommute(const Term& term1, const Term& term2);
+Expression anticommute(const Expression& expression1,
+                       const Expression& expression2);
