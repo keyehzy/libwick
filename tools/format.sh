@@ -22,3 +22,6 @@ echo "${FILES}" | xargs clang-format -i
 
 echo "Formatted the following files:"
 echo "${FILES}"
+
+# Copyright (c) 2024 Matheus Sousa
+# SPDX-License-Identifier: BSD-2-Clause

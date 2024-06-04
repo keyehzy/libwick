@@ -11,10 +11,13 @@ find_repository_files() {
     git ls-files --cached --exclude-standard -- "${ROOT}"
 }
 
-FILES="$(find_repository_files | grep -v '^vendor' | grep -E '\.(c|cpp|h)$')"
+FILES="$(find_repository_files | grep -v '^vendor' | grep -E '\.(c|cpp|h|sh|py)$')"
 
 for FILE in ${FILES}; do
     if ! grep -q "$NOTICE_PATTERN" "$FILE"; then
         echo "Warning: Copyright notice not found in $FILE"
     fi
 done
+
+# Copyright (c) 2024 Matheus Sousa
+# SPDX-License-Identifier: BSD-2-Clause
