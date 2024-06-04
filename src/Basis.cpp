@@ -29,19 +29,27 @@ std::string Basis::state_string(const Basis::BasisElement& element) const {
   std::vector<int> up(m_orbitals, 0);
   std::vector<int> down(m_orbitals, 0);
   prepare_up_and_down_representation(element, up, down);
+
   std::stringstream out;
   out << "|";
+
   for (std::size_t i = 0; i < m_orbitals; i++) {
-    if (up[i] == 1 && down[i] == 1) {
-      out << "\u2191\u2193,";
-    } else if (up[i] == 1 && down[i] == 0) {
-      out << "\u2191 ,";
-    } else if (up[i] == 0 && down[i] == 1) {
-      out << " \u2193,";
-    } else if (up[i] == 0 && down[i] == 0) {
-      out << "  ,";
-    } else {
-      assert(false);
+    switch (up[i] * 2 + down[i]) {
+      case 0:
+        out << "  ,";
+        break;
+      case 1:
+        out << " \u2193,";
+        break;
+      case 2:
+        out << "\u2191 ,";
+        break;
+      case 3:
+        out << "\u2191\u2193,";
+        break;
+      default:
+        assert(false);
+        break;
     }
   }
   out << ">";
