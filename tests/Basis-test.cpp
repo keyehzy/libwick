@@ -156,8 +156,7 @@ TEST(PrepareUpAndDownRepresentationTest, EmptyElement) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
-  Basis::BasisElement element;
-  element.push_back(Operator::annihilation(Operator::Spin::UP, 2));
+  Basis::BasisElement element{Operator::annihilation(Operator::Spin::UP, 2)};
   std::vector<int> up(5, 0);
   std::vector<int> down(5, 0);
   prepare_up_and_down_representation(element, up, down);
@@ -166,13 +165,50 @@ TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, MultipleOperators) {
-  Basis::BasisElement element;
-  element.push_back(Operator::creation(Operator::Spin::DOWN, 1));
-  element.push_back(Operator::annihilation(Operator::Spin::UP, 3));
-  element.push_back(Operator::creation(Operator::Spin::UP, 0));
+  Basis::BasisElement element{Operator::creation(Operator::Spin::DOWN, 1),
+                              Operator::annihilation(Operator::Spin::UP, 3),
+                              Operator::creation(Operator::Spin::UP, 0)};
   std::vector<int> up(5, 0);
   std::vector<int> down(5, 0);
   prepare_up_and_down_representation(element, up, down);
   EXPECT_EQ(up, std::vector<int>({1, 0, 0, -1, 0}));
   EXPECT_EQ(down, std::vector<int>({0, 1, 0, 0, 0}));
+}
+
+TEST(StateStringTest, EmptyElement) {
+  Basis::BasisElement element;
+  FermionicBasis basis(5, 0, /*allow_double_occupancy=*/true);
+  std::string expected_state = "|  ,  ,  ,  ,  >";
+  std::string actual_state = basis.state_string(element);
+  EXPECT_EQ(actual_state, expected_state);
+}
+
+TEST(StateStringTest, SingleUp) {
+  Basis::BasisElement element;
+  element.push_back(Operator::creation(Operator::Spin::UP, 1));
+  FermionicBasis basis(5, 1, /*allow_double_occupancy=*/true);
+  std::string expected_state = "|  ,\u2191 ,  ,  ,  >";
+  std::string actual_state = basis.state_string(element);
+  EXPECT_EQ(actual_state, expected_state);
+}
+
+TEST(StateStringTest, MultipleOperators) {
+  Basis::BasisElement element{Operator::creation(Operator::Spin::UP, 0),
+                              Operator::creation(Operator::Spin::DOWN, 1),
+                              Operator::creation(Operator::Spin::UP, 3)};
+  FermionicBasis basis(5, 3, /*allow_double_occupancy=*/true);
+  std::string expected_state = "|\u2191 , \u2193,  ,\u2191 ,  >";
+  std::string actual_state = basis.state_string(element);
+  EXPECT_EQ(actual_state, expected_state);
+}
+
+TEST(StateStringTest, AllUpAndDown) {
+  Basis::BasisElement element{Operator::creation(Operator::Spin::UP, 0),
+                              Operator::creation(Operator::Spin::DOWN, 0),
+                              Operator::creation(Operator::Spin::UP, 1),
+                              Operator::creation(Operator::Spin::DOWN, 1)};
+  FermionicBasis basis(5, 4, /*allow_double_occupancy=*/true);
+  std::string expected_state = "|\u2191\u2193,\u2191\u2193,  ,  ,  >";
+  std::string actual_state = basis.state_string(element);
+  EXPECT_EQ(actual_state, expected_state);
 }

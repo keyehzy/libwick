@@ -24,6 +24,11 @@ void Basis::generate_basis() {
   generate_combinations(current, 0, 0, m_particles);
 }
 
+static constexpr std::string unicode_empty_cell = "  ";
+static constexpr std::string unicode_up_arrow_cell = "\u2191 ";
+static constexpr std::string unicode_down_arrow_cell = " \u2193";
+static constexpr std::string unicode_double_occ_cell = "\u2191\u2193";
+
 std::string Basis::state_string(const Basis::BasisElement& element) const {
   assert(contains(element));
   std::vector<int> up(m_orbitals, 0);
@@ -36,20 +41,23 @@ std::string Basis::state_string(const Basis::BasisElement& element) const {
   for (std::size_t i = 0; i < m_orbitals; i++) {
     switch (up[i] * 2 + down[i]) {
       case 0:
-        out << "  ,";
+        out << unicode_empty_cell;
         break;
       case 1:
-        out << " \u2193,";
+        out << unicode_down_arrow_cell;
         break;
       case 2:
-        out << "\u2191 ,";
+        out << unicode_up_arrow_cell;
         break;
       case 3:
-        out << "\u2191\u2193,";
+        out << unicode_double_occ_cell;
         break;
       default:
         assert(false);
         break;
+    }
+    if (i < m_orbitals - 1) {
+      out << ",";
     }
   }
   out << ">";
