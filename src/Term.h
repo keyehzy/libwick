@@ -70,7 +70,7 @@ class Term {
       adj_operators.push_back(op.adjoint());
     }
     std::reverse(adj_operators.begin(), adj_operators.end());
-    // TODO(m): coefficient should be a complex number
+    // TODO: coefficient should be a complex number
     // and we should take the complex conjugate.
     return Term(m_coefficient, adj_operators);
   }
