@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>  //  for eigensolver
+#include <iomanip>
 #include <iostream>
 
 #include "FermionicBasis.h"
