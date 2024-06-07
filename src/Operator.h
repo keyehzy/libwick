@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <functional>
 #include <string>
+#include <vector>
 
 constexpr std::uint8_t OPERATOR_MASK = 0x1;    // 0b00000001
 constexpr std::uint8_t STATISTICS_MASK = 0x2;  // 0b00000010
