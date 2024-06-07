@@ -11,6 +11,10 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
+          - {runs_on: macos-12, name: "macOS Clang", CC: clang, CXX: clang++, CFLAGS: "", CMAKE_BUILD_TYPE: "Debug", WARNINGS: "-Werror;{1}", CMAKE_FLAGS: "-DOpenMP_ROOT=/usr/local/opt/libomp"}
+          - {runs_on: ubuntu-latest, name: "Clang Sanitizers", CC: clang, CXX: clang++, CFLAGS: "-fsanitize=address,undefined -fno-sanitize-recover=address,undefined -stdlib=libstdc++", CMAKE_BUILD_TYPE: "Debug", WARNINGS: "-Werror;{1}"}
+          - {runs_on: ubuntu-latest, name: "Clang Debug", CC: clang, CXX: clang++, CFLAGS: "-stdlib=libstdc++", CMAKE_BUILD_TYPE: "Debug", WARNINGS: "-Werror;{1}"}
+          - {runs_on: ubuntu-latest, name: "Clang Release", CC: clang, CXX: clang++, CFLAGS: "-stdlib=libstdc++", CMAKE_BUILD_TYPE: "Release", WARNINGS: "-Werror;{1}"}
           - {runs_on: ubuntu-latest, name: "GCC Sanitizers", CC: gcc, CXX: g++, CFLAGS: "-fsanitize=address,undefined -fsanitize-address-use-after-scope -fno-sanitize-recover=address,undefined -fuse-ld=gold", CMAKE_BUILD_TYPE: "Debug", WARNINGS: "-Werror;{0}", ASAN_OPTIONS: "strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1"}
           - {runs_on: ubuntu-latest, name: "GCC Debug", CC: gcc, CXX: g++, BUILD_TYPE: "Debug", WARNINGS: "-Werror;{0}"}
           - {runs_on: ubuntu-latest, name: "GCC Release", CC: gcc, CXX: g++, BUILD_TYPE: "Release", WARNINGS: "-Werror;{0}"}
@@ -18,6 +22,8 @@ jobs:
     env:
       ASAN_OPTIONS: ${{ matrix.toolchain.ASAN_OPTIONS }}
       CMAKE_BUILD_TYPE: ${{ matrix.toolchain.CMAKE_BUILD_TYPE }}
+      CMAKE_C_COMPILER: ${{ matrix.toolchain.CC }}
+      CMAKE_C_FLAGS: ${{ matrix.toolchain.CFLAGS }}
       CMAKE_CXX_COMPILER: ${{ matrix.toolchain.CXX }}
       CMAKE_CXX_FLAGS: ${{ matrix.toolchain.CFLAGS }}
       CMAKE_EXE_LINKER_FLAGS: ${{ matrix.toolchain.CFLAGS }}
@@ -27,13 +33,29 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4
 
+    - name: install dependencies ubuntu
+      if: ${{ matrix.toolchain.runs_on == 'ubuntu-latest'}}
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libomp-dev libopenblas-dev liblapack-dev libarpack2-dev libsuperlu-dev libarmadillo-dev
+
+    - name: install dependencies macOS
+      if: ${{ matrix.toolchain.runs_on == 'macos-12'}}
+      run: |
+        brew update
+        brew install libomp openblas lapack arpack superlu armadillo
+        export
+
     - name: configure
       run: |
-        sudo apt-get install -y libopenblas-dev liblapack-dev libarpack2-dev libsuperlu-dev libarmadillo-dev
-        cmake -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" -DBUILD_TESTING=YES -DCMAKE_CXX_COMPILER="${CMAKE_CXX_COMPILER}" -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}" -DCMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS}" ${CMAKE_EXTRA_FLAGS} -S . -B .
+        env | grep '^CMAKE' | sort
+        cmake -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" -DBUILD_TESTING=YES -DCMAKE_C_COMPILER="${CMAKE_C_COMPILER}" -DCMAKE_C_FLAGS="${CMAKE_C_FLAGS}" -DCMAKE_CXX_COMPILER="${CMAKE_CXX_COMPILER}" -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS}" -DCMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS}" ${CMAKE_EXTRA_FLAGS} -S . -B .
 
     - name: Build
       run: cmake --build . --config Debug
 
     - name: Test
       run: ctest --build-config Debug --verbose --rerun-failed --output-on-failure
+
+# Copyright (c) 2024 Matheus Sousa
+# SPDX-License-Identifier: BSD-2-Clause

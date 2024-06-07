@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
 find_package(OpenMP REQUIRED)
-find_package(BLAS)
-find_package(Armadillo)
 
 add_executable(
     main
@@ -12,27 +10,13 @@ add_executable(
 target_link_libraries(
     main
     libmb
-    BLAS::BLAS
-    armadillo
-    superlu
-    arpack
-    m
-    gfortran
-)
-
-target_compile_definitions(
-    main
-    PUBLIC
-    ARMA_DONT_USE_WRAPPER
-    ARMA_USE_ARPACK
-    ARMA_USE_SUPERLU
-    ARMA_USE_OPENMP
-    #ARMA_OPENMP_THREADS=12
 )
 
 add_library(
     libmb
     Basis.cpp
+    FermionicBasis.cpp
+    BosonicBasis.cpp
     Operator.cpp
     Term.cpp
     Expression.cpp

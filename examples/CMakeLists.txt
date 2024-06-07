@@ -13,17 +13,14 @@ target_include_directories(
     libmb-example
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${ARMADILLO_INCLUDE_DIRS}
 )
 
 target_link_libraries(
     libmb-example
     libmb
     BLAS::BLAS
-    armadillo
-    superlu
-    arpack
-    m
-    gfortran
+    ${ARMADILLO_LIBRARIES}
 )
 
 target_compile_definitions(
@@ -33,5 +30,4 @@ target_compile_definitions(
     ARMA_USE_ARPACK
     ARMA_USE_SUPERLU
     ARMA_USE_OPENMP
-    #ARMA_OPENMP_THREADS=12
 )

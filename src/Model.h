@@ -21,7 +21,7 @@ class Model {
       }
       const Expression& e = normal_order(terms);
       for (const auto& [term, coeff] : e.terms()) {
-        if (term.back().type() == Operator::Type::CREATION &&
+        if (term.back().type() == Operator::Type::Creation &&
             basis.contains(term)) {
           std::size_t term_index = basis.index(term);
 #pragma omp critical

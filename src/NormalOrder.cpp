@@ -9,8 +9,8 @@
 // i.e. they are all fermionic or all bosonic. Normal order between
 // fermionic and bosonic operators is not well defined.
 
-void sort_term(Term& term, std::vector<Term>& stack,
-               std::vector<Operator>& elms) {
+void sort_term(
+    Term& term, std::vector<Term>& stack, std::vector<Operator>& elms) {
   if (term.operators().size() < 2) {
     return;
   }
@@ -28,18 +28,20 @@ void sort_term(Term& term, std::vector<Term>& stack,
     for (std::size_t j = i; j > 0; --j) {
       Operator& op1 = operators[j - 1];
       Operator& op2 = operators[j];
-      if (op1.type() == Operator::Type::CREATION &&
-          op2.type() == Operator::Type::CREATION &&
+      if (op1.type() == Operator::Type::Creation &&
+          op2.type() == Operator::Type::Creation &&
           op1.identifier() > op2.identifier()) {
         std::swap(op1, op2);
         term.increment(op1.is_fermion() && op2.is_fermion());
-      } else if (op1.type() == Operator::Type::ANNIHILATION &&
-                 op2.type() == Operator::Type::ANNIHILATION &&
-                 op1.identifier() < op2.identifier()) {
+      } else if (
+          op1.type() == Operator::Type::Annihilation &&
+          op2.type() == Operator::Type::Annihilation &&
+          op1.identifier() < op2.identifier()) {
         std::swap(op1, op2);
         term.increment(op1.is_fermion() && op2.is_fermion());
-      } else if (op1.type() == Operator::Type::ANNIHILATION &&
-                 op2.type() == Operator::Type::CREATION) {
+      } else if (
+          op1.type() == Operator::Type::Annihilation &&
+          op2.type() == Operator::Type::Creation) {
         if (op1.identifier() == op2.identifier()) {
           push_new_term(j);
         }
@@ -106,18 +108,19 @@ Expression commute(const Term& term1, const Term& term2) {
   return normal_order({term1.product(term2), term2.product(term1).negate()});
 }
 
-Expression commute(const Expression& expression1,
-                   const Expression& expression2) {
-  return normal_order({expression1.product(expression2),
-                       expression2.product(expression1).negate()});
+Expression commute(
+    const Expression& expression1, const Expression& expression2) {
+  return normal_order(
+      {expression1.product(expression2),
+       expression2.product(expression1).negate()});
 }
 
 Expression anticommute(const Term& term1, const Term& term2) {
   return normal_order({term1.product(term2), term2.product(term1)});
 }
 
-Expression anticommute(const Expression& expression1,
-                       const Expression& expression2) {
+Expression anticommute(
+    const Expression& expression1, const Expression& expression2) {
   return normal_order(
       {expression1.product(expression2), expression2.product(expression1)});
 }

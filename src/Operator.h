@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <functional>
 #include <string>
+#include <vector>
 
 constexpr std::uint8_t OPERATOR_MASK = 0x1;    // 0b00000001
 constexpr std::uint8_t STATISTICS_MASK = 0x2;  // 0b00000010
@@ -21,9 +22,9 @@ constexpr std::uint8_t ORBITAL_MASK = 0xF8;    // 0b11111000
 
 class Operator {
  public:
-  enum class Type { CREATION = 0, ANNIHILATION = 1 };
-  enum class Statistics { BOSON = 0, FERMION = 1 };
-  enum class Spin { UP = 0, DOWN = 1 };
+  enum class Type { Creation = 0, Annihilation = 1 };
+  enum class Statistics { Boson = 0, Fermion = 1 };
+  enum class Spin { Up = 0, Down = 1 };
 
   Operator(Type type, Statistics stats, Spin spin, std::uint8_t orbital) {
     m_data = static_cast<std::uint8_t>(type) |
@@ -62,14 +63,14 @@ class Operator {
     return m_data != other.m_data;
   }
 
-  bool is_boson() const { return statistics() == Statistics::BOSON; }
+  bool is_boson() const { return statistics() == Statistics::Boson; }
 
-  bool is_fermion() const { return statistics() == Statistics::FERMION; }
+  bool is_fermion() const { return statistics() == Statistics::Fermion; }
 
   std::string toString() const {
     std::string typeStr =
-        (type() == Type::CREATION) ? "Creation" : "Annihilation";
-    std::string spinStr = (spin() == Spin::UP) ? "Up" : "Down";
+        (type() == Type::Creation) ? "Creation" : "Annihilation";
+    std::string spinStr = (spin() == Spin::Up) ? "Up" : "Down";
     std::string orbitalStr = std::to_string(orbital());
     return "Operator { Type: " + typeStr + ", Spin: " + spinStr +
            ", Orbital: " + orbitalStr + " }";
@@ -81,16 +82,18 @@ class Operator {
 
   Operator adjoint() const {
     return Operator(
-        type() == Type::CREATION ? Type::ANNIHILATION : Type::CREATION,
+        type() == Type::Creation ? Type::Annihilation : Type::Creation,
         statistics(), spin(), orbital());
   }
 
+  template <Statistics S>
   static Operator creation(Spin spin, std::uint8_t orbital) {
-    return Operator(Type::CREATION, Statistics::FERMION, spin, orbital);
+    return Operator(Type::Creation, S, spin, orbital);
   }
 
+  template <Statistics S>
   static Operator annihilation(Spin spin, std::uint8_t orbital) {
-    return Operator(Type::ANNIHILATION, Statistics::FERMION, spin, orbital);
+    return Operator(Type::Annihilation, S, spin, orbital);
   }
 
  private:

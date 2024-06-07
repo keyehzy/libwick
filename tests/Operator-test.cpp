@@ -5,19 +5,21 @@
 
 #include <gtest/gtest.h>
 
+using enum Operator::Type;
+using enum Operator::Statistics;
+using enum Operator::Spin;
+
 TEST(OperatorTest, ConstructorAndGetterFermion) {
   // Test creation operator with spin up and orbital 5
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 5);
-  EXPECT_EQ(op1.type(), Operator::Type::CREATION);
-  EXPECT_EQ(op1.spin(), Operator::Spin::UP);
+  Operator op1 = Operator::creation<Fermion>(Up, 5);
+  EXPECT_EQ(op1.type(), Creation);
+  EXPECT_EQ(op1.spin(), Up);
   EXPECT_EQ(op1.orbital(), 5);
 
   // Test annihilation operator with spin down and orbital 31
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 31);
-  EXPECT_EQ(op2.type(), Operator::Type::ANNIHILATION);
-  EXPECT_EQ(op2.spin(), Operator::Spin::DOWN);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 31);
+  EXPECT_EQ(op2.type(), Annihilation);
+  EXPECT_EQ(op2.spin(), Down);
   EXPECT_EQ(op2.orbital(), 31);
 
   // Test raw data access
@@ -31,17 +33,15 @@ TEST(OperatorTest, ConstructorAndGetterFermion) {
 
 TEST(OperatorTest, ConstructorAndGetterBoson) {
   // Test creation operator with spin up and orbital 5
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 5);
-  EXPECT_EQ(op1.type(), Operator::Type::CREATION);
-  EXPECT_EQ(op1.spin(), Operator::Spin::UP);
+  Operator op1 = Operator::creation<Boson>(Up, 5);
+  EXPECT_EQ(op1.type(), Creation);
+  EXPECT_EQ(op1.spin(), Up);
   EXPECT_EQ(op1.orbital(), 5);
 
   // Test annihilation operator with spin down and orbital 31
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::BOSON,
-               Operator::Spin::DOWN, 31);
-  EXPECT_EQ(op2.type(), Operator::Type::ANNIHILATION);
-  EXPECT_EQ(op2.spin(), Operator::Spin::DOWN);
+  Operator op2 = Operator::annihilation<Boson>(Down, 31);
+  EXPECT_EQ(op2.type(), Annihilation);
+  EXPECT_EQ(op2.spin(), Down);
   EXPECT_EQ(op2.orbital(), 31);
 
   // Test raw data access
@@ -54,8 +54,7 @@ TEST(OperatorTest, ConstructorAndGetterBoson) {
 }
 
 TEST(OperatorTest, CopyConstructorAndAssignment) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 10);
+  Operator op1 = Operator::creation<Fermion>(Up, 10);
 
   // Test copy constructor
   Operator op2(op1);
@@ -64,8 +63,7 @@ TEST(OperatorTest, CopyConstructorAndAssignment) {
   EXPECT_EQ(op1.orbital(), op2.orbital());
 
   // Test assignment operator
-  Operator op3(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 20);
+  Operator op3 = Operator::annihilation<Fermion>(Down, 20);
   op3 = op1;
   EXPECT_EQ(op1.type(), op3.type());
   EXPECT_EQ(op1.spin(), op3.spin());
@@ -73,11 +71,9 @@ TEST(OperatorTest, CopyConstructorAndAssignment) {
 }
 
 TEST(OperatorTest, EqualityAndInequality) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
   Operator op2(op1);
-  Operator op3(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
+  Operator op3 = Operator::annihilation<Fermion>(Down, 15);
 
   EXPECT_EQ(op1, op2);
   EXPECT_NE(op1, op3);
@@ -85,12 +81,9 @@ TEST(OperatorTest, EqualityAndInequality) {
 }
 
 TEST(OperatorTest, EqualityAndInequalityFermionBoson) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);
-  Operator op3(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::creation<Boson>(Up, 15);
+  Operator op3 = Operator::creation<Fermion>(Down, 15);
 
   EXPECT_NE(op1, op2);
   EXPECT_NE(op1, op3);
@@ -98,23 +91,20 @@ TEST(OperatorTest, EqualityAndInequalityFermionBoson) {
 }
 
 TEST(OperatorTest, ToString) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 31);
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 0);
+  Operator op1 = Operator::creation<Fermion>(Up, 31);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 0);
 
-  EXPECT_EQ(op1.toString(),
-            "Operator { Type: Creation, Spin: Up, Orbital: 31 }");
-  EXPECT_EQ(op2.toString(),
-            "Operator { Type: Annihilation, Spin: Down, Orbital: 0 }");
+  EXPECT_EQ(
+      op1.toString(), "Operator { Type: Creation, Spin: Up, Orbital: 31 }");
+  EXPECT_EQ(
+      op2.toString(),
+      "Operator { Type: Annihilation, Spin: Down, Orbital: 0 }");
 }
 
 // test operator<<
 TEST(OperatorTest, OutputOperator) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 15);
 
   std::ostringstream os1;
   os1 << op1;
@@ -122,15 +112,13 @@ TEST(OperatorTest, OutputOperator) {
 
   std::ostringstream os2;
   os2 << op2;
-  EXPECT_EQ(os2.str(),
-            "Operator { Type: Annihilation, Spin: Down, Orbital: 15 }");
+  EXPECT_EQ(
+      os2.str(), "Operator { Type: Annihilation, Spin: Down, Orbital: 15 }");
 }
 
 TEST(OperatorTest, Hash) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 15);
 
   std::hash<Operator> hash_fn;
   EXPECT_EQ(hash_fn(op1), op1.raw());
@@ -138,14 +126,10 @@ TEST(OperatorTest, Hash) {
 }
 
 TEST(OperatorTest, SameHash) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op3(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);
-  Operator op4(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::creation<Fermion>(Up, 15);
+  Operator op3 = Operator::creation<Boson>(Up, 15);
+  Operator op4 = Operator::creation<Boson>(Up, 15);
 
   std::hash<Operator> hash_fn;
   EXPECT_EQ(hash_fn(op1), hash_fn(op2));
@@ -155,12 +139,9 @@ TEST(OperatorTest, SameHash) {
 }
 
 TEST(OperatorTest, DifferentHash) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
-  Operator op3(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 15);
+  Operator op3 = Operator::creation<Boson>(Up, 15);
 
   std::hash<Operator> hash_fn;
   EXPECT_NE(hash_fn(op1), hash_fn(op2));
@@ -168,32 +149,26 @@ TEST(OperatorTest, DifferentHash) {
 }
 
 TEST(OperatorTest, Adjoint) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 15);
 
-  EXPECT_EQ(op1.adjoint().type(), Operator::Type::ANNIHILATION);
-  EXPECT_EQ(op1.adjoint().spin(), Operator::Spin::UP);
+  EXPECT_EQ(op1.adjoint().type(), Annihilation);
+  EXPECT_EQ(op1.adjoint().spin(), Up);
   EXPECT_EQ(op1.adjoint().orbital(), 15);
 
-  EXPECT_EQ(op2.adjoint().type(), Operator::Type::CREATION);
-  EXPECT_EQ(op2.adjoint().spin(), Operator::Spin::DOWN);
+  EXPECT_EQ(op2.adjoint().type(), Creation);
+  EXPECT_EQ(op2.adjoint().spin(), Down);
   EXPECT_EQ(op2.adjoint().orbital(), 15);
 }
 
 TEST(OperatorTest, AssertAdjointDoesNotChangeStatistics) {
-  Operator op1(Operator::Type::CREATION, Operator::Statistics::FERMION,
-               Operator::Spin::UP, 15);
-  Operator op2(Operator::Type::ANNIHILATION, Operator::Statistics::FERMION,
-               Operator::Spin::DOWN, 15);
-  Operator op3(Operator::Type::CREATION, Operator::Statistics::BOSON,
-               Operator::Spin::UP, 15);
-  Operator op4(Operator::Type::ANNIHILATION, Operator::Statistics::BOSON,
-               Operator::Spin::DOWN, 15);
+  Operator op1 = Operator::creation<Fermion>(Up, 15);
+  Operator op2 = Operator::annihilation<Fermion>(Down, 15);
+  Operator op3 = Operator::creation<Boson>(Up, 15);
+  Operator op4 = Operator::annihilation<Boson>(Down, 15);
 
-  EXPECT_EQ(op1.adjoint().statistics(), Operator::Statistics::FERMION);
-  EXPECT_EQ(op2.adjoint().statistics(), Operator::Statistics::FERMION);
-  EXPECT_EQ(op3.adjoint().statistics(), Operator::Statistics::BOSON);
-  EXPECT_EQ(op4.adjoint().statistics(), Operator::Statistics::BOSON);
+  EXPECT_EQ(op1.adjoint().statistics(), Fermion);
+  EXPECT_EQ(op2.adjoint().statistics(), Fermion);
+  EXPECT_EQ(op3.adjoint().statistics(), Boson);
+  EXPECT_EQ(op4.adjoint().statistics(), Boson);
 }

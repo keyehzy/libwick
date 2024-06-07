@@ -6,6 +6,7 @@
 #include <iomanip>
 
 #include "Basis.h"
+#include "FermionicBasis.h"
 #include "Models/HubbardSquare.h"
 
 // Table 2 of https://journals.aps.org/prb/pdf/10.1103/PhysRevB.45.10741
@@ -54,7 +55,7 @@ int example() {
   for (int row = 0; row < rows_to_take; row++) {
     for (int uidx = 0; uidx < uidx_to_take; uidx++) {
       HubbardSquare model(1.0, hubbardU[uidx], /*nx=*/4, /*ny=*/4);
-      Basis basis(model.size(), results[row].num_electrons, filter);
+      FermionicBasis basis(model.size(), results[row].num_electrons, filter);
       arma::sp_mat mat(basis.size(), basis.size());
       model.compute_matrix_elements(basis, mat);
       arma::vec eigval;
