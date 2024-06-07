@@ -41,3 +41,6 @@ jobs:
 
     - name: Test
       run: ctest --build-config Debug --verbose --rerun-failed --output-on-failure
+
+# Copyright (c) 2024 Matheus Sousa
+# SPDX-License-Identifier: BSD-2-Clause
