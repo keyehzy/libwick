@@ -33,6 +33,8 @@ target_compile_definitions(
 add_library(
     libmb
     Basis.cpp
+    FermionicBasis.cpp
+    BosonicBasis.cpp
     Operator.cpp
     Term.cpp
     Expression.cpp

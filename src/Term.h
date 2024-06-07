@@ -14,8 +14,9 @@ class Term {
   Term(double coefficient, const std::vector<Operator>& operators)
       : m_coefficient{coefficient}, m_operators{operators}, m_swaps{0} {}
 
-  Term(double coefficient, const std::vector<Operator>& operators,
-       std::size_t phase)
+  Term(
+      double coefficient, const std::vector<Operator>& operators,
+      std::size_t phase)
       : m_coefficient{coefficient}, m_operators{operators}, m_swaps{phase} {}
 
   double coefficient() const { return m_coefficient; }
@@ -52,15 +53,16 @@ class Term {
 
   Term product(const Term& other) const {
     std::vector<Operator> new_operators = m_operators;
-    new_operators.insert(new_operators.end(), other.m_operators.begin(),
-                         other.m_operators.end());
+    new_operators.insert(
+        new_operators.end(), other.m_operators.begin(),
+        other.m_operators.end());
     return Term(m_coefficient * other.m_coefficient, new_operators);
   }
 
   Term product(const std::vector<Operator>& operators) const {
     std::vector<Operator> new_operators = m_operators;
-    new_operators.insert(new_operators.end(), operators.begin(),
-                         operators.end());
+    new_operators.insert(
+        new_operators.end(), operators.begin(), operators.end());
     return Term(m_coefficient, new_operators);
   }
 
@@ -80,15 +82,37 @@ class Term {
   struct Factory {
     Factory() = delete;
 
-    static Term one_body(double, Operator::Spin, std::uint8_t, Operator::Spin,
-                         std::uint8_t);
+    template <Operator::Statistics S>
+    static Term one_body(
+        double coefficient, Operator::Spin spin1, std::uint8_t orbital1,
+        Operator::Spin spin2, std::uint8_t orbital2) {
+      return Term(
+          coefficient, {Operator::creation<S>(spin1, orbital1),
+                        Operator::annihilation<S>(spin2, orbital2)});
+    }
 
-    static Term two_body(double, Operator::Spin, std::uint8_t, Operator::Spin,
-                         std::uint8_t, Operator::Spin, std::uint8_t,
-                         Operator::Spin, std::uint8_t);
+    template <Operator::Statistics S>
+    static Term two_body(
+        double coefficient, Operator::Spin spin1, std::uint8_t orbital1,
+        Operator::Spin spin2, std::uint8_t orbital2, Operator::Spin spin3,
+        std::uint8_t orbital3, Operator::Spin spin4, std::uint8_t orbital4) {
+      return Term(
+          coefficient, {Operator::creation<S>(spin1, orbital1),
+                        Operator::annihilation<S>(spin2, orbital2),
+                        Operator::creation<S>(spin3, orbital3),
+                        Operator::annihilation<S>(spin4, orbital4)});
+    }
 
-    static Term density_density(double, Operator::Spin, std::uint8_t,
-                                Operator::Spin, std::uint8_t);
+    template <Operator::Statistics S>
+    static Term density_density(
+        double coefficient, Operator::Spin spin1, std::uint8_t orbital1,
+        Operator::Spin spin2, std::uint8_t orbital2) {
+      return Term(
+          coefficient, {Operator::creation<S>(spin1, orbital1),
+                        Operator::annihilation<S>(spin1, orbital1),
+                        Operator::creation<S>(spin2, orbital2),
+                        Operator::annihilation<S>(spin2, orbital2)});
+    }
   };
 
  private:

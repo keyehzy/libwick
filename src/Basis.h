@@ -67,25 +67,6 @@ class Basis {
   FilterFunction m_filter;
 };
 
-void prepare_up_and_down_representation(const Basis::BasisElement& element,
-                                        std::vector<int>& up,
-                                        std::vector<int>& down);
-
-class FermionicBasis final : public Basis {
- public:
-  FermionicBasis(std::size_t n, std::size_t m, bool allow_double_occupancy)
-      : Basis(n, m), m_allow_double_occupancy{allow_double_occupancy} {
-    generate_basis();
-  }
-
-  FermionicBasis(std::size_t n, std::size_t m, FilterFunction filter,
-                 bool allow_double_occupancy)
-      : Basis(n, m, filter), m_allow_double_occupancy{allow_double_occupancy} {
-    generate_basis();
-  }
-
-  void generate_combinations(BasisElement&, size_t, size_t, size_t) override;
-
- private:
-  bool m_allow_double_occupancy = true;
-};
+void prepare_up_and_down_representation(
+    const Basis::BasisElement& element, std::vector<int>& up,
+    std::vector<int>& down);

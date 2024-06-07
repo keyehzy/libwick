@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 
+#include "FermionicBasis.h"
 #include "Models/LinearChain.h"
 #include "SparseMatrix.h"
 

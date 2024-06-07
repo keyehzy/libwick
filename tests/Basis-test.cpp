@@ -8,8 +8,15 @@
 
 #include <unordered_set>
 
+#include "BosonicBasis.h"
+#include "FermionicBasis.h"
+
 using testing::ElementsAre;
 using testing::UnorderedElementsAre;
+
+using enum Operator::Type;
+using enum Operator::Statistics;
+using enum Operator::Spin;
 
 constexpr int binomial(int n, int k) {
   if (k == 0 || k == n) {
@@ -30,20 +37,41 @@ TEST(BasisTest, BasisGeneration) {
   FermionicBasis basis(2, 2, /*allow_double_occupancy=*/true);
   EXPECT_EQ(basis.elements().size(), 6);
   EXPECT_THAT(
-      basis.elements(),
-      UnorderedElementsAre(
-          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 0),
-                                Operator::creation(Operator::Spin::DOWN, 1)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 1),
-                                Operator::creation(Operator::Spin::DOWN, 1)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 0),
-                                Operator::creation(Operator::Spin::UP, 1)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0),
-                                Operator::creation(Operator::Spin::DOWN, 1)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0),
-                                Operator::creation(Operator::Spin::DOWN, 0)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0),
-                                Operator::creation(Operator::Spin::UP, 1)}));
+      basis.elements(), UnorderedElementsAre(
+                            std::vector<Operator>{
+                                Operator::creation<Fermion>(Down, 0),
+                                Operator::creation<Fermion>(Down, 1)},
+                            std::vector<Operator>{
+                                Operator::creation<Fermion>(Up, 1),
+                                Operator::creation<Fermion>(Down, 1)},
+                            std::vector<Operator>{
+                                Operator::creation<Fermion>(Down, 0),
+                                Operator::creation<Fermion>(Up, 1)},
+                            std::vector<Operator>{
+                                Operator::creation<Fermion>(Up, 0),
+                                Operator::creation<Fermion>(Down, 1)},
+                            std::vector<Operator>{
+                                Operator::creation<Fermion>(Up, 0),
+                                Operator::creation<Fermion>(Down, 0)},
+                            std::vector<Operator>{
+                                Operator::creation<Fermion>(Up, 0),
+                                Operator::creation<Fermion>(Up, 1)}));
+}
+
+TEST(BasisTest, BosonicBasisGeneration) {
+  BosonicBasis basis(2, 2);
+  EXPECT_EQ(basis.elements().size(), 3);
+  EXPECT_THAT(
+      basis.elements(), UnorderedElementsAre(
+                            std::vector<Operator>{
+                                Operator::creation<Boson>(Up, 0),
+                                Operator::creation<Boson>(Up, 0)},
+                            std::vector<Operator>{
+                                Operator::creation<Boson>(Up, 0),
+                                Operator::creation<Boson>(Up, 1)},
+                            std::vector<Operator>{
+                                Operator::creation<Boson>(Up, 1),
+                                Operator::creation<Boson>(Up, 1)}));
 }
 
 TEST(BasisTest, BasisGenerationDisallowingDoubleOccupation) {
@@ -52,10 +80,10 @@ TEST(BasisTest, BasisGenerationDisallowingDoubleOccupation) {
   EXPECT_THAT(
       basis.elements(),
       UnorderedElementsAre(
-          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 0)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 0)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::DOWN, 1)},
-          std::vector<Operator>{Operator::creation(Operator::Spin::UP, 1)}));
+          std::vector<Operator>{Operator::creation<Fermion>(Down, 0)},
+          std::vector<Operator>{Operator::creation<Fermion>(Up, 0)},
+          std::vector<Operator>{Operator::creation<Fermion>(Down, 1)},
+          std::vector<Operator>{Operator::creation<Fermion>(Up, 1)}));
 }
 
 TEST(BasisTest, IndexingUnique) {
@@ -76,16 +104,16 @@ TEST(BasisTest, IndexingUnique) {
 TEST(BasisTest, IndexingInsideBasis) {
   FermionicBasis basis(2, 2, /*allow_double_occupancy=*/true);
 
-  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0),
-                                Operator::creation(Operator::Spin::DOWN, 1)};
+  std::vector<Operator> term = {
+      Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Down, 1)};
   EXPECT_TRUE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingOutsideBasis) {
   FermionicBasis basis(2, 2, /*allow_double_occupancy=*/true);
 
-  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0),
-                                Operator::creation(Operator::Spin::UP, 2)};
+  std::vector<Operator> term = {
+      Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Up, 2)};
   EXPECT_FALSE(basis.contains(term));
 }
 
@@ -110,14 +138,14 @@ TEST(BasisTest, IndexingEmptyTerm) {
 TEST(BasisTest, IndexingSingleTermSingleBodyBasis) {
   FermionicBasis basis(1, 1, /*allow_double_occupancy=*/true);
 
-  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0)};
+  std::vector<Operator> term = {Operator::creation<Fermion>(Up, 0)};
   EXPECT_TRUE(basis.contains(term));
 }
 
 TEST(BasisTest, IndexingSingleTermManyBodyBasis) {
   FermionicBasis basis(2, 2, /*allow_double_occupancy=*/true);
 
-  std::vector<Operator> term = {Operator::creation(Operator::Spin::UP, 0)};
+  std::vector<Operator> term = {Operator::creation<Fermion>(Up, 0)};
   EXPECT_FALSE(basis.contains(term));
 }
 
@@ -138,10 +166,11 @@ TEST(BasisTest, SortBasis) {
   };
   basis.sort(sort_fn);
 
-  std::vector<Operator> first{Operator::creation(Operator::Spin::UP, 0),
-                              Operator::creation(Operator::Spin::UP, 1)};
-  std::vector<Operator> last{Operator::creation(Operator::Spin::DOWN, 0),
-                             Operator::creation(Operator::Spin::DOWN, 1)};
+  std::vector<Operator> first{
+      Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Up, 1)};
+  std::vector<Operator> last{
+      Operator::creation<Fermion>(Down, 0),
+      Operator::creation<Fermion>(Down, 1)};
   EXPECT_EQ(*basis.elements().begin(), first);
   EXPECT_EQ(*basis.elements().rbegin(), last);
 }
@@ -156,7 +185,7 @@ TEST(PrepareUpAndDownRepresentationTest, EmptyElement) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
-  Basis::BasisElement element{Operator::annihilation(Operator::Spin::UP, 2)};
+  Basis::BasisElement element{Operator::annihilation<Fermion>(Up, 2)};
   std::vector<int> up(5, 0);
   std::vector<int> down(5, 0);
   prepare_up_and_down_representation(element, up, down);
@@ -165,9 +194,10 @@ TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, MultipleOperators) {
-  Basis::BasisElement element{Operator::creation(Operator::Spin::DOWN, 1),
-                              Operator::annihilation(Operator::Spin::UP, 3),
-                              Operator::creation(Operator::Spin::UP, 0)};
+  Basis::BasisElement element{
+      Operator::creation<Fermion>(Down, 1),
+      Operator::annihilation<Fermion>(Up, 3),
+      Operator::creation<Fermion>(Up, 0)};
   std::vector<int> up(5, 0);
   std::vector<int> down(5, 0);
   prepare_up_and_down_representation(element, up, down);
@@ -185,7 +215,7 @@ TEST(StateStringTest, EmptyElement) {
 
 TEST(StateStringTest, SingleUp) {
   Basis::BasisElement element;
-  element.push_back(Operator::creation(Operator::Spin::UP, 1));
+  element.push_back(Operator::creation<Fermion>(Up, 1));
   FermionicBasis basis(5, 1, /*allow_double_occupancy=*/true);
   std::string expected_state = "|  ,\u2191 ,  ,  ,  >";
   std::string actual_state = basis.state_string(element);
@@ -193,9 +223,9 @@ TEST(StateStringTest, SingleUp) {
 }
 
 TEST(StateStringTest, MultipleOperators) {
-  Basis::BasisElement element{Operator::creation(Operator::Spin::UP, 0),
-                              Operator::creation(Operator::Spin::DOWN, 1),
-                              Operator::creation(Operator::Spin::UP, 3)};
+  Basis::BasisElement element{
+      Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Down, 1),
+      Operator::creation<Fermion>(Up, 3)};
   FermionicBasis basis(5, 3, /*allow_double_occupancy=*/true);
   std::string expected_state = "|\u2191 , \u2193,  ,\u2191 ,  >";
   std::string actual_state = basis.state_string(element);
@@ -203,10 +233,9 @@ TEST(StateStringTest, MultipleOperators) {
 }
 
 TEST(StateStringTest, AllUpAndDown) {
-  Basis::BasisElement element{Operator::creation(Operator::Spin::UP, 0),
-                              Operator::creation(Operator::Spin::DOWN, 0),
-                              Operator::creation(Operator::Spin::UP, 1),
-                              Operator::creation(Operator::Spin::DOWN, 1)};
+  Basis::BasisElement element{
+      Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Down, 0),
+      Operator::creation<Fermion>(Up, 1), Operator::creation<Fermion>(Down, 1)};
   FermionicBasis basis(5, 4, /*allow_double_occupancy=*/true);
   std::string expected_state = "|\u2191\u2193,\u2191\u2193,  ,  ,  >";
   std::string actual_state = basis.state_string(element);

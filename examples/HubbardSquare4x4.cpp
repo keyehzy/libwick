@@ -6,6 +6,7 @@
 #include <iomanip>
 
 #include "Basis.h"
+#include "FermionicBasis.h"
 #include "Models/HubbardSquare.h"
 
 // Table 2 of https://journals.aps.org/prb/pdf/10.1103/PhysRevB.45.10741
