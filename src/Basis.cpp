@@ -24,10 +24,10 @@ void Basis::generate_basis() {
   generate_combinations(current, 0, 0, m_particles);
 }
 
-static constexpr std::string unicode_empty_cell = "  ";
-static constexpr std::string unicode_up_arrow_cell = "\u2191 ";
-static constexpr std::string unicode_down_arrow_cell = " \u2193";
-static constexpr std::string unicode_double_occ_cell = "\u2191\u2193";
+static constexpr std::string_view unicode_empty_cell = "  ";
+static constexpr std::string_view unicode_up_arrow_cell = "\u2191 ";
+static constexpr std::string_view unicode_down_arrow_cell = " \u2193";
+static constexpr std::string_view unicode_double_occ_cell = "\u2191\u2193";
 
 std::string Basis::state_string(const Basis::BasisElement& element) const {
   assert(contains(element));

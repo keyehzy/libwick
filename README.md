@@ -26,37 +26,49 @@ cmake --build build
 In the following example, we construct a Hubbard chain model and compute the ground state using the Armadillo library.
 
 ```cpp
+// Copyright (c) 2024 Matheus Sousa
+// SPDX-License-Identifier: BSD-2-Clause
+
 #include <armadillo>  //  for eigensolver
 #include <iostream>
 
+#include "FermionicBasis.h"
 #include "Model.h"
+
+using enum Operator::Type;        // for Creation, Annihilation
+using enum Operator::Statistics;  // for Fermion
+using enum Operator::Spin;        // Up, Down
 
 class HubbardChain : public Model {
  public:
   HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
 
  private:
-  void HubbardChain::hopping_term(std::vector<Term>& result) const {
-    for (Operator::Spin spin : {Operator::Spin::UP, Operator::Spin::DOWN}) {
+  void hopping_term(std::vector<Term>& result) const {
+    for (Operator::Spin spin : {Up, Down}) {
       for (std::size_t i = 0; i < m_size; i++) {
-        result.push_back(Term::Factory::one_body(-m_u, spin, i, spin, i));
+        result.push_back(
+            Term::Factory::one_body<Fermion>(-m_u, spin, i, spin, i));
       }
       for (std::size_t i = 0; i < m_size - 1; i++) {
-        result.push_back(Term::Factory::one_body(-m_t, spin, i, spin, i + 1));
         result.push_back(
-            Term::Factory::one_body(-m_t, spin, i, spin, i + 1).adjoint());
+            Term::Factory::one_body<Fermion>(-m_t, spin, i, spin, i + 1));
+        result.push_back(
+            Term::Factory::one_body<Fermion>(-m_t, spin, i, spin, i + 1)
+                .adjoint());
       }
       result.push_back(
-          Term::Factory::one_body(-m_t, spin, m_size - 1, spin, 0));
+          Term::Factory::one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0));
       result.push_back(
-          Term::Factory::one_body(-m_t, spin, m_size - 1, spin, 0).adjoint());
+          Term::Factory::one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0)
+              .adjoint());
     }
   }
 
-  void HubbardChain::interaction_term(std::vector<Term>& result) const {
+  void interaction_term(std::vector<Term>& result) const {
     for (size_t i = 0; i < m_size; i++) {
-      result.push_back(Term::Factory::density_density(
-          m_u, Operator::Spin::UP, i, Operator::Spin::DOWN, i));
+      result.push_back(
+          Term::Factory::density_density<Fermion>(m_u, Up, i, Down, i));
     }
   }
 
@@ -77,17 +89,21 @@ int main() {
   const std::size_t particles = 8;
   const std::size_t sz = 0;
 
-  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size, particles);
+  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size);
 
   // Construct a basis with total spin equal to zero
-  Basis basis(size, particles, /*allow_double_occupancy=*/true,
-              [](const Basis::BasisElement& element) {
-                int total_spin = 0;
-                for (const auto& op : element) {
-                  total_spin += op.spin() == Operator::Spin::UP ? 1 : -1;
-                }
-                return total_spin == sz;
-              });
+
+  Basis::FilterFunction filter = [](const Basis::BasisElement& element) {
+    int total_spin = 0;
+    for (const auto& op : element) {
+      total_spin += op.spin() == Up ? 1 : -1;
+    }
+    return total_spin == sz;
+  };
+
+  FermionicBasis basis(
+      size, particles, filter,
+      /*allow_double_occupancy=*/true);
 
   // Compute matrix elements
   arma::sp_mat m(basis.size(), basis.size());
@@ -106,7 +122,7 @@ int main() {
 
   for (std::size_t i = 0; i < eigval.size(); i++) {
     std::cout << "Ground state " << i << ":" << std::endl;
-    ground_state_analysis(basis, eigvec.col(i));
+    // Perform some analysis here...
   }
 }
 ```
