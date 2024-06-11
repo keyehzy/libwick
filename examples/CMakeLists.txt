@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
 
-find_package(OpenMP)
-find_package(BLAS)
-find_package(Armadillo)
+find_package(Armadillo REQUIRED)
+find_package(BLAS REQUIRED)
+find_package(OpenMP REQUIRED)
 
 function(add_example example_file)
   get_filename_component(
@@ -23,7 +23,6 @@ function(add_example example_file)
     ${ARMADILLO_INCLUDE_DIRS}
   )
 
-
   target_link_libraries(
     ${example_name}
     PRIVATE
@@ -31,18 +30,8 @@ function(add_example example_file)
     BLAS::BLAS
     OpenMP::OpenMP_CXX
     ${ARMADILLO_LIBRARIES}
-    superlu
-    arpack
   )
 
-  target_compile_definitions(
-    ${example_name}
-    PRIVATE
-    ARMA_DONT_USE_WRAPPER
-    ARMA_USE_ARPACK
-    ARMA_USE_SUPERLU
-    ARMA_USE_OPENMP
-  )
 endfunction()
 
 file(GLOB EXAMPLE_FILES
@@ -52,5 +41,5 @@ file(GLOB EXAMPLE_FILES
 )
 
 foreach(EXAMPLE_FILE ${EXAMPLE_FILES})
-    add_example(${EXAMPLE_FILE})
+  add_example(${EXAMPLE_FILE})
 endforeach()

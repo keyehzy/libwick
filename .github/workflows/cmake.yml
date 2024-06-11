@@ -43,8 +43,10 @@ jobs:
       if: ${{ matrix.toolchain.runs_on == 'macos-12'}}
       run: |
         brew update
-        brew install libomp openblas lapack arpack superlu armadillo
-        export
+        brew install libomp
+        brew install openblas
+        brew install lapack
+        brew install armadillo
 
     - name: configure
       run: |
