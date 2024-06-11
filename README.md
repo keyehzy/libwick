@@ -30,6 +30,7 @@ In the following example, we construct a Hubbard chain model and compute the gro
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>  //  for eigensolver
+#include <iomanip>
 #include <iostream>
 
 #include "FermionicBasis.h"
