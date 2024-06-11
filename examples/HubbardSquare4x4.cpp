@@ -41,7 +41,7 @@ constexpr static HubbardModel4x4Results results[] = {
     {16, {-3.73991, -7.02900, -8.46888, -13.62185}},
 };
 
-int example() {
+int HubbardModel4x4Example() {
   auto filter = [](const Basis::BasisElement& element) -> bool {
     int total_spin = 0;
     for (const auto& op : element) {

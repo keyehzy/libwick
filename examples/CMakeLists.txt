@@ -8,6 +8,7 @@ add_executable(
   libmb-example
   main.cpp
   HubbardSquare4x4.cpp
+  HeisenbergChain.cpp
 )
 
 target_include_directories(
