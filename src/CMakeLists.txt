@@ -15,19 +15,20 @@ target_link_libraries(
 add_library(
     libmb
     Basis.cpp
-    FermionicBasis.cpp
     BosonicBasis.cpp
-    Operator.cpp
-    Term.cpp
     Expression.cpp
-    NormalOrder.cpp
+    FermionicBasis.cpp
     Model.cpp
-    SparseMatrix.cpp
-    Models/LinearChain.cpp
     Models/HubbardChain.cpp
     Models/HubbardChainKSpace.cpp
     Models/HubbardKagome.cpp
     Models/HubbardSquare.cpp
+    Models/LinearChain.cpp
+    NormalOrder.cpp
+    Operator.cpp
+    SparseMatrix.cpp
+    SpinOperators.cpp
+    Term.cpp
 )
 
 target_include_directories(

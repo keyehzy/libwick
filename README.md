@@ -46,36 +46,35 @@ class HubbardChain : public Model {
   HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
 
  private:
-  // aliases
-  template <Operator::Statistics S>
-  static constexpr auto one_body = Term::Factory::one_body<S>;
-
-  template <Operator::Statistics S>
-  static constexpr auto density_density = Term::Factory::density_density<S>;
-
   void hopping_term(std::vector<Term>& result) const {
     for (Operator::Spin spin : {Up, Down}) {
       // chemical potential
       for (std::size_t i = 0; i < m_size; i++) {
-        result.push_back(one_body<Fermion>(-m_u, spin, i, spin, i));
+        result.push_back(
+            Term::Factory::one_body<Fermion>(-m_u, spin, i, spin, i));
       }
 
       // hopping term
       for (std::size_t i = 0; i < m_size - 1; i++) {
-        result.push_back(one_body<Fermion>(-m_t, spin, i, spin, i + 1));
         result.push_back(
-            one_body<Fermion>(-m_t, spin, i, spin, i + 1).adjoint());
+            Term::Factory::one_body<Fermion>(-m_t, spin, i, spin, i + 1));
+        result.push_back(
+            Term::Factory::one_body<Fermion>(-m_t, spin, i, spin, i + 1)
+                .adjoint());
       }
-      result.push_back(one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0));
       result.push_back(
-          one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0).adjoint());
+          Term::Factory::one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0));
+      result.push_back(
+          Term::Factory::one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0)
+              .adjoint());
     }
   }
 
   void interaction_term(std::vector<Term>& result) const {
     // interatction term
     for (size_t i = 0; i < m_size; i++) {
-      result.push_back(density_density<Fermion>(m_u, Up, i, Down, i));
+      result.push_back(
+          Term::Factory::density_density<Fermion>(m_u, Up, i, Down, i));
     }
   }
 

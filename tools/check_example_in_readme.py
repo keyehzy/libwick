@@ -4,7 +4,8 @@ import os
 import subprocess
 
 ROOT = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode().strip()
-main_example_file = os.path.join(ROOT, "examples", "main.cpp")
+main = "HubbardChain.cpp"
+main_example_file = os.path.join(ROOT, "examples", main)
 readme_file = os.path.join(ROOT, "README.md")
 
 text = open(main_example_file, 'r').read()

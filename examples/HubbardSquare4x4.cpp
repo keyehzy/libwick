@@ -41,7 +41,7 @@ constexpr static HubbardModel4x4Results results[] = {
     {16, {-3.73991, -7.02900, -8.46888, -13.62185}},
 };
 
-int HubbardModel4x4Example() {
+int main() {
   auto filter = [](const Basis::BasisElement& element) -> bool {
     int total_spin = 0;
     for (const auto& op : element) {
@@ -63,7 +63,7 @@ int HubbardModel4x4Example() {
       model.compute_matrix_elements(basis, mat);
       assert(mat.is_hermitian());
       arma::cx_vec eigval;
-      arma::eigs_gen(eigval, mat, 1, "sa");
+      arma::eigs_gen(eigval, mat, 1, "sr");
       std::cout << std::setw(10) << eigval[0].real() << "   "
                 << results[row].ground_state_energy[uidx] << std::endl;
     }
