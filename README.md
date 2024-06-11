@@ -30,6 +30,7 @@ In the following example, we construct a Hubbard chain model and compute the gro
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>  //  for eigensolver
+#include <cassert>
 #include <iomanip>
 #include <iostream>
 
@@ -107,18 +108,19 @@ int main() {
       /*allow_double_occupancy=*/true);
 
   // Compute matrix elements
-  arma::sp_mat m(basis.size(), basis.size());
+  arma::SpMat<arma::cx_double> m(basis.size(), basis.size());
   model.compute_matrix_elements(basis, m);
+  assert(m.is_hermitian());
 
   // Compute ground state using, e.g. Armadillo library
-  arma::vec eigval;
-  arma::mat eigvec;
+  arma::cx_vec eigval;
+  arma::cx_mat eigvec;
   const std::size_t eigval_count = 4;
-  arma::eigs_sym(eigval, eigvec, m, eigval_count, "sa");
+  arma::eigs_gen(eigval, eigvec, m, eigval_count, "sa");
 
   std::cout << "Eigenvalues:" << std::endl;
   for (std::size_t i = 0; i < eigval.size(); i++) {
-    std::cout << std::setprecision(10) << eigval(i) << std::endl;
+    std::cout << std::setprecision(10) << eigval(i).real() << std::endl;
   }
 
   for (std::size_t i = 0; i < eigval.size(); i++) {

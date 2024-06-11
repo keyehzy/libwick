@@ -3,6 +3,7 @@
 
 #include <armadillo>
 #include <array>
+#include <cassert>
 #include <iomanip>
 
 #include "Basis.h"
@@ -58,11 +59,12 @@ int example() {
     for (int uidx = 0; uidx < uidx_to_take; uidx++) {
       HubbardSquare model(1.0, hubbardU[uidx], /*nx=*/4, /*ny=*/4);
       FermionicBasis basis(model.size(), results[row].num_electrons, filter);
-      arma::sp_mat mat(basis.size(), basis.size());
+      arma::SpMat<arma::cx_double> mat(basis.size(), basis.size());
       model.compute_matrix_elements(basis, mat);
-      arma::vec eigval;
-      arma::eigs_sym(eigval, mat, 1, "sa");
-      std::cout << std::setw(10) << eigval[0] << "   "
+      assert(mat.is_hermitian());
+      arma::cx_vec eigval;
+      arma::eigs_gen(eigval, mat, 1, "sa");
+      std::cout << std::setw(10) << eigval[0].real() << "   "
                 << results[row].ground_state_energy[uidx] << std::endl;
     }
   }

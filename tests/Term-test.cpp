@@ -15,7 +15,7 @@ TEST(TermTest, ConstructorAndAccessors) {
       Operator::annihilation<Fermion>(Down, 1)};
   Term term(2.5, operators);
 
-  EXPECT_DOUBLE_EQ(term.coefficient(), 2.5);
+  EXPECT_DOUBLE_EQ(term.coefficient().real(), 2.5);
   EXPECT_EQ(term.operators(), operators);
   EXPECT_EQ(term.operators().size(), 2);
   EXPECT_EQ(term.operators().at(0), Operator::creation<Fermion>(Up, 0));

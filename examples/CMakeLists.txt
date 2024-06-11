@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
+find_package(OpenMP)
 find_package(BLAS)
 find_package(Armadillo)
 
@@ -20,7 +21,10 @@ target_link_libraries(
     libmb-example
     libmb
     BLAS::BLAS
+    OpenMP::OpenMP_CXX
     ${ARMADILLO_LIBRARIES}
+    superlu
+    arpack
 )
 
 target_compile_definitions(

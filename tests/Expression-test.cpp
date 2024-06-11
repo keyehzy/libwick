@@ -26,14 +26,18 @@ TEST(ExpressionTest, ConstructorAndAccessors) {
 
   EXPECT_EQ(expression.terms().size(), 2);
   EXPECT_DOUBLE_EQ(
-      expression.terms().at(
-          {Operator::creation<Fermion>(Up, 0),
-           Operator::annihilation<Fermion>(Down, 1)}),
+      expression.terms()
+          .at(
+              {Operator::creation<Fermion>(Up, 0),
+               Operator::annihilation<Fermion>(Down, 1)})
+          .real(),
       2.5);
   EXPECT_DOUBLE_EQ(
-      expression.terms().at(
-          {Operator::creation<Fermion>(Down, 0),
-           Operator::annihilation<Fermion>(Up, 1)}),
+      expression.terms()
+          .at(
+              {Operator::creation<Fermion>(Down, 0),
+               Operator::annihilation<Fermion>(Up, 1)})
+          .real(),
       3.0);
 }
 
