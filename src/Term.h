@@ -78,9 +78,7 @@ class Term {
       adj_operators.push_back(op.adjoint());
     }
     std::reverse(adj_operators.begin(), adj_operators.end());
-    // TODO: coefficient should be a complex number
-    // and we should take the complex conjugate.
-    return Term(m_coefficient, adj_operators);
+    return Term(std::conj(m_coefficient), adj_operators);
   }
 
   Term negate() const { return Term(-m_coefficient, m_operators); }
