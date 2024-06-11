@@ -51,7 +51,9 @@ int example() {
   int rows_to_take = 4;
   int uidx_to_take = 4;
   std::cout << std::setw(10);
-  std::cout << "Result:" << "    " << "Expected:" << std::endl;
+  std::cout << "Result:"
+            << "    "
+            << "Expected:" << std::endl;
   for (int row = 0; row < rows_to_take; row++) {
     for (int uidx = 0; uidx < uidx_to_take; uidx++) {
       HubbardSquare model(1.0, hubbardU[uidx], /*nx=*/4, /*ny=*/4);
