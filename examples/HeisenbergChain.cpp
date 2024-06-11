@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>
+#include <iomanip>
 
 #include "Basis.h"
 #include "FermionicBasis.h"
