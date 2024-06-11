@@ -80,20 +80,54 @@ class Expression {
     return result;
   }
 
-  struct Factory {
-    Factory() = delete;
-
-    static Expression add(const Term&, const Term&);
-
-    static Expression hopping(double, Operator::Spin, std::size_t, std::size_t);
-
-    static Expression spin_x(double, std::size_t);
-
-    static Expression spin_y(double, std::size_t);
-
-    static Expression spin_z(double, std::size_t);
-  };
+  struct Factory;
 
  private:
   ExpressionMap m_terms;
+};
+
+struct Expression::Factory {
+  Factory() = delete;
+
+  static constexpr auto Fermion = Operator::Statistics::Fermion;
+
+  static Expression add(const Term&, const Term&);
+
+  template <Operator::Statistics S>
+  static Expression hopping(
+      double t, Operator::Spin spin, std::size_t i, std::size_t j) {
+    return add(
+        Term::Factory::one_body<S>(-t, spin, i, spin, j),
+        Term::Factory::one_body<S>(-t, spin, i, spin, j).adjoint());
+  }
+
+  // NOTE: These are only spin-1/2 operators. We implement them here in terms of
+  // spin flippings of Fermions. However, for spin-1 particles we would have to
+  // implement them in terms of Bosons.
+
+  static Expression spin_x(double coeff, std::size_t i) {
+    return add(
+        Term::Factory::one_body<Fermion>(
+            1.0 * coeff, Operator::Spin::Up, i, Operator::Spin::Down, i),
+        Term::Factory::one_body<Fermion>(
+            1.0 * coeff, Operator::Spin::Down, i, Operator::Spin::Up, i));
+  }
+
+  static Expression spin_y(double coeff, std::size_t i) {
+    // FIXME: We don't have complex numbers
+    return add(
+        Term::Factory::one_body<Fermion>(
+            1.0 /*j*/ * coeff, Operator::Spin::Up, i, Operator::Spin::Down, i),
+        Term::Factory::one_body<Fermion>(
+            -1.0 /*j*/ * coeff, Operator::Spin::Down, i, Operator::Spin::Up,
+            i));
+  }
+
+  static Expression spin_z(double coeff, std::size_t i) {
+    return add(
+        Term::Factory::one_body<Fermion>(
+            1.0 * coeff, Operator::Spin::Up, i, Operator::Spin::Up, i),
+        Term::Factory::one_body<Fermion>(
+            -1.0 * coeff, Operator::Spin::Down, i, Operator::Spin::Down, i));
+  }
 };
