@@ -11,6 +11,12 @@ add_executable(
     Model-test.cpp
 )
 
+target_compile_options(
+    libmb-test
+    PRIVATE
+    "${LIBMB_CXX_COMPILER_OPTIONS}"
+)
+
 target_include_directories(
     libmb-test
     PRIVATE

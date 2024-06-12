@@ -26,10 +26,12 @@ class Operator {
   enum class Statistics { Boson = 0, Fermion = 1 };
   enum class Spin { Up = 0, Down = 1 };
 
-  Operator(Type type, Statistics stats, Spin spin, std::uint8_t orbital) {
-    m_data = static_cast<std::uint8_t>(type) |
-             (static_cast<std::uint8_t>(stats) << 1) |
-             (static_cast<std::uint8_t>(spin) << 2) | (orbital << 3);
+  Operator(Type type, Statistics stats, Spin spin, std::size_t orbital) {
+    m_data = static_cast<std::uint8_t>(
+        (static_cast<std::uint8_t>(type) << 0) |
+        (static_cast<std::uint8_t>(stats) << 1) |
+        (static_cast<std::uint8_t>(spin) << 2) |
+        (static_cast<std::uint8_t>(orbital) << 3));
   }
 
   Operator(const Operator& other) : m_data(other.m_data) {}
@@ -49,7 +51,9 @@ class Operator {
 
   Spin spin() const { return static_cast<Spin>((m_data & SPIN_MASK) >> 2); }
 
-  std::uint8_t orbital() const { return m_data >> 3; }
+  std::size_t orbital() const {
+    return static_cast<std::size_t>((m_data & ORBITAL_MASK) >> 3);
+  }
 
   std::uint8_t identifier() const { return m_data >> 1; }
 
@@ -87,12 +91,12 @@ class Operator {
   }
 
   template <Statistics S>
-  static Operator creation(Spin spin, std::uint8_t orbital) {
+  static Operator creation(Spin spin, std::size_t orbital) {
     return Operator(Type::Creation, S, spin, orbital);
   }
 
   template <Statistics S>
-  static Operator annihilation(Spin spin, std::uint8_t orbital) {
+  static Operator annihilation(Spin spin, std::size_t orbital) {
     return Operator(Type::Annihilation, S, spin, orbital);
   }
 

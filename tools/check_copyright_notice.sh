@@ -16,6 +16,7 @@ FILES="$(find_repository_files | grep -v '^vendor' | grep -E '\.(c|cpp|h|sh|py)$
 for FILE in ${FILES}; do
     if ! grep -q "$NOTICE_PATTERN" "$FILE"; then
         echo "Warning: Copyright notice not found in $FILE"
+        exit 1
     fi
 done
 

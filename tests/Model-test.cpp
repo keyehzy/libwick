@@ -9,7 +9,7 @@
 
 TEST(ModelTest, LinearChain) {
   auto model = LinearChain(3, 1.0, 2.0);
-  SparseMatrix<double> m;
+  SparseMatrix<std::complex<double>> m;
   FermionicBasis basis(3, 1, /*allow_double_occupancy=*/true);
   model.compute_matrix_elements(basis, m);
   std::size_t diag = 3;

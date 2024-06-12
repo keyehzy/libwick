@@ -13,7 +13,8 @@ class Expression {
  public:
   Expression() = default;
 
-  using ExpressionMap = std::unordered_map<std::vector<Operator>, double>;
+  using ExpressionMap =
+      std::unordered_map<std::vector<Operator>, Term::CoeffType>;
 
   Expression(const ExpressionMap& terms) : m_terms(terms) {}
 
@@ -53,6 +54,14 @@ class Expression {
     return result;
   }
 
+  friend Expression operator+(const Expression& lhs, const Expression& rhs) {
+    Expression result(lhs);
+    for (const auto& [operators, coefficient] : rhs.terms()) {
+      result.insert(Term(coefficient, operators));
+    }
+    return result;
+  }
+
   Expression product(const Expression& other) const {
     Expression result;
     for (const auto& [operators_a, coefficient_a] : terms()) {
@@ -60,6 +69,25 @@ class Expression {
         result.insert(Term(coefficient_a, operators_a)
                           .product(Term(coefficient_b, operators_b)));
       }
+    }
+    return result;
+  }
+
+  friend Expression operator*(const Expression& lhs, const Expression& rhs) {
+    Expression result;
+    for (const auto& [operators_a, coefficient_a] : lhs.terms()) {
+      for (const auto& [operators_b, coefficient_b] : rhs.terms()) {
+        result.insert(Term(coefficient_a, operators_a)
+                          .product(Term(coefficient_b, operators_b)));
+      }
+    }
+    return result;
+  }
+
+  friend Expression operator*(double coefficient, const Expression& other) {
+    Expression result;
+    for (const auto& [other_operators, other_coefficient] : other.terms()) {
+      result.insert(Term(coefficient * other_coefficient, other_operators));
     }
     return result;
   }
@@ -80,20 +108,8 @@ class Expression {
     return result;
   }
 
-  struct Factory {
-    Factory() = delete;
-
-    static Expression add(const Term&, const Term&);
-
-    static Expression hopping(double, Operator::Spin, std::size_t, std::size_t);
-
-    static Expression spin_x(double, std::size_t);
-
-    static Expression spin_y(double, std::size_t);
-
-    static Expression spin_z(double, std::size_t);
-  };
-
  private:
   ExpressionMap m_terms;
 };
+
+Expression add(const Term& a, const Term& b);

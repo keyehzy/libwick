@@ -518,8 +518,8 @@ TEST(
             Operator::annihilation<Fermion>(Up, 0),
             Operator::creation<Fermion>(Up, 0)});
   Expression normal_ordered = normal_order(term);
-  std::erase_if(normal_ordered.terms(), [](const auto &term) {
-    return std::abs(term.second) < 1e-10;
+  std::erase_if(normal_ordered.terms(), [](const auto &term_to_erase) {
+    return std::abs(term_to_erase.second) < 1e-10;
   });
 
   std::vector<Term> terms = {Term(
