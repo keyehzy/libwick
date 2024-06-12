@@ -3,12 +3,12 @@
 
 #include "Basis.h"
 
-#include <cassert>
 #include <sstream>
 
+#include "Assert.h"
+
 void prepare_up_and_down_representation(
-    const Basis::BasisElement& element, std::vector<int>& up,
-    std::vector<int>& down) {
+    const BasisElement& element, std::vector<int>& up, std::vector<int>& down) {
   for (const auto& o : element) {
     (o.type() == Operator::Type::Annihilation
          ? (o.spin() == Operator::Spin::Up ? up[o.orbital()]--
@@ -29,8 +29,8 @@ static constexpr std::string_view unicode_up_arrow_cell = "\u2191 ";
 static constexpr std::string_view unicode_down_arrow_cell = " \u2193";
 static constexpr std::string_view unicode_double_occ_cell = "\u2191\u2193";
 
-std::string Basis::state_string(const Basis::BasisElement& element) const {
-  assert(contains(element));
+std::string Basis::state_string(const BasisElement& element) const {
+  LIBMB_ASSERT(contains(element));
   std::vector<int> up(m_orbitals, 0);
   std::vector<int> down(m_orbitals, 0);
   prepare_up_and_down_representation(element, up, down);
@@ -53,7 +53,7 @@ std::string Basis::state_string(const Basis::BasisElement& element) const {
         out << unicode_double_occ_cell;
         break;
       default:
-        assert(false);
+        LIBMB_UNREACHABLE();
         break;
     }
     if (i < m_orbitals - 1) {

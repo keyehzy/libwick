@@ -176,7 +176,7 @@ TEST(BasisTest, SortBasis) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, EmptyElement) {
-  Basis::BasisElement element;
+  BasisElement element;
   std::vector<int> up(5, 0);
   std::vector<int> down(5, 0);
   prepare_up_and_down_representation(element, up, down);
@@ -185,7 +185,7 @@ TEST(PrepareUpAndDownRepresentationTest, EmptyElement) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
-  Basis::BasisElement element{Operator::annihilation<Fermion>(Up, 2)};
+  BasisElement element{Operator::annihilation<Fermion>(Up, 2)};
   std::vector<int> up(5, 0);
   std::vector<int> down(5, 0);
   prepare_up_and_down_representation(element, up, down);
@@ -194,7 +194,7 @@ TEST(PrepareUpAndDownRepresentationTest, SingleAnnihilationUp) {
 }
 
 TEST(PrepareUpAndDownRepresentationTest, MultipleOperators) {
-  Basis::BasisElement element{
+  BasisElement element{
       Operator::creation<Fermion>(Down, 1),
       Operator::annihilation<Fermion>(Up, 3),
       Operator::creation<Fermion>(Up, 0)};
@@ -206,7 +206,7 @@ TEST(PrepareUpAndDownRepresentationTest, MultipleOperators) {
 }
 
 TEST(StateStringTest, EmptyElement) {
-  Basis::BasisElement element;
+  BasisElement element;
   FermionicBasis basis(5, 0, /*allow_double_occupancy=*/true);
   std::string expected_state = "|  ,  ,  ,  ,  >";
   std::string actual_state = basis.state_string(element);
@@ -214,7 +214,7 @@ TEST(StateStringTest, EmptyElement) {
 }
 
 TEST(StateStringTest, SingleUp) {
-  Basis::BasisElement element;
+  BasisElement element;
   element.push_back(Operator::creation<Fermion>(Up, 1));
   FermionicBasis basis(5, 1, /*allow_double_occupancy=*/true);
   std::string expected_state = "|  ,\u2191 ,  ,  ,  >";
@@ -223,7 +223,7 @@ TEST(StateStringTest, SingleUp) {
 }
 
 TEST(StateStringTest, MultipleOperators) {
-  Basis::BasisElement element{
+  BasisElement element{
       Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Down, 1),
       Operator::creation<Fermion>(Up, 3)};
   FermionicBasis basis(5, 3, /*allow_double_occupancy=*/true);
@@ -233,7 +233,7 @@ TEST(StateStringTest, MultipleOperators) {
 }
 
 TEST(StateStringTest, AllUpAndDown) {
-  Basis::BasisElement element{
+  BasisElement element{
       Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Down, 0),
       Operator::creation<Fermion>(Up, 1), Operator::creation<Fermion>(Down, 1)};
   FermionicBasis basis(5, 4, /*allow_double_occupancy=*/true);

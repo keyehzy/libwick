@@ -3,9 +3,9 @@
 
 #include <armadillo>
 #include <array>
-#include <cassert>
 #include <iomanip>
 
+#include "Assert.h"
 #include "Basis.h"
 #include "FermionicBasis.h"
 #include "Models/HubbardSquare.h"
@@ -31,13 +31,16 @@ constexpr static std::array<std::array<double, 4>, 15> hubbardModelTable = {
      {-3.73991, -7.02900, -8.46888, -13.62185}}     // 16 electrons
 };
 
-// Filter for total spin == 0
-auto spinFilter = [](const Basis::BasisElement& element) -> bool {
-  int totalSpin = 0;
-  for (const auto& op : element) {
-    totalSpin += 1 - 2 * static_cast<int>(op.spin());
+// Construct a basis with total spin equal to zero
+class ZeroTotalSpinFilter : BasisFilter {
+ public:
+  bool filter(const BasisElement& element) const noexcept override {
+    int totalSpin = 0;
+    for (const auto& op : element) {
+      totalSpin += 1 - 2 * static_cast<int>(op.spin());
+    }
+    return totalSpin == 0;
   }
-  return totalSpin == 0;
 };
 
 int main() {
@@ -52,11 +55,11 @@ int main() {
       const std::size_t ny = 4;
 
       HubbardSquare model(t, u, nx, ny);
-      FermionicBasis basis(model.size(), row + 2, spinFilter);
+      FermionicBasis basis(model.size(), row + 2, new ZeroTotalSpinFilter);
 
       arma::SpMat<arma::cx_double> mat(basis.size(), basis.size());
       model.compute_matrix_elements(basis, mat);
-      assert(mat.is_hermitian());
+      LIBMB_ASSERT(mat.is_hermitian());
 
       arma::cx_vec eigval;
       arma::eigs_gen(eigval, mat, 1, "sr");

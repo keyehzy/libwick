@@ -13,13 +13,13 @@ class FermionicBasis final : public Basis {
   }
 
   FermionicBasis(
-      std::size_t n, std::size_t m, FilterFunction filter,
+      std::size_t n, std::size_t m, BasisFilter *filter,
       bool allow_double_occupancy)
       : Basis(n, m, filter), m_allow_double_occupancy{allow_double_occupancy} {
     generate_basis();
   }
 
-  void generate_combinations(BasisElement&, size_t, size_t, size_t) override;
+  void generate_combinations(BasisElement &, size_t, size_t, size_t) override;
 
  private:
   bool m_allow_double_occupancy = true;

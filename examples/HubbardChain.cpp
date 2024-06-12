@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>  //  for eigensolver
-#include <cassert>
 #include <iomanip>
 #include <iostream>
 
+#include "Assert.h"
 #include "FermionicBasis.h"
 #include "Model.h"
 
@@ -62,29 +62,29 @@ class HubbardChain : public Model {
   size_t m_size;
 };
 
-int main() {
-  const std::size_t size = 8;
-  const std::size_t particles = 8;
-
-  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size);
-
-  // Construct a basis with total spin equal to zero
-  Basis::FilterFunction filter = [](const Basis::BasisElement& element) {
+// Construct a basis with total spin equal to zero
+class ZeroTotalSpinFilter : BasisFilter {
+ public:
+  bool filter(const BasisElement& element) const noexcept override {
     int total_spin = 0;
     for (const auto& op : element) {
       total_spin += op.spin() == Up ? 1 : -1;
     }
     return total_spin == 0;
-  };
+  }
+};
 
-  FermionicBasis basis(
-      size, particles, filter,
-      /*allow_double_occupancy=*/true);
+int main() {
+  const std::size_t size = 8;
+  const std::size_t particles = 8;
+
+  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size);
+  FermionicBasis basis(size, particles, new ZeroTotalSpinFilter);
 
   // Compute matrix elements
   arma::SpMat<arma::cx_double> m(basis.size(), basis.size());
   model.compute_matrix_elements(basis, m);
-  assert(m.is_hermitian());
+  LIBMB_ASSERT(m.is_hermitian());
 
   // Compute ground state using, e.g. Armadillo library
   arma::cx_vec eigval;

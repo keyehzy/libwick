@@ -9,19 +9,26 @@
 
 #include "IndexedVectorMap.h"
 #include "Operator.h"
+#include "Pointers/NonnullOwnPtr.h"
+
+using BasisElement = std::vector<Operator>;
+using BasisMap = std::unordered_map<BasisElement, std::size_t>;
+
+class BasisFilter {
+ public:
+  virtual bool filter(const BasisElement&) const noexcept { return true; }
+  virtual ~BasisFilter() = default;
+};
 
 class Basis {
  public:
-  using BasisElement = std::vector<Operator>;
-  using BasisMap = std::unordered_map<BasisElement, std::size_t>;
-  using FilterFunction = std::function<bool(const BasisElement&)>;
-
   virtual ~Basis() = default;
 
-  Basis(std::size_t n, std::size_t m) : m_orbitals{n}, m_particles{m} {}
+  Basis(std::size_t n, std::size_t m)
+      : m_orbitals{n}, m_particles{m}, m_basis_filter{make<BasisFilter>()} {}
 
-  Basis(std::size_t n, std::size_t m, FilterFunction filter)
-      : m_orbitals{n}, m_particles{m}, m_filter{filter} {}
+  Basis(std::size_t n, std::size_t m, BasisFilter* filter)
+      : m_orbitals{n}, m_particles{m}, m_basis_filter{adopt_own(filter)} {}
 
   const std::vector<BasisElement>& elements() const {
     return m_basis_map.elements();
@@ -64,9 +71,8 @@ class Basis {
   std::size_t m_orbitals;
   std::size_t m_particles;
   IndexedVectorMap<BasisElement> m_basis_map;
-  FilterFunction m_filter;
+  NonnullOwnPtr<BasisFilter> m_basis_filter;
 };
 
 void prepare_up_and_down_representation(
-    const Basis::BasisElement& element, std::vector<int>& up,
-    std::vector<int>& down);
+    const BasisElement& element, std::vector<int>& up, std::vector<int>& down);

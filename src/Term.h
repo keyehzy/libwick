@@ -4,7 +4,6 @@
 #pragma once
 
 #include <algorithm>
-#include <cassert>
 #include <complex>
 #include <vector>
 
@@ -44,7 +43,7 @@ class Term {
         "Term { Coefficient: " + std::to_string(m_coefficient.real());
     if (std::abs(m_coefficient.imag()) > 1e-9) {
       result += "+ i" + std::to_string(m_coefficient.imag());
-    };
+    }
     result += ", Operators: [";
     for (const auto& op : m_operators) {
       result += op.toString() + ", ";
