@@ -16,6 +16,12 @@ function(add_example example_file)
     ${example_file}
   )
 
+  target_compile_options(
+    ${example_name}
+    PRIVATE
+    "${LIBMB_CXX_COMPILER_OPTIONS}"
+  )
+
   target_include_directories(
     ${example_name}
     PRIVATE

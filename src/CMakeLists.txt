@@ -12,6 +12,12 @@ target_link_libraries(
     libmb
 )
 
+target_compile_options(
+    main
+    PRIVATE
+    "${LIBMB_CXX_COMPILER_OPTIONS}"
+)
+
 add_library(
     libmb
     Basis.cpp
@@ -42,4 +48,3 @@ target_link_libraries(
     PUBLIC
     OpenMP::OpenMP_CXX
 )
-
