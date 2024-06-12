@@ -82,46 +82,40 @@ class Term {
 
   Term negate() const { return Term(-m_coefficient, m_operators); }
 
-  struct Factory;
-
  private:
   CoeffType m_coefficient;
   std::vector<Operator> m_operators;
   std::size_t m_swaps;
 };
 
-struct Term::Factory {
-  Factory() = delete;
+template <Operator::Statistics S>
+Term one_body(
+    Term::CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
+    Operator::Spin spin2, std::size_t orbital2) {
+  return Term(
+      coefficient, {Operator::creation<S>(spin1, orbital1),
+                    Operator::annihilation<S>(spin2, orbital2)});
+}
 
-  template <Operator::Statistics S>
-  static Term one_body(
-      CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
-      Operator::Spin spin2, std::size_t orbital2) {
-    return Term(
-        coefficient, {Operator::creation<S>(spin1, orbital1),
-                      Operator::annihilation<S>(spin2, orbital2)});
-  }
+template <Operator::Statistics S>
+Term two_body(
+    Term::CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
+    Operator::Spin spin2, std::size_t orbital2, Operator::Spin spin3,
+    std::size_t orbital3, Operator::Spin spin4, std::size_t orbital4) {
+  return Term(
+      coefficient, {Operator::creation<S>(spin1, orbital1),
+                    Operator::annihilation<S>(spin2, orbital2),
+                    Operator::creation<S>(spin3, orbital3),
+                    Operator::annihilation<S>(spin4, orbital4)});
+}
 
-  template <Operator::Statistics S>
-  static Term two_body(
-      CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
-      Operator::Spin spin2, std::size_t orbital2, Operator::Spin spin3,
-      std::size_t orbital3, Operator::Spin spin4, std::size_t orbital4) {
-    return Term(
-        coefficient, {Operator::creation<S>(spin1, orbital1),
-                      Operator::annihilation<S>(spin2, orbital2),
-                      Operator::creation<S>(spin3, orbital3),
-                      Operator::annihilation<S>(spin4, orbital4)});
-  }
-
-  template <Operator::Statistics S>
-  static Term density_density(
-      CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
-      Operator::Spin spin2, std::size_t orbital2) {
-    return Term(
-        coefficient, {Operator::creation<S>(spin1, orbital1),
-                      Operator::annihilation<S>(spin1, orbital1),
-                      Operator::creation<S>(spin2, orbital2),
-                      Operator::annihilation<S>(spin2, orbital2)});
-  }
-};
+template <Operator::Statistics S>
+Term density_density(
+    Term::CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
+    Operator::Spin spin2, std::size_t orbital2) {
+  return Term(
+      coefficient, {Operator::creation<S>(spin1, orbital1),
+                    Operator::annihilation<S>(spin1, orbital1),
+                    Operator::creation<S>(spin2, orbital2),
+                    Operator::annihilation<S>(spin2, orbital2)});
+}
