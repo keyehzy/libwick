@@ -50,31 +50,25 @@ class HubbardChain : public Model {
     for (Operator::Spin spin : {Up, Down}) {
       // chemical potential
       for (std::size_t i = 0; i < m_size; i++) {
-        result.push_back(
-            Term::Factory::one_body<Fermion>(-m_u, spin, i, spin, i));
+        result.push_back(one_body<Fermion>(-m_u, spin, i, spin, i));
       }
 
       // hopping term
       for (std::size_t i = 0; i < m_size - 1; i++) {
+        result.push_back(one_body<Fermion>(-m_t, spin, i, spin, i + 1));
         result.push_back(
-            Term::Factory::one_body<Fermion>(-m_t, spin, i, spin, i + 1));
-        result.push_back(
-            Term::Factory::one_body<Fermion>(-m_t, spin, i, spin, i + 1)
-                .adjoint());
+            one_body<Fermion>(-m_t, spin, i, spin, i + 1).adjoint());
       }
+      result.push_back(one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0));
       result.push_back(
-          Term::Factory::one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0));
-      result.push_back(
-          Term::Factory::one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0)
-              .adjoint());
+          one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0).adjoint());
     }
   }
 
   void interaction_term(std::vector<Term>& result) const {
     // interatction term
     for (size_t i = 0; i < m_size; i++) {
-      result.push_back(
-          Term::Factory::density_density<Fermion>(m_u, Up, i, Down, i));
+      result.push_back(density_density<Fermion>(m_u, Up, i, Down, i));
     }
   }
 

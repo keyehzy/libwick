@@ -24,8 +24,8 @@ void HubbardChainKSpace::hopping_term(std::vector<Term>& result) const {
       double k = 2.0 * std::numbers::pi_v<double> *
                  static_cast<double>(index(i)) / static_cast<double>(m_size);
       double a = m_size == 2 ? 1 : 2;
-      result.push_back(Term::Factory::one_body<Fermion>(
-          -a * m_t * std::cos(k), spin, i, spin, i));
+      result.push_back(
+          one_body<Fermion>(-a * m_t * std::cos(k), spin, i, spin, i));
     }
   }
 }
