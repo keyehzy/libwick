@@ -42,7 +42,7 @@ class Term {
   std::string toString() const {
     std::string result =
         "Term { Coefficient: " + std::to_string(m_coefficient.real());
-    if (m_coefficient.imag() != 0.0) {
+    if (std::abs(m_coefficient.imag()) > 1e-9) {
       result += "+ i" + std::to_string(m_coefficient.imag());
     };
     result += ", Operators: [";
@@ -96,8 +96,8 @@ struct Term::Factory {
 
   template <Operator::Statistics S>
   static Term one_body(
-      CoeffType coefficient, Operator::Spin spin1, std::uint8_t orbital1,
-      Operator::Spin spin2, std::uint8_t orbital2) {
+      CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
+      Operator::Spin spin2, std::size_t orbital2) {
     return Term(
         coefficient, {Operator::creation<S>(spin1, orbital1),
                       Operator::annihilation<S>(spin2, orbital2)});
@@ -105,9 +105,9 @@ struct Term::Factory {
 
   template <Operator::Statistics S>
   static Term two_body(
-      CoeffType coefficient, Operator::Spin spin1, std::uint8_t orbital1,
-      Operator::Spin spin2, std::uint8_t orbital2, Operator::Spin spin3,
-      std::uint8_t orbital3, Operator::Spin spin4, std::uint8_t orbital4) {
+      CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
+      Operator::Spin spin2, std::size_t orbital2, Operator::Spin spin3,
+      std::size_t orbital3, Operator::Spin spin4, std::size_t orbital4) {
     return Term(
         coefficient, {Operator::creation<S>(spin1, orbital1),
                       Operator::annihilation<S>(spin2, orbital2),
@@ -117,8 +117,8 @@ struct Term::Factory {
 
   template <Operator::Statistics S>
   static Term density_density(
-      CoeffType coefficient, Operator::Spin spin1, std::uint8_t orbital1,
-      Operator::Spin spin2, std::uint8_t orbital2) {
+      CoeffType coefficient, Operator::Spin spin1, std::size_t orbital1,
+      Operator::Spin spin2, std::size_t orbital2) {
     return Term(
         coefficient, {Operator::creation<S>(spin1, orbital1),
                       Operator::annihilation<S>(spin1, orbital1),
