@@ -5,23 +5,14 @@
 
 #include <cstdio>
 
-#ifndef NDEBUG
-#define LIBMB_ASSERT(condition)                                            \
-  do {                                                                     \
-    if (!(condition)) {                                                    \
-      std::fprintf(                                                        \
-          stderr, "Assertion failed: %s at %s:%d\n", #condition, __FILE__, \
-          __LINE__);                                                       \
-      __builtin_trap();                                                    \
-    }                                                                      \
-  } while (0)
+void libmb_assert_impl(
+    bool condition, const char* expr, const char* file, int line);
+void libmb_unreachable_impl(const char* file, int line);
 
-#define LIBMB_UNREACHABLE()                                                 \
-  do {                                                                      \
-    std::fprintf(                                                           \
-        stderr, "Unreachable code reached at %s:%d\n", __FILE__, __LINE__); \
-    __builtin_trap();                                                       \
-  } while (0)
+#ifndef NDEBUG
+#define LIBMB_ASSERT(condition) \
+  libmb_assert_impl(condition, #condition, __FILE__, __LINE__)
+#define LIBMB_UNREACHABLE() libmb_unreachable_impl(__FILE__, __LINE__)
 #else
 #define LIBMB_ASSERT(condition)
 #define LIBMB_UNREACHABLE()

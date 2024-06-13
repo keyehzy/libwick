@@ -8,8 +8,15 @@
 
 class Model {
  public:
+  virtual ~Model() = default;
+
+  Model(const Model& other) = delete;
+  Model& operator=(const Model& other) = delete;
+  Model(Model&& other) = delete;
+  Model& operator=(Model&& other) = delete;
+
   template <typename SpMat>
-  void compute_matrix_elements(const Basis& basis, SpMat& mat) {
+  void compute_matrix_elements(const Basis& basis, SpMat& mat) const {
     const std::vector<Term>& hamilt = hamiltonian();
 #pragma omp parallel for schedule(dynamic)
     for (const auto& basis_element : basis.elements()) {
@@ -30,6 +37,9 @@ class Model {
       }
     }
   }
+
+ protected:
+  Model() = default;
 
  private:
   virtual std::vector<Term> hamiltonian() const = 0;

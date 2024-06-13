@@ -31,31 +31,19 @@ constexpr static std::array<std::array<double, 4>, 15> hubbardModelTable = {
      {-3.73991, -7.02900, -8.46888, -13.62185}}     // 16 electrons
 };
 
-// Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : BasisFilter {
- public:
-  bool filter(const BasisElement& element) const noexcept override {
-    int totalSpin = 0;
-    for (const auto& op : element) {
-      totalSpin += 1 - 2 * static_cast<int>(op.spin());
-    }
-    return totalSpin == 0;
-  }
-};
-
 int main() {
-  std::size_t rowsToTake = 4;
+  const std::size_t rowsToTake = 4;
   std::cout << "Result:   Expected:" << std::endl;
 
   for (std::size_t row = 0; row < rowsToTake; row++) {
-    for (std::size_t uidx = 0; uidx < 4; uidx++) {
+    for (std::size_t uidx = 0; uidx < hubbardModelU.size(); uidx++) {
       const double t = 1.0;
       const double u = hubbardModelU[uidx];
       const std::size_t nx = 4;
       const std::size_t ny = 4;
 
       HubbardSquare model(t, u, nx, ny);
-      FermionicBasis basis(model.size(), row + 2, new ZeroTotalSpinFilter);
+      FermionicBasis basis(model.size(), row + 2);
 
       arma::SpMat<arma::cx_double> mat(basis.size(), basis.size());
       model.compute_matrix_elements(basis, mat);
@@ -63,7 +51,7 @@ int main() {
 
       arma::cx_vec eigval;
       arma::eigs_gen(eigval, mat, 1, "sr");
-      std::cout << std::setw(10) << eigval[0].real() << "   "
+      std::cout << std::fixed << eigval[0].real() << "   "
                 << hubbardModelTable[row][uidx] << std::endl;
     }
   }

@@ -9,6 +9,8 @@ class LinearChain : public Model {
  public:
   LinearChain(std::size_t n, double t, double u) : m_size{n}, m_t{t}, m_u{u} {}
 
+  ~LinearChain() override {}
+
  private:
   std::vector<Term> hamiltonian() const override;
 

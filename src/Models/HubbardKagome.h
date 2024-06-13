@@ -8,14 +8,16 @@ class HubbardKagome : public Model {
   HubbardKagome(double t, double u, bool periodic)
       : m_t(t), m_u(u), m_periodic(periodic) {}
 
-  static constexpr size_t size() { return 12; }
+  ~HubbardKagome() override {}
 
-  static constexpr size_t nx() { return 1; }
+  static constexpr std::size_t size = 12;
 
-  static constexpr size_t ny() { return 1; }
+  static constexpr std::size_t nx = 1;
 
-  static constexpr size_t index(int k, int i, int j) {
-    return ((j % ny()) * nx() + (i % nx())) * size() + (k % size());
+  static constexpr std::size_t ny = 1;
+
+  static constexpr std::size_t index(int k, int i, int j) {
+    return ((j % ny) * nx + (i % nx)) * size + (k % size);
   }
 
  private:

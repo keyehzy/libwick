@@ -7,18 +7,13 @@
 #include <unordered_map>
 #include <vector>
 
+#include "BasisFilter.h"
 #include "IndexedVectorMap.h"
 #include "Operator.h"
 #include "Pointers/NonnullOwnPtr.h"
 
 using BasisElement = std::vector<Operator>;
 using BasisMap = std::unordered_map<BasisElement, std::size_t>;
-
-class BasisFilter {
- public:
-  virtual bool filter(const BasisElement&) const noexcept { return true; }
-  virtual ~BasisFilter() = default;
-};
 
 class Basis {
  public:
@@ -29,6 +24,38 @@ class Basis {
 
   Basis(std::size_t n, std::size_t m, BasisFilter* filter)
       : m_orbitals{n}, m_particles{m}, m_basis_filter{adopt_own(filter)} {}
+
+  Basis(const Basis& other)
+      : m_orbitals{other.m_orbitals},
+        m_particles{other.m_particles},
+        m_basis_map{other.m_basis_map},
+        m_basis_filter{make<BasisFilter>(*other.m_basis_filter)} {}
+
+  Basis& operator=(const Basis& other) {
+    if (this != &other) {
+      m_orbitals = other.m_orbitals;
+      m_particles = other.m_particles;
+      m_basis_map = other.m_basis_map;
+      m_basis_filter = make<BasisFilter>(*other.m_basis_filter);
+    }
+    return *this;
+  }
+
+  Basis(Basis&& other) noexcept
+      : m_orbitals{other.m_orbitals},
+        m_particles{other.m_particles},
+        m_basis_map{std::move(other.m_basis_map)},
+        m_basis_filter{std::move(other.m_basis_filter)} {}
+
+  Basis& operator=(Basis&& other) noexcept {
+    if (this != &other) {
+      m_orbitals = other.m_orbitals;
+      m_particles = other.m_particles;
+      m_basis_map = std::move(other.m_basis_map);
+      m_basis_filter = std::move(other.m_basis_filter);
+    }
+    return *this;
+  }
 
   const std::vector<BasisElement>& elements() const {
     return m_basis_map.elements();

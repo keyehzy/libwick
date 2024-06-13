@@ -68,19 +68,6 @@ TEST(TermTest, InequalityOperator) {
   EXPECT_TRUE(term1 != term4);
 }
 
-TEST(TermTest, ToString) {
-  std::vector<Operator> operators = {
-      Operator::creation<Fermion>(Up, 0),
-      Operator::annihilation<Fermion>(Down, 1)};
-  Term term(2.5, operators);
-
-  EXPECT_EQ(
-      term.toString(),
-      "Term { Coefficient: 2.500000, Operators: [Operator { Type: "
-      "Creation, Spin: Up, Orbital: 0 }, Operator { Type: Annihilation, "
-      "Spin: Down, Orbital: 1 }, ] }");
-}
-
 TEST(TermTest, OutputOperator) {
   std::vector<Operator> operators = {
       Operator::creation<Fermion>(Up, 0),
@@ -92,9 +79,9 @@ TEST(TermTest, OutputOperator) {
 
   EXPECT_EQ(
       os.str(),
-      "Term { Coefficient: 2.500000, Operators: [Operator { Type: "
+      "Term { Coefficient: (2.5,0), Operators: [Operator { Type: "
       "Creation, Spin: Up, Orbital: 0 }, Operator { Type: Annihilation, "
-      "Spin: Down, Orbital: 1 }, ] }");
+      "Spin: Down, Orbital: 1 }]}");
 }
 
 TEST(TermTest, Product) {
@@ -149,14 +136,14 @@ TEST(TermTest, AdjointSingleBody) {
   std::vector<Operator> operators = {
       Operator::creation<Fermion>(Up, 0),
       Operator::annihilation<Fermion>(Down, 1)};
-  Term term(2.5, operators);
+  Term term(std::complex<double>(2.5, 1.0), operators);
 
   Term adjoint = term.adjoint();
 
   std::vector<Operator> expected_operators = {
       Operator::creation<Fermion>(Down, 1),
       Operator::annihilation<Fermion>(Up, 0)};
-  Term expected_adjoint(2.5, expected_operators);
+  Term expected_adjoint(std::complex<double>(2.5, -1.0), expected_operators);
 
   EXPECT_EQ(adjoint, expected_adjoint);
 }
@@ -166,7 +153,7 @@ TEST(TermTest, AdjointManyBody) {
       Operator::creation<Fermion>(Up, 0), Operator::creation<Fermion>(Down, 1),
       Operator::annihilation<Fermion>(Down, 2),
       Operator::annihilation<Fermion>(Up, 3)};
-  Term term(2.5, operators);
+  Term term(std::complex<double>(2.5, 1.0), operators);
 
   Term adjoint = term.adjoint();
 
@@ -174,7 +161,7 @@ TEST(TermTest, AdjointManyBody) {
       Operator::creation<Fermion>(Up, 3), Operator::creation<Fermion>(Down, 2),
       Operator::annihilation<Fermion>(Down, 1),
       Operator::annihilation<Fermion>(Up, 0)};
-  Term expected_adjoint(2.5, expected_operators);
+  Term expected_adjoint(std::complex<double>(2.5, -1.0), expected_operators);
 
   EXPECT_EQ(adjoint, expected_adjoint);
 }

@@ -26,15 +26,16 @@ class Operator {
   enum class Statistics { Boson = 0, Fermion = 1 };
   enum class Spin { Up = 0, Down = 1 };
 
-  Operator(Type type, Statistics stats, Spin spin, std::size_t orbital) {
-    m_data = static_cast<std::uint8_t>(
-        (static_cast<std::uint8_t>(type) << 0) |
-        (static_cast<std::uint8_t>(stats) << 1) |
-        (static_cast<std::uint8_t>(spin) << 2) |
-        (static_cast<std::uint8_t>(orbital) << 3));
-  }
+  Operator(Type type, Statistics stats, Spin spin, std::size_t orbital)
+      : m_data(static_cast<std::uint8_t>(
+            (static_cast<std::uint8_t>(type) << 0) |
+            (static_cast<std::uint8_t>(stats) << 1) |
+            (static_cast<std::uint8_t>(spin) << 2) |
+            (static_cast<std::uint8_t>(orbital) << 3))) {}
 
   Operator(const Operator& other) : m_data(other.m_data) {}
+
+  Operator(Operator&& other) noexcept : m_data(other.m_data) {}
 
   Operator& operator=(const Operator& other) {
     if (this != &other) {
@@ -42,6 +43,15 @@ class Operator {
     }
     return *this;
   }
+
+  Operator& operator=(Operator&& other) noexcept {
+    if (this != &other) {
+      m_data = other.m_data;
+    }
+    return *this;
+  }
+
+  ~Operator() {}
 
   Type type() const { return static_cast<Type>(m_data & OPERATOR_MASK); }
 

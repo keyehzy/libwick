@@ -30,7 +30,6 @@ In the following example, we construct a Hubbard chain model and compute the gro
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>  //  for eigensolver
-#include <iomanip>
 #include <iostream>
 
 #include "Assert.h"
@@ -44,6 +43,8 @@ using enum Operator::Spin;        // Up, Down
 class HubbardChain : public Model {
  public:
   HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
+
+  ~HubbardChain() override {}
 
  private:
   void hopping_term(std::vector<Term>& result) const {
@@ -66,7 +67,7 @@ class HubbardChain : public Model {
   }
 
   void interaction_term(std::vector<Term>& result) const {
-    // interatction term
+    // interaction term
     for (size_t i = 0; i < m_size; i++) {
       result.push_back(density_density<Fermion>(m_u, Up, i, Down, i));
     }
@@ -85,9 +86,9 @@ class HubbardChain : public Model {
 };
 
 // Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : BasisFilter {
+class ZeroTotalSpinFilter : public BasisFilter {
  public:
-  bool filter(const BasisElement& element) const noexcept override {
+  bool filter(const BasisElement& element) const override {
     int total_spin = 0;
     for (const auto& op : element) {
       total_spin += op.spin() == Up ? 1 : -1;
@@ -99,8 +100,10 @@ class ZeroTotalSpinFilter : BasisFilter {
 int main() {
   const std::size_t size = 8;
   const std::size_t particles = 8;
+  const double t = 1.0;
+  const double u = 2.0;
 
-  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size);
+  HubbardChain model(t, u, size);
   FermionicBasis basis(size, particles, new ZeroTotalSpinFilter);
 
   // Compute matrix elements
@@ -112,17 +115,14 @@ int main() {
   arma::cx_vec eigval;
   arma::cx_mat eigvec;
   const std::size_t eigval_count = 4;
-  arma::eigs_gen(eigval, eigvec, m, eigval_count, "sa");
+  arma::eigs_gen(eigval, eigvec, m, eigval_count, "sr");
 
   std::cout << "Eigenvalues:" << std::endl;
   for (std::size_t i = 0; i < eigval.size(); i++) {
-    std::cout << std::setprecision(10) << eigval(i).real() << std::endl;
+    std::cout << std::fixed << eigval(i).real() << std::endl;
   }
 
-  for (std::size_t i = 0; i < eigval.size(); i++) {
-    std::cout << "Ground state " << i << ":" << std::endl;
-    // Perform some analysis here...
-  }
+  // Perform some further analysis here...
 }
 ```
 

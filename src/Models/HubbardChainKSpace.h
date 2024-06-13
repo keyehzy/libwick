@@ -10,6 +10,8 @@ class HubbardChainKSpace : public Model {
   HubbardChainKSpace(double t, double u, std::size_t n, std::size_t m)
       : m_t(t), m_u(u), m_size(n), m_particles(m) {}
 
+  ~HubbardChainKSpace() override {}
+
  private:
   void hopping_term(std::vector<Term>& result) const;
 
