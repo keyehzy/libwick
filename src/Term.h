@@ -38,47 +38,13 @@ class Term {
 
   bool operator!=(const Term& other) const { return !(*this == other); }
 
-  std::string toString() const {
-    std::string result =
-        "Term { Coefficient: " + std::to_string(m_coefficient.real());
-    if (std::abs(m_coefficient.imag()) > 1e-9) {
-      result += "+ i" + std::to_string(m_coefficient.imag());
-    }
-    result += ", Operators: [";
-    for (const auto& op : m_operators) {
-      result += op.toString() + ", ";
-    }
-    result += "] }";
-    return result;
-  }
+  friend std::ostream& operator<<(std::ostream& os, const Term& term);
 
-  friend std::ostream& operator<<(std::ostream& os, const Term& term) {
-    return os << term.toString();
-  }
+  Term product(const Term& other) const;
 
-  Term product(const Term& other) const {
-    std::vector<Operator> new_operators = m_operators;
-    new_operators.insert(
-        new_operators.end(), other.m_operators.begin(),
-        other.m_operators.end());
-    return Term(m_coefficient * other.m_coefficient, new_operators);
-  }
+  Term product(const std::vector<Operator>& operators) const;
 
-  Term product(const std::vector<Operator>& operators) const {
-    std::vector<Operator> new_operators = m_operators;
-    new_operators.insert(
-        new_operators.end(), operators.begin(), operators.end());
-    return Term(m_coefficient, new_operators);
-  }
-
-  Term adjoint() const {
-    std::vector<Operator> adj_operators;
-    for (const auto& op : m_operators) {
-      adj_operators.push_back(op.adjoint());
-    }
-    std::reverse(adj_operators.begin(), adj_operators.end());
-    return Term(std::conj(m_coefficient), adj_operators);
-  }
+  Term adjoint() const;
 
   Term negate() const { return Term(-m_coefficient, m_operators); }
 
