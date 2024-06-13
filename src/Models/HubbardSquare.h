@@ -10,6 +10,8 @@ class HubbardSquare : public Model {
   HubbardSquare(double t, double u, std::size_t nx, std::size_t ny)
       : m_t(t), m_u(u), m_nx(nx), m_ny(ny) {}
 
+  ~HubbardSquare() override {}
+
   std::size_t size() const { return m_nx * m_ny; }
 
   std::size_t nx() const { return m_nx; }

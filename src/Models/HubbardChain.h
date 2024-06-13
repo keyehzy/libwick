@@ -9,6 +9,8 @@ class HubbardChain : public Model {
  public:
   HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
 
+  ~HubbardChain() override {}
+
  private:
   void hopping_term(std::vector<Term>& result) const;
 
