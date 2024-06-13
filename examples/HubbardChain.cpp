@@ -56,7 +56,7 @@ class HubbardChain : public Model {
 };
 
 // Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : BasisFilter {
+class ZeroTotalSpinFilter : public BasisFilter {
  public:
   bool filter(const BasisElement& element) const override {
     int total_spin = 0;

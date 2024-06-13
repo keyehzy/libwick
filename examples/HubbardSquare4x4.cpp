@@ -32,7 +32,7 @@ constexpr static std::array<std::array<double, 4>, 15> hubbardModelTable = {
 };
 
 // Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : BasisFilter {
+class ZeroTotalSpinFilter : public BasisFilter {
  public:
   bool filter(const BasisElement& element) const override {
     int totalSpin = 0;
