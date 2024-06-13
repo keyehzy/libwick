@@ -7,18 +7,13 @@
 #include <unordered_map>
 #include <vector>
 
+#include "BasisFilter.h"
 #include "IndexedVectorMap.h"
 #include "Operator.h"
 #include "Pointers/NonnullOwnPtr.h"
 
 using BasisElement = std::vector<Operator>;
 using BasisMap = std::unordered_map<BasisElement, std::size_t>;
-
-class BasisFilter {
- public:
-  virtual bool filter(const BasisElement&) const { return true; }
-  virtual ~BasisFilter() = default;
-};
 
 class Basis {
  public:
