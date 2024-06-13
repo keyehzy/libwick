@@ -9,7 +9,7 @@
 class Model {
  public:
   template <typename SpMat>
-  void compute_matrix_elements(const Basis& basis, SpMat& mat) {
+  void compute_matrix_elements(const Basis& basis, SpMat& mat) const {
     const std::vector<Term>& hamilt = hamiltonian();
 #pragma omp parallel for schedule(dynamic)
     for (const auto& basis_element : basis.elements()) {

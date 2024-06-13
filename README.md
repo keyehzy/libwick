@@ -30,7 +30,6 @@ In the following example, we construct a Hubbard chain model and compute the gro
 // SPDX-License-Identifier: BSD-2-Clause
 
 #include <armadillo>  //  for eigensolver
-#include <iomanip>
 #include <iostream>
 
 #include "Assert.h"
@@ -66,7 +65,7 @@ class HubbardChain : public Model {
   }
 
   void interaction_term(std::vector<Term>& result) const {
-    // interatction term
+    // interaction term
     for (size_t i = 0; i < m_size; i++) {
       result.push_back(density_density<Fermion>(m_u, Up, i, Down, i));
     }
@@ -87,7 +86,7 @@ class HubbardChain : public Model {
 // Construct a basis with total spin equal to zero
 class ZeroTotalSpinFilter : BasisFilter {
  public:
-  bool filter(const BasisElement& element) const noexcept override {
+  bool filter(const BasisElement& element) const override {
     int total_spin = 0;
     for (const auto& op : element) {
       total_spin += op.spin() == Up ? 1 : -1;
@@ -112,17 +111,14 @@ int main() {
   arma::cx_vec eigval;
   arma::cx_mat eigvec;
   const std::size_t eigval_count = 4;
-  arma::eigs_gen(eigval, eigvec, m, eigval_count, "sa");
+  arma::eigs_gen(eigval, eigvec, m, eigval_count, "sr");
 
   std::cout << "Eigenvalues:" << std::endl;
   for (std::size_t i = 0; i < eigval.size(); i++) {
-    std::cout << std::setprecision(10) << eigval(i).real() << std::endl;
+    std::cout << std::fixed << eigval(i).real() << std::endl;
   }
 
-  for (std::size_t i = 0; i < eigval.size(); i++) {
-    std::cout << "Ground state " << i << ":" << std::endl;
-    // Perform some analysis here...
-  }
+  // Perform some further analysis here...
 }
 ```
 

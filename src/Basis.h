@@ -16,7 +16,7 @@ using BasisMap = std::unordered_map<BasisElement, std::size_t>;
 
 class BasisFilter {
  public:
-  virtual bool filter(const BasisElement&) const noexcept { return true; }
+  virtual bool filter(const BasisElement&) const { return true; }
   virtual ~BasisFilter() = default;
 };
 

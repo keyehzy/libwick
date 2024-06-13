@@ -34,7 +34,7 @@ constexpr static std::array<std::array<double, 4>, 15> hubbardModelTable = {
 // Construct a basis with total spin equal to zero
 class ZeroTotalSpinFilter : BasisFilter {
  public:
-  bool filter(const BasisElement& element) const noexcept override {
+  bool filter(const BasisElement& element) const override {
     int totalSpin = 0;
     for (const auto& op : element) {
       totalSpin += 1 - 2 * static_cast<int>(op.spin());

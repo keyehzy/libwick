@@ -33,7 +33,6 @@ add_library(
     NormalOrder.cpp
     Operator.cpp
     SparseMatrix.cpp
-    SpinOperators.cpp
     Term.cpp
 )
 
