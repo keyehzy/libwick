@@ -12,6 +12,8 @@ class HeisenbergChain : public Model {
   HeisenbergChain(std::size_t n, double J, double h)
       : m_size{n}, m_J{J}, m_h{h} {}
 
+  ~HeisenbergChain() override {}
+
   std::size_t size() const { return m_size; }
 
  private:
@@ -103,18 +105,19 @@ static void analysis(
 
 int main() {
   const int chain_size = 10;
+  const double small_h_field = 1e-4;
   FermionicBasis basis(
       chain_size, chain_size, /*allow_double_occupancy=*/false);
 
   {
     std::cout << "Ferromagnetic Heisenberg Chain" << std::endl;
-    HeisenbergChain model(chain_size, -1.0, 1e-4);
+    HeisenbergChain model(chain_size, -1.0, small_h_field);
     analysis(model, basis);
   }
 
   {
     std::cout << "Antiferromagnetic Heisenberg Chain" << std::endl;
-    HeisenbergChain model(chain_size, 1.0, 1e-4);
+    HeisenbergChain model(chain_size, 1.0, small_h_field);
     analysis(model, basis);
   }
 
