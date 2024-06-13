@@ -1,3 +1,6 @@
+# Copyright (c) 2024 Matheus Sousa
+# SPDX-License-Identifier: BSD-2-Clause
+
 cmake_minimum_required(VERSION 3.12)
 
 find_package(OpenMP REQUIRED)
