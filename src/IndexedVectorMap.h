@@ -3,6 +3,11 @@
 
 #pragma once
 
+#include <algorithm>
+#include <cstddef>
+#include <unordered_map>
+#include <vector>
+
 template <class T>
 class IndexedVectorMap {
  public:
@@ -38,7 +43,7 @@ class IndexedVectorMap {
   template <class CompareFunction>
   void sort(CompareFunction comp) {
     std::sort(m_elements.begin(), m_elements.end(), comp);
-    for (size_t i = 0; i < m_elements.size(); i++) {
+    for (std::size_t i = 0; i < m_elements.size(); i++) {
       m_index_map[m_elements[i]] = i;
     }
   }

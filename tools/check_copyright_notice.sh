@@ -11,7 +11,7 @@ find_repository_files() {
     git ls-files --cached --exclude-standard -- "${ROOT}"
 }
 
-FILES="$(find_repository_files | grep -v '^vendor' | grep -E '\.(c|cpp|h|sh|py)$')"
+FILES="$(find_repository_files | grep -v '^vendor' | grep -E '\.(c|cpp|h|sh|py|yml)$')"
 
 for FILE in ${FILES}; do
     if ! grep -q "$NOTICE_PATTERN" "$FILE"; then
