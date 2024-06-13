@@ -31,18 +31,6 @@ constexpr static std::array<std::array<double, 4>, 15> hubbardModelTable = {
      {-3.73991, -7.02900, -8.46888, -13.62185}}     // 16 electrons
 };
 
-// Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : public BasisFilter {
- public:
-  bool filter(const BasisElement& element) const override {
-    int totalSpin = 0;
-    for (const auto& op : element) {
-      totalSpin += 1 - 2 * static_cast<int>(op.spin());
-    }
-    return totalSpin == 0;
-  }
-};
-
 int main() {
   const std::size_t rowsToTake = 4;
   std::cout << "Result:   Expected:" << std::endl;
@@ -55,7 +43,7 @@ int main() {
       const std::size_t ny = 4;
 
       HubbardSquare model(t, u, nx, ny);
-      FermionicBasis basis(model.size(), row + 2, new ZeroTotalSpinFilter);
+      FermionicBasis basis(model.size(), row + 2);
 
       arma::SpMat<arma::cx_double> mat(basis.size(), basis.size());
       model.compute_matrix_elements(basis, mat);

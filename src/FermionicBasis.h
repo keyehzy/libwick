@@ -24,6 +24,11 @@ class FermionicBasis final : public Basis {
     generate_basis();
   }
 
+  FermionicBasis(std::size_t n, std::size_t m)
+      : Basis(n, m), m_allow_double_occupancy{true} {
+    generate_basis();
+  }
+
   void generate_combinations(BasisElement &, size_t, size_t, size_t) override;
 
  private:

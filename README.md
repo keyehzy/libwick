@@ -44,6 +44,8 @@ class HubbardChain : public Model {
  public:
   HubbardChain(double t, double u, size_t n) : m_t(t), m_u(u), m_size(n) {}
 
+  ~HubbardChain() override {}
+
  private:
   void hopping_term(std::vector<Term>& result) const {
     for (Operator::Spin spin : {Up, Down}) {
@@ -84,7 +86,7 @@ class HubbardChain : public Model {
 };
 
 // Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : BasisFilter {
+class ZeroTotalSpinFilter : public BasisFilter {
  public:
   bool filter(const BasisElement& element) const override {
     int total_spin = 0;
@@ -98,8 +100,10 @@ class ZeroTotalSpinFilter : BasisFilter {
 int main() {
   const std::size_t size = 8;
   const std::size_t particles = 8;
+  const double t = 1.0;
+  const double u = 2.0;
 
-  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size);
+  HubbardChain model(t, u, size);
   FermionicBasis basis(size, particles, new ZeroTotalSpinFilter);
 
   // Compute matrix elements

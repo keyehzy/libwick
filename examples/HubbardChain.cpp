@@ -61,7 +61,6 @@ class HubbardChain : public Model {
 class ZeroTotalSpinFilter : public BasisFilter {
  public:
   bool filter(const BasisElement& element) const override {
-    std::cout << "filter!" << std::endl;
     int total_spin = 0;
     for (const auto& op : element) {
       total_spin += op.spin() == Up ? 1 : -1;
