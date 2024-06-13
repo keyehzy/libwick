@@ -71,8 +71,10 @@ class ZeroTotalSpinFilter : public BasisFilter {
 int main() {
   const std::size_t size = 8;
   const std::size_t particles = 8;
+  const double t = 1.0;
+  const double u = 2.0;
 
-  HubbardChain model(/*t=*/1.0, /*u=*/2.0, size);
+  HubbardChain model(t, u, size);
   FermionicBasis basis(size, particles, new ZeroTotalSpinFilter);
 
   // Compute matrix elements

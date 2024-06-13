@@ -44,11 +44,11 @@ class ZeroTotalSpinFilter : public BasisFilter {
 };
 
 int main() {
-  std::size_t rowsToTake = 4;
+  const std::size_t rowsToTake = 4;
   std::cout << "Result:   Expected:" << std::endl;
 
   for (std::size_t row = 0; row < rowsToTake; row++) {
-    for (std::size_t uidx = 0; uidx < 4; uidx++) {
+    for (std::size_t uidx = 0; uidx < hubbardModelU.size(); uidx++) {
       const double t = 1.0;
       const double u = hubbardModelU[uidx];
       const std::size_t nx = 4;
@@ -63,7 +63,7 @@ int main() {
 
       arma::cx_vec eigval;
       arma::eigs_gen(eigval, mat, 1, "sr");
-      std::cout << std::setw(10) << eigval[0].real() << "   "
+      std::cout << std::fixed << eigval[0].real() << "   "
                 << hubbardModelTable[row][uidx] << std::endl;
     }
   }
