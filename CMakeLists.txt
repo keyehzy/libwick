@@ -13,8 +13,11 @@ mark_as_advanced(LIBMB_CXX_COMPILER_OPTIONS)
 
 add_subdirectory(src)
 add_subdirectory(examples)
-add_subdirectory(benchmark)
 add_subdirectory(vendor)
+
+if (BUILD_BENCHMARK)
+  add_subdirectory(benchmark)
+endif()
 
 if (BUILD_TESTING)
   include(CTest)
