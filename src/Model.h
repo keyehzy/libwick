@@ -26,7 +26,7 @@ class Model {
       for (const Term& hamilt_term : hamilt) {
         terms.push_back(hamilt_term.product(basis_element));
       }
-      const Expression& e = normal_order(terms);
+      const Expression& e = NormalOrderer(terms).expression();
       for (const auto& [term, coeff] : e.terms()) {
         if (term.back().type() == Operator::Type::Creation &&
             basis.contains(term)) {

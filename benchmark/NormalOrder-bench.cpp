@@ -27,7 +27,7 @@ static void BM_NormalOrderTermEasy(benchmark::State& state) {
     Term term(1.0, operators);
 
     state.ResumeTiming();
-    Expression e = normal_order(term);
+    Expression e = NormalOrderer(term).expression();
     benchmark::DoNotOptimize(e);
   }
 }
@@ -50,7 +50,7 @@ static void BM_NormalOrderTermHard(benchmark::State& state) {
     Term term(1.0, operators);
 
     state.ResumeTiming();
-    Expression e = normal_order(term);
+    Expression e = NormalOrderer(term).expression();
     benchmark::DoNotOptimize(e);
   }
 }
@@ -74,7 +74,7 @@ static void BM_NormalOrderTermHarderEasyVersion(benchmark::State& state) {
     Term term(1.0, operators);
 
     state.ResumeTiming();
-    Expression e = normal_order(term);
+    Expression e = NormalOrderer(term).expression();
     benchmark::DoNotOptimize(e);
   }
 }
@@ -98,7 +98,7 @@ static void BM_NormalOrderTermHarder1(benchmark::State& state) {
     Term term(1.0, operators);
 
     state.ResumeTiming();
-    Expression e = normal_order(term);
+    Expression e = NormalOrderer(term).expression();
     benchmark::DoNotOptimize(e);
   }
 }
@@ -123,7 +123,7 @@ static void BM_NormalOrderTermHarder2(benchmark::State& state) {
     Term term(1.0, operators);
 
     state.ResumeTiming();
-    Expression e = normal_order(term);
+    Expression e = NormalOrderer(term).expression();
     benchmark::DoNotOptimize(e);
   }
 }

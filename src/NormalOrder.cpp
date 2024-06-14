@@ -5,25 +5,57 @@
 
 #include <vector>
 
-// We assume that all the operators in the term have the same statistics
-// i.e. they are all fermionic or all bosonic. Normal order between
-// fermionic and bosonic operators is not well defined.
+template <typename SomeDouble>
+constexpr SomeDouble evaluate_parity(
+    SomeDouble coefficient, std::size_t phase) {
+  return phase % 2 == 0 ? coefficient : -coefficient;
+}
 
-void sort_term(
-    Term& term, std::vector<Term>& stack, std::vector<Operator>& elms) {
-  if (term.operators().size() < 2) {
-    return;
+NormalOrderer::NormalOrderer(const Term& term) { normal_order(term); }
+
+NormalOrderer::NormalOrderer(const std::vector<Term>& terms) {
+  for (const Term& term : terms) {
+    normal_order(term);
   }
+}
 
-  std::vector<Operator>& operators = term.operators();
+NormalOrderer::NormalOrderer(const Expression& expression) {
+  for (const auto& [term, coeff] : expression.terms()) {
+    normal_order(Term(coeff, term));
+  }
+}
 
-  auto push_new_term = [&](size_t j) {
-    elms.clear();
-    elms.insert(elms.end(), operators.begin(), operators.end());
-    elms.erase(elms.begin() + j - 1, elms.begin() + j + 1);
-    stack.emplace_back(term.coefficient(), std::move(elms), term.swaps());
-  };
+NormalOrderer::NormalOrderer(const std::vector<Expression>& expressions) {
+  for (const Expression& expression : expressions) {
+    for (const auto& [term, coeff] : expression.terms()) {
+      normal_order(Term(coeff, term));
+    }
+  }
+}
 
+void NormalOrderer::normal_order(const Term& term) {
+  m_stack.emplace_back(term.operators(), 0);
+  m_elements.reserve(term.operators().size());
+
+  while (!m_stack.empty()) {
+    auto [prev_operators, prev_phase] = std::move(m_stack.back());
+    m_stack.pop_back();
+
+    if (prev_operators.size() < 2) {
+      m_terms_map[prev_operators] +=
+          evaluate_parity(term.coefficient(), prev_phase);
+      continue;
+    }
+
+    auto [new_operators, new_phase] =
+        sort_operators(prev_operators, prev_phase);
+    m_terms_map[new_operators] +=
+        evaluate_parity(term.coefficient(), new_phase);
+  }
+}
+
+NormalOrderer::OperatorsPhasePair NormalOrderer::sort_operators(
+    std::vector<Operator> operators, std::size_t phase) {
   for (std::size_t i = 1; i < operators.size(); ++i) {
     for (std::size_t j = i; j > 0; --j) {
       Operator& op1 = operators[j - 1];
@@ -32,95 +64,53 @@ void sort_term(
           op2.type() == Operator::Type::Creation &&
           op1.identifier() > op2.identifier()) {
         std::swap(op1, op2);
-        term.increment(op1.is_fermion() && op2.is_fermion());
+        phase += op1.is_fermion() && op2.is_fermion();
       } else if (
           op1.type() == Operator::Type::Annihilation &&
           op2.type() == Operator::Type::Annihilation &&
           op1.identifier() < op2.identifier()) {
         std::swap(op1, op2);
-        term.increment(op1.is_fermion() && op2.is_fermion());
+        phase += op1.is_fermion() && op2.is_fermion();
       } else if (
           op1.type() == Operator::Type::Annihilation &&
           op2.type() == Operator::Type::Creation) {
         if (op1.identifier() == op2.identifier()) {
-          push_new_term(j);
+          m_elements.clear();
+          m_elements.insert(
+              m_elements.end(), operators.begin(), operators.end());
+          m_elements.erase(
+              m_elements.begin() + j - 1, m_elements.begin() + j + 1);
+          m_stack.emplace_back(m_elements, phase);
         }
         std::swap(op1, op2);
-        term.increment(op1.is_fermion() && op2.is_fermion());
+        phase += op1.is_fermion() && op2.is_fermion();
       }
     }
   }
-}
-
-Expression normal_order(const Term& term) {
-  std::vector<Term> stack = {term};
-  Expression::ExpressionMap terms;
-  std::vector<Operator> elms;
-  elms.reserve(term.operators().size());
-  while (!stack.empty()) {
-    Term cur = stack.back();
-    stack.pop_back();
-    if (cur.operators().empty()) {
-      terms[{}] += cur.coefficient();
-      continue;
-    }
-    sort_term(cur, stack, elms);
-    terms[cur.operators()] +=
-        cur.swaps() % 2 == 0 ? cur.coefficient() : -cur.coefficient();
-  }
-  return Expression(terms);
-}
-
-Expression normal_order(const std::vector<Term>& terms) {
-  Expression::ExpressionMap result;
-  for (const Term& term : terms) {
-    const Expression& e = normal_order(term);
-    for (const auto& [term, coeff] : e.terms()) {
-      result[term] += coeff;
-    }
-  }
-  return Expression(std::move(result));
-}
-
-Expression normal_order(const Expression& expression) {
-  Expression::ExpressionMap result;
-  for (const auto& [term, coeff] : expression.terms()) {
-    const Expression& e = normal_order(Term(coeff, term));
-    for (const auto& [term, coeff] : e.terms()) {
-      result[term] += coeff;
-    }
-  }
-  return Expression(std::move(result));
-}
-
-Expression normal_order(const std::vector<Expression>& expressions) {
-  Expression::ExpressionMap result;
-  for (const Expression& expression : expressions) {
-    const Expression& e = normal_order(expression);
-    for (const auto& [term, coeff] : e.terms()) {
-      result[term] += coeff;
-    }
-  }
-  return Expression(std::move(result));
+  return OperatorsPhasePair{operators, phase};
 }
 
 Expression commute(const Term& term1, const Term& term2) {
-  return normal_order({term1.product(term2), term2.product(term1).negate()});
+  return NormalOrderer({term1.product(term2), term2.product(term1).negate()})
+      .expression();
 }
 
 Expression commute(
     const Expression& expression1, const Expression& expression2) {
-  return normal_order(
-      {expression1.product(expression2),
-       expression2.product(expression1).negate()});
+  return NormalOrderer({expression1.product(expression2),
+                        expression2.product(expression1).negate()})
+      .expression();
 }
 
 Expression anticommute(const Term& term1, const Term& term2) {
-  return normal_order({term1.product(term2), term2.product(term1)});
+  return NormalOrderer({term1.product(term2), term2.product(term1)})
+      .expression();
 }
 
 Expression anticommute(
     const Expression& expression1, const Expression& expression2) {
-  return normal_order(
-      {expression1.product(expression2), expression2.product(expression1)});
+  return NormalOrderer({expression1.product(expression2),
+                        expression2.product(expression1)})
+      .expression();
+  ;
 }

@@ -11,10 +11,10 @@
 
 class Expression {
  public:
-  Expression() = default;
-
   using ExpressionMap =
       std::unordered_map<std::vector<Operator>, Term::CoeffType>;
+
+  Expression() = default;
 
   Expression(const ExpressionMap& terms) : m_terms(terms) {}
 
