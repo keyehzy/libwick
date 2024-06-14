@@ -28,6 +28,7 @@ add_library(
   BosonicBasis.cpp
   Expression.cpp
   FermionicBasis.cpp
+  GenericBasis.cpp
   Model.cpp
   Models/HubbardChain.cpp
   Models/HubbardChainKSpace.cpp
