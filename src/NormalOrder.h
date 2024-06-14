@@ -21,6 +21,8 @@ class NormalOrderer {
 
   NormalOrderer(const std::vector<Expression>& expressions);
 
+  Expression::ExpressionMap terms() const { return m_terms_map; }
+
   Expression expression() const { return Expression(m_terms_map); }
 
  private:
