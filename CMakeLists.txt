@@ -1,3 +1,6 @@
+# Copyright (c) 2024 Matheus Sousa
+# SPDX-License-Identifier: BSD-2-Clause
+
 cmake_minimum_required(VERSION 3.12)
 project(LibMB)
 
@@ -11,6 +14,10 @@ mark_as_advanced(LIBMB_CXX_COMPILER_OPTIONS)
 add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(vendor)
+
+if (BUILD_BENCHMARK)
+  add_subdirectory(benchmark)
+endif()
 
 if (BUILD_TESTING)
   include(CTest)

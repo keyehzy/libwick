@@ -11,14 +11,4 @@ class BasisFilter {
  public:
   virtual bool filter(const BasisElement&) const { return true; }
   virtual ~BasisFilter() = default;
-
-  BasisFilter() = default;
-
-  BasisFilter(const BasisFilter& other) = default;
-
-  BasisFilter& operator=(const BasisFilter& other) = default;
-
-  BasisFilter(BasisFilter&& other) = default;
-
-  BasisFilter& operator=(BasisFilter&& other) = default;
 };

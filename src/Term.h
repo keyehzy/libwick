@@ -14,18 +14,9 @@ class Term {
   using CoeffType = std::complex<double>;
 
   Term(CoeffType coefficient, const std::vector<Operator>& operators)
-      : m_coefficient{coefficient}, m_operators{operators}, m_swaps{0} {}
-
-  Term(
-      CoeffType coefficient, const std::vector<Operator>& operators,
-      std::size_t phase)
-      : m_coefficient{coefficient}, m_operators{operators}, m_swaps{phase} {}
+      : m_coefficient{coefficient}, m_operators{operators} {}
 
   CoeffType coefficient() const { return m_coefficient; }
-
-  std::size_t swaps() const { return m_swaps; }
-
-  void increment(std::size_t i) { m_swaps += i; }
 
   const std::vector<Operator>& operators() const { return m_operators; }
 
@@ -51,7 +42,6 @@ class Term {
  private:
   CoeffType m_coefficient;
   std::vector<Operator> m_operators;
-  std::size_t m_swaps;
 };
 
 template <Operator::Statistics S>

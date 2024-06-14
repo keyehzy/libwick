@@ -26,8 +26,7 @@ class Model {
       for (const Term& hamilt_term : hamilt) {
         terms.push_back(hamilt_term.product(basis_element));
       }
-      const Expression& e = normal_order(terms);
-      for (const auto& [term, coeff] : e.terms()) {
+      for (const auto& [term, coeff] : NormalOrderer(terms).terms()) {
         if (term.back().type() == Operator::Type::Creation &&
             basis.contains(term)) {
           std::size_t term_index = basis.index(term);

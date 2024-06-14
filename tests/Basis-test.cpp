@@ -10,6 +10,8 @@
 
 #include "BosonicBasis.h"
 #include "FermionicBasis.h"
+#include "GenericBasis.h"
+#include "Term.h"
 
 using testing::ElementsAre;
 using testing::UnorderedElementsAre;
@@ -18,14 +20,23 @@ using enum Operator::Type;
 using enum Operator::Statistics;
 using enum Operator::Spin;
 
-constexpr int binomial(int n, int k) {
+constexpr int binomial(std::size_t n, std::size_t k) {
   if (k == 0 || k == n) {
     return 1;
   }
   return binomial(n - 1, k - 1) + binomial(n - 1, k);
 }
 
-TEST(BasisTest, ConstructorAndAttributes) {
+TEST(GenericBasisTest, ConstructorAndAttributes) {
+  for (std::size_t orbs = 0; orbs < 6; orbs++) {
+    for (std::size_t parts = 0; parts < 6; parts++) {
+      GenericBasis basis(orbs, parts);
+      EXPECT_EQ(basis.elements().size(), binomial(orbs + parts, parts));
+    }
+  }
+}
+
+TEST(FermionicBasisTest, ConstructorAndAttributes) {
   FermionicBasis basis(2, 2, /*allow_double_occupancy=*/true);
 
   EXPECT_EQ(basis.particles(), 2);

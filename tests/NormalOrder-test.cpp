@@ -17,7 +17,7 @@ TEST(NormalOrderTest, NormalOrderTermEqual) {
     Term term(
         1.0, {Operator::creation<Fermion>(Up, 0),
               Operator::annihilation<Fermion>(Down, 1)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::creation<Fermion>(Up, 0),
@@ -31,7 +31,7 @@ TEST(NormalOrderTest, NormalOrderTermEqual) {
     Term term(
         1.0, {Operator::creation<Boson>(Up, 0),
               Operator::annihilation<Boson>(Down, 1)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::creation<Boson>(Up, 0),
@@ -47,7 +47,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationCreation) {
     Term term(
         1.0, {Operator::creation<Fermion>(Up, 1),
               Operator::creation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         -1.0, {Operator::creation<Fermion>(Up, 0),
@@ -61,7 +61,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationCreation) {
     Term term(
         1.0,
         {Operator::creation<Boson>(Up, 1), Operator::creation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0,
@@ -77,7 +77,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationAnnihilation) {
     Term term(
         1.0, {Operator::annihilation<Fermion>(Down, 0),
               Operator::annihilation<Fermion>(Down, 1)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         -1.0, {Operator::annihilation<Fermion>(Down, 1),
@@ -91,7 +91,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationAnnihilation) {
     Term term(
         1.0, {Operator::annihilation<Boson>(Down, 0),
               Operator::annihilation<Boson>(Down, 1)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::annihilation<Boson>(Down, 1),
@@ -107,7 +107,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationAnnihilation) {
     Term term(
         1.0, {Operator::creation<Fermion>(Up, 0),
               Operator::annihilation<Fermion>(Down, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::creation<Fermion>(Up, 0),
@@ -121,7 +121,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationAnnihilation) {
     Term term(
         1.0, {Operator::creation<Boson>(Up, 0),
               Operator::annihilation<Boson>(Down, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::creation<Boson>(Up, 0),
@@ -137,7 +137,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentSpin) {
     Term term(
         1.0, {Operator::annihilation<Fermion>(Down, 0),
               Operator::creation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         -1.0, {Operator::creation<Fermion>(Up, 0),
@@ -151,7 +151,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentSpin) {
     Term term(
         1.0, {Operator::annihilation<Boson>(Down, 0),
               Operator::creation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::creation<Boson>(Up, 0),
@@ -167,7 +167,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentOrbital) {
     Term term(
         1.0, {Operator::annihilation<Fermion>(Up, 1),
               Operator::creation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         -1.0, {Operator::creation<Fermion>(Up, 0),
@@ -181,7 +181,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationDifferentOrbital) {
     Term term(
         1.0, {Operator::annihilation<Boson>(Up, 1),
               Operator::creation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0, {Operator::creation<Boson>(Up, 0),
@@ -197,7 +197,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationSameSpinSameOrbital) {
     Term term(
         1.0, {Operator::annihilation<Fermion>(Up, 0),
               Operator::creation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -213,7 +213,7 @@ TEST(NormalOrderTest, NormalOrderTermAnnihilationCreationSameSpinSameOrbital) {
     Term term(
         1.0, {Operator::annihilation<Boson>(Up, 0),
               Operator::creation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -234,7 +234,7 @@ TEST(
         1.0,
         {Operator::creation<Fermion>(Up, 1), Operator::creation<Fermion>(Up, 0),
          Operator::annihilation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         -1.0,
@@ -250,7 +250,7 @@ TEST(
         1.0,
         {Operator::creation<Boson>(Up, 1), Operator::creation<Boson>(Up, 0),
          Operator::annihilation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {Term(
         1.0,
@@ -268,7 +268,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationAnnihilationCreationSameOrbital) {
         1.0, {Operator::creation<Fermion>(Up, 0),
               Operator::annihilation<Fermion>(Up, 0),
               Operator::creation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -286,7 +286,7 @@ TEST(NormalOrderTest, NormalOrderTermCreationAnnihilationCreationSameOrbital) {
         1.0,
         {Operator::creation<Boson>(Up, 0), Operator::annihilation<Boson>(Up, 0),
          Operator::creation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -308,7 +308,7 @@ TEST(
         1.0, {Operator::annihilation<Fermion>(Up, 0),
               Operator::creation<Fermion>(Up, 0),
               Operator::annihilation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -326,7 +326,7 @@ TEST(
         1.0,
         {Operator::annihilation<Boson>(Up, 0), Operator::creation<Boson>(Up, 0),
          Operator::annihilation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -348,7 +348,7 @@ TEST(
         1.0, {Operator::annihilation<Fermion>(Up, 0),
               Operator::annihilation<Fermion>(Up, 0),
               Operator::creation<Fermion>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -366,7 +366,7 @@ TEST(
         1.0, {Operator::annihilation<Boson>(Up, 0),
               Operator::annihilation<Boson>(Up, 0),
               Operator::creation<Boson>(Up, 0)});
-    Expression normal_ordered = normal_order(term);
+    Expression normal_ordered = NormalOrderer(term).expression();
 
     std::vector<Term> terms = {
         Term(
@@ -389,7 +389,7 @@ TEST(NormalOrderTest, NormalOrderExpression) {
         Term(
             1.0, {Operator::creation<Fermion>(Up, 1),
                   Operator::annihilation<Fermion>(Up, 0)})};
-    Expression normal_ordered = normal_order(terms);
+    Expression normal_ordered = NormalOrderer(terms).expression();
 
     std::vector<Term> normal_terms = {
         Term(
@@ -411,7 +411,7 @@ TEST(NormalOrderTest, NormalOrderExpression) {
         Term(
             1.0, {Operator::creation<Boson>(Up, 1),
                   Operator::annihilation<Boson>(Up, 0)})};
-    Expression normal_ordered = normal_order(terms);
+    Expression normal_ordered = NormalOrderer(terms).expression();
 
     std::vector<Term> normal_terms = {
         Term(
@@ -435,7 +435,7 @@ TEST(NormalOrderTest, NormalOrderExpressionWrongOrder) {
         Term(
             1.0, {Operator::annihilation<Fermion>(Up, 0),
                   Operator::annihilation<Fermion>(Up, 1)})};
-    Expression normal_ordered = normal_order(terms);
+    Expression normal_ordered = NormalOrderer(terms).expression();
 
     std::vector<Term> normal_terms = {
         Term(
@@ -457,7 +457,7 @@ TEST(NormalOrderTest, NormalOrderExpressionWrongOrder) {
         Term(
             1.0, {Operator::annihilation<Boson>(Up, 0),
                   Operator::annihilation<Boson>(Up, 1)})};
-    Expression normal_ordered = normal_order(terms);
+    Expression normal_ordered = NormalOrderer(terms).expression();
 
     std::vector<Term> normal_terms = {
         Term(
@@ -481,7 +481,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZero) {
         Term(
             1.0, {Operator::creation<Fermion>(Up, 0),
                   Operator::creation<Fermion>(Up, 1)})};
-    Expression normal_ordered = normal_order(terms);
+    Expression normal_ordered = NormalOrderer(terms).expression();
 
     std::vector<Term> normal_terms = {Term(
         0.0, {Operator::creation<Fermion>(Up, 0),
@@ -499,7 +499,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZero) {
         Term(
             1.0, {Operator::creation<Boson>(Up, 0),
                   Operator::creation<Boson>(Up, 1)})};
-    Expression normal_ordered = normal_order(terms);
+    Expression normal_ordered = NormalOrderer(terms).expression();
 
     std::vector<Term> normal_terms = {Term(
         2.0,
@@ -517,7 +517,7 @@ TEST(
       1.0, {Operator::annihilation<Fermion>(Up, 0),
             Operator::annihilation<Fermion>(Up, 0),
             Operator::creation<Fermion>(Up, 0)});
-  Expression normal_ordered = normal_order(term);
+  Expression normal_ordered = NormalOrderer(term).expression();
   std::erase_if(normal_ordered.terms(), [](const auto &term_to_erase) {
     return std::abs(term_to_erase.second) < 1e-10;
   });
@@ -539,7 +539,7 @@ TEST(NormalOrderTest, NormalOrderExpressionResultingInZeroAfterClean) {
       Term(
           1.0, {Operator::creation<Fermion>(Up, 0),
                 Operator::creation<Fermion>(Up, 1)})};
-  Expression normal_ordered = normal_order(terms);
+  Expression normal_ordered = NormalOrderer(terms).expression();
   std::erase_if(normal_ordered.terms(), [](const auto &term) {
     return std::abs(term.second) < 1e-10;
   });
@@ -595,4 +595,36 @@ TEST(NormalOrderTest, NormalOrderAntiCommuteDifferentResultingInNonZero) {
   std::vector<Term> terms = {Term(1.0, {})};
   Expression expected(terms);
   EXPECT_EQ(e, expected);
+}
+
+TEST(DISABLED_NormalOrderTest, NormalOrderOutofOrderCaseWithIndex) {
+  std::vector<Operator> operators;
+  const std::size_t size = 64;
+  const std::size_t max_orbital = 32;
+  operators.reserve(size);
+
+  for (std::size_t i = 0; i < size / 2; i++) {
+    operators.push_back(
+        Operator::annihilation<Fermion>(Up, (size / 2 - i + 1) % max_orbital));
+  }
+  for (std::size_t i = 0; i < size / 2; i++) {
+    operators.push_back(Operator::creation<Fermion>(Up, i % max_orbital));
+  }
+  Term term(1.0, operators);
+  Expression e = NormalOrderer(term).expression();
+}
+
+TEST(DISABLED_NormalOrderTest, NormalOrderOutofOrderCaseWithoutIndex) {
+  std::vector<Operator> operators;
+  const int size = 32;
+  operators.reserve(size);
+
+  for (int i = 0; i < size / 2; i++) {
+    operators.push_back(Operator::annihilation<Fermion>(Up, 0));
+  }
+  for (int i = 0; i < size / 2; i++) {
+    operators.push_back(Operator::creation<Fermion>(Up, 0));
+  }
+  Term term(1.0, operators);
+  Expression e = NormalOrderer(term).expression();
 }
