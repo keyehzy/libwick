@@ -5,52 +5,52 @@
 
 #include <vector>
 
-template <typename SomeDouble>
-constexpr SomeDouble evaluate_parity(
-    SomeDouble coefficient, std::size_t phase) {
+constexpr Term::CoeffType evaluate_parity(
+    Term::CoeffType coefficient, std::size_t phase) {
   return phase % 2 == 0 ? coefficient : -coefficient;
 }
 
-NormalOrderer::NormalOrderer(const Term& term) { normal_order(term); }
+NormalOrderer::NormalOrderer(const Term& term) {
+  normal_order(term.operators(), term.coefficient());
+}
 
 NormalOrderer::NormalOrderer(const std::vector<Term>& terms) {
   for (const Term& term : terms) {
-    normal_order(term);
+    normal_order(term.operators(), term.coefficient());
   }
 }
 
 NormalOrderer::NormalOrderer(const Expression& expression) {
-  for (const auto& [term, coeff] : expression.terms()) {
-    normal_order(Term(coeff, term));
+  for (const auto& [operators, coeff] : expression.terms()) {
+    normal_order(operators, coeff);
   }
 }
 
 NormalOrderer::NormalOrderer(const std::vector<Expression>& expressions) {
   for (const Expression& expression : expressions) {
-    for (const auto& [term, coeff] : expression.terms()) {
-      normal_order(Term(coeff, term));
+    for (const auto& [operators, coeff] : expression.terms()) {
+      normal_order(operators, coeff);
     }
   }
 }
 
-void NormalOrderer::normal_order(const Term& term) {
-  m_stack.emplace_back(term.operators(), 0);
-  m_elements.reserve(term.operators().size());
+void NormalOrderer::normal_order(
+    const std::vector<Operator>& operators, Term::CoeffType coefficient) {
+  m_stack.emplace_back(operators, 0);
+  m_elements.reserve(operators.size());
 
   while (!m_stack.empty()) {
     auto [prev_operators, prev_phase] = std::move(m_stack.back());
     m_stack.pop_back();
 
     if (prev_operators.size() < 2) {
-      m_terms_map[prev_operators] +=
-          evaluate_parity(term.coefficient(), prev_phase);
+      m_terms_map[prev_operators] += evaluate_parity(coefficient, prev_phase);
       continue;
     }
 
     auto [new_operators, new_phase] =
         sort_operators(prev_operators, prev_phase);
-    m_terms_map[new_operators] +=
-        evaluate_parity(term.coefficient(), new_phase);
+    m_terms_map[new_operators] += evaluate_parity(coefficient, new_phase);
   }
 }
 

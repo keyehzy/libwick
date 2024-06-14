@@ -26,7 +26,8 @@ class NormalOrderer {
   Expression expression() const { return Expression(m_terms_map); }
 
  private:
-  void normal_order(const Term& term);
+  void normal_order(
+      const std::vector<Operator>& operators, Term::CoeffType coefficient);
 
   OperatorsPhasePair sort_operators(
       std::vector<Operator> operators, std::size_t phase);
