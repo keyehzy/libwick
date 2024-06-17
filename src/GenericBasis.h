@@ -5,7 +5,7 @@
 
 #include "Basis.h"
 
-class GenericBasis final : public Basis {
+class GenericBasis : public Basis {
  public:
   GenericBasis(std::size_t n, std::size_t m) : Basis(n, m) { generate_basis(); }
 

@@ -32,6 +32,13 @@ class NormalOrderer {
   OperatorsPhasePair sort_operators(
       std::vector<Operator> operators, std::size_t phase);
 
+  NormalOrderer::OperatorsPhasePair merge(
+      std::vector<Operator>& left, std::vector<Operator>& right,
+      std::size_t phase);
+
+  NormalOrderer::OperatorsPhasePair merge_sort(
+      std::vector<Operator>& operators, std::size_t phase);
+
   std::vector<OperatorsPhasePair> m_stack;
   Expression::ExpressionMap m_terms_map;
   std::vector<Operator> m_elements;

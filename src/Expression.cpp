@@ -3,6 +3,20 @@
 
 #include "Expression.h"
 
+#include <iostream>
+#include <ostream>
+
+std::ostream& operator<<(std::ostream& os, const Expression& e) {
+  for (const auto& [operators, coeff] : e.terms()) {
+    os << coeff << "  {";
+    for (Operator o : operators) {
+      os << o << ", ";
+    }
+    os << "}\n";
+  }
+  return os;
+}
+
 Expression add(const Term& a, const Term& b) {
   Expression result;
   result.insert(a);

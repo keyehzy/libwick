@@ -60,6 +60,8 @@ class Operator {
 
   std::uint8_t raw() const { return m_data; }
 
+  bool operator<(Operator other) const { return m_data < other.m_data; }
+
   bool operator==(Operator other) const { return m_data == other.m_data; }
 
   bool operator!=(Operator other) const { return m_data != other.m_data; }

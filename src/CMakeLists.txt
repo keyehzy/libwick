@@ -35,7 +35,7 @@ add_library(
   Models/HubbardKagome.cpp
   Models/HubbardSquare.cpp
   Models/LinearChain.cpp
-  NormalOrder.cpp
+  NormalOrderer.cpp
   Operator.cpp
   SparseMatrix.cpp
   Term.cpp

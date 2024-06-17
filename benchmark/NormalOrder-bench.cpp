@@ -3,7 +3,7 @@
 
 #include <benchmark/benchmark.h>
 
-#include "NormalOrder.h"
+#include "NormalOrderer.h"
 
 using enum Operator::Statistics;
 using enum Operator::Spin;

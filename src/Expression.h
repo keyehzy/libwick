@@ -108,6 +108,8 @@ class Expression {
     return result;
   }
 
+  friend std::ostream& operator<<(std::ostream& os, const Expression& e);
+
  private:
   ExpressionMap m_terms;
 };
