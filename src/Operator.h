@@ -35,16 +35,7 @@ class Operator {
 
   Operator(const Operator& other) : m_data(other.m_data) {}
 
-  Operator(Operator&& other) noexcept : m_data(other.m_data) {}
-
   Operator& operator=(const Operator& other) {
-    if (this != &other) {
-      m_data = other.m_data;
-    }
-    return *this;
-  }
-
-  Operator& operator=(Operator&& other) noexcept {
     if (this != &other) {
       m_data = other.m_data;
     }
@@ -69,13 +60,9 @@ class Operator {
 
   std::uint8_t raw() const { return m_data; }
 
-  bool operator==(const Operator& other) const {
-    return m_data == other.m_data;
-  }
+  bool operator==(Operator other) const { return m_data == other.m_data; }
 
-  bool operator!=(const Operator& other) const {
-    return m_data != other.m_data;
-  }
+  bool operator!=(Operator other) const { return m_data != other.m_data; }
 
   bool is_boson() const { return statistics() == Statistics::Boson; }
 
@@ -90,7 +77,7 @@ class Operator {
            ", Orbital: " + orbitalStr + " }";
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const Operator& op) {
+  friend std::ostream& operator<<(std::ostream& os, Operator op) {
     return os << op.toString();
   }
 
@@ -116,7 +103,7 @@ class Operator {
 
 template <>
 struct std::hash<Operator> {
-  size_t operator()(const Operator& op) const {
+  size_t operator()(Operator op) const {
     return std::hash<std::uint8_t>()(op.raw());
   }
 };
