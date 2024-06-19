@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <deque>
+
 #include "Expression.h"
 
 // We assume that all the operators in the term have the same statistics
@@ -26,22 +28,12 @@ class NormalOrderer {
   Expression expression() const { return Expression(m_terms_map); }
 
  private:
-  void normal_order(
-      const std::vector<Operator>& operators, Term::CoeffType coefficient);
+  void normal_order(const std::vector<Operator>&, Term::CoeffType);
 
   OperatorsPhasePair sort_operators(
-      std::vector<Operator> operators, std::size_t phase);
+      std::vector<Operator>, std::size_t, std::deque<OperatorsPhasePair>&);
 
-  NormalOrderer::OperatorsPhasePair merge(
-      std::vector<Operator>& left, std::vector<Operator>& right,
-      std::size_t phase);
-
-  NormalOrderer::OperatorsPhasePair merge_sort(
-      std::vector<Operator>& operators, std::size_t phase);
-
-  std::vector<OperatorsPhasePair> m_stack;
   Expression::ExpressionMap m_terms_map;
-  std::vector<Operator> m_elements;
 };
 
 Expression commute(const Term& term1, const Term& term2);
