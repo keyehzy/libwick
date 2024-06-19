@@ -597,6 +597,38 @@ TEST(NormalOrderTest, NormalOrderAntiCommuteDifferentResultingInNonZero) {
   EXPECT_EQ(e, expected);
 }
 
+TEST(NormalOrderTest, NormalOrderOutofOrderCaseWithIndexEasy) {
+  std::vector<Operator> operators;
+  const std::size_t size = 32;
+  const std::size_t max_orbital = 32;
+  operators.reserve(size);
+
+  for (std::size_t i = 0; i < size / 2; i++) {
+    operators.push_back(
+        Operator::annihilation<Fermion>(Up, (size / 2 - i + 1) % max_orbital));
+  }
+  for (std::size_t i = 0; i < size / 2; i++) {
+    operators.push_back(Operator::creation<Fermion>(Up, i % max_orbital));
+  }
+  Term term(1.0, operators);
+  Expression e = NormalOrderer(term).expression();
+}
+
+TEST(NormalOrderTest, NormalOrderOutofOrderCaseWithoutIndexEasy) {
+  std::vector<Operator> operators;
+  const int size = 16;
+  operators.reserve(size);
+
+  for (int i = 0; i < size / 2; i++) {
+    operators.push_back(Operator::annihilation<Fermion>(Up, 0));
+  }
+  for (int i = 0; i < size / 2; i++) {
+    operators.push_back(Operator::creation<Fermion>(Up, 0));
+  }
+  Term term(1.0, operators);
+  Expression e = NormalOrderer(term).expression();
+}
+
 TEST(DISABLED_NormalOrderTest, NormalOrderOutofOrderCaseWithIndex) {
   std::vector<Operator> operators;
   const std::size_t size = 64;
