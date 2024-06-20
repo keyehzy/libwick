@@ -36,6 +36,11 @@ class Expression {
     }
   }
 
+  Expression& operator+=(const Expression& other) {
+    insert(other);
+    return *this;
+  }
+
   const ExpressionMap& terms() const { return m_terms; }
 
   ExpressionMap& terms() { return m_terms; }
