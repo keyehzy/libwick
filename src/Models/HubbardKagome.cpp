@@ -6,85 +6,45 @@
 using enum Operator::Statistics;
 
 void HubbardKagome::hopping_term(std::vector<Term>& result) const {
-  size_t hex_size = size / 2;
+  Expression e;
   for (Operator::Spin spin : {Operator::Spin::Up, Operator::Spin::Down}) {
-    for (std::size_t i = 0; i < nx; i++) {
-      for (std::size_t j = 0; j < nx; j++) {
-        // Unitcell
-        for (std::size_t k = 0; k < hex_size; k++) {
-          std::vector<Term> terms{
-              // Inner ring
-              one_body<Fermion>(
-                  -m_t, spin, index(k, i, j), spin,
-                  index((k + 1) % hex_size, i, j)),
-              one_body<Fermion>(
-                  -m_t, spin, index(k, i, j), spin,
-                  index((k + 1) % hex_size, i, j))
-                  .adjoint(),
+    // Inner ring
+    e += hopping<Fermion>(-m_t, spin, 0, 1);
+    e += hopping<Fermion>(-m_t, spin, 1, 2);
+    e += hopping<Fermion>(-m_t, spin, 2, 3);
+    e += hopping<Fermion>(-m_t, spin, 3, 4);
+    e += hopping<Fermion>(-m_t, spin, 4, 5);
+    e += hopping<Fermion>(-m_t, spin, 5, 0);
 
-              // Outer ring
-              one_body<Fermion>(
-                  -m_t, spin, index(hex_size + k, i, j), spin, index(k, i, j)),
-              one_body<Fermion>(
-                  -m_t, spin, index(hex_size + k, i, j), spin, index(k, i, j))
-                  .adjoint(),
+    e += hopping<Fermion>(-m_t, spin, 0, 6);
+    e += hopping<Fermion>(-m_t, spin, 1, 7);
+    e += hopping<Fermion>(-m_t, spin, 2, 8);
+    e += hopping<Fermion>(-m_t, spin, 3, 9);
+    e += hopping<Fermion>(-m_t, spin, 4, 10);
+    e += hopping<Fermion>(-m_t, spin, 5, 11);
 
-              one_body<Fermion>(
-                  -m_t, spin, index(hex_size + k, i, j), spin,
-                  index((k + 1) % hex_size, i, j)),
-              one_body<Fermion>(
-                  -m_t, spin, index(hex_size + k, i, j), spin,
-                  index((k + 1) % hex_size, i, j))
-                  .adjoint(),
-          };
+    e += hopping<Fermion>(-m_t, spin, 1, 6);
+    e += hopping<Fermion>(-m_t, spin, 2, 7);
+    e += hopping<Fermion>(-m_t, spin, 3, 8);
+    e += hopping<Fermion>(-m_t, spin, 4, 9);
+    e += hopping<Fermion>(-m_t, spin, 5, 10);
+    e += hopping<Fermion>(-m_t, spin, 0, 11);
 
-          result.insert(result.end(), terms.begin(), terms.end());
-        }
-
-        // PBC
-        if (m_periodic) {
-          std::vector<Term> terms{
-              one_body<Fermion>(
-                  -m_t, spin, index(6, i, j), spin, index(8, i - 1, j - 1)),
-              one_body<Fermion>(
-                  -m_t, spin, index(6, i, j), spin, index(8, i - 1, j - 1))
-                  .adjoint(),
-
-              one_body<Fermion>(
-                  -m_t, spin, index(6, i, j), spin, index(10, i, j - 1)),
-              one_body<Fermion>(
-                  -m_t, spin, index(6, i, j), spin, index(10, i, j - 1))
-                  .adjoint(),
-
-              one_body<Fermion>(
-                  -m_t, spin, index(7, i, j), spin, index(9, i, j - 1)),
-              one_body<Fermion>(
-                  -m_t, spin, index(7, i, j), spin, index(9, i, j - 1))
-                  .adjoint(),
-
-              one_body<Fermion>(
-                  -m_t, spin, index(7, i, j), spin, index(11, i + 1, j)),
-              one_body<Fermion>(
-                  -m_t, spin, index(7, i, j), spin, index(11, i + 1, j))
-                  .adjoint(),
-
-              one_body<Fermion>(
-                  -m_t, spin, index(8, i, j), spin, index(10, i + 1, j)),
-              one_body<Fermion>(
-                  -m_t, spin, index(8, i, j), spin, index(10, i + 1, j))
-                  .adjoint(),
-
-              one_body<Fermion>(
-                  -m_t, spin, index(9, i, j), spin, index(11, i, j + 1)),
-              one_body<Fermion>(
-                  -m_t, spin, index(9, i, j), spin, index(11, i, j + 1))
-                  .adjoint(),
-          };
-          result.insert(result.end(), terms.begin(), terms.end());
-        }
-      }
+    // PBC
+    if (m_periodic) {
+      e += hopping<Fermion>(-m_t, spin, 6, 10);
+      e += hopping<Fermion>(-m_t, spin, 7, 11);
+      e += hopping<Fermion>(-m_t, spin, 8, 6);
+      e += hopping<Fermion>(-m_t, spin, 9, 7);
+      e += hopping<Fermion>(-m_t, spin, 10, 8);
+      e += hopping<Fermion>(-m_t, spin, 11, 9);
     }
   }
+  std::vector<Term> terms;
+  for (const auto& [operators, coefficient] : e.terms()) {
+    terms.emplace_back(coefficient, operators);
+  }
+  result.insert(result.end(), terms.begin(), terms.end());
 }
 
 void HubbardKagome::interaction_term(std::vector<Term>& result) const {
