@@ -47,6 +47,7 @@ file(GLOB EXAMPLE_FILES
   HubbardChain.cpp
   HubbardSquare4x4.cpp
   HeisenbergChain.cpp
+  HubbardKagome.cpp
 )
 
 foreach(EXAMPLE_FILE ${EXAMPLE_FILES})

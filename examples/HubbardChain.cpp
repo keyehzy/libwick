@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "Assert.h"
+#include "BasisFilter.h"
 #include "FermionicBasis.h"
 #include "Model.h"
 
@@ -57,18 +58,6 @@ class HubbardChain : public Model {
   size_t m_size;
 };
 
-// Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : public BasisFilter {
- public:
-  bool filter(const BasisElement& element) const override {
-    int total_spin = 0;
-    for (const auto& op : element) {
-      total_spin += op.spin() == Up ? 1 : -1;
-    }
-    return total_spin == 0;
-  }
-};
-
 int main() {
   const std::size_t size = 8;
   const std::size_t particles = 8;
@@ -76,7 +65,7 @@ int main() {
   const double u = 2.0;
 
   HubbardChain model(t, u, size);
-  FermionicBasis basis(size, particles, new ZeroTotalSpinFilter);
+  FermionicBasis basis(size, particles, new TotalSpinFilter(0));
 
   // Compute matrix elements
   arma::SpMat<arma::cx_double> m(basis.size(), basis.size());
