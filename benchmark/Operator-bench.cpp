@@ -28,3 +28,20 @@ static void BM_CreateOperator(benchmark::State& state) {
 }
 
 BENCHMARK(BM_CreateOperator)->Range(8, 8 << 27);
+
+static void BM_CreateOperatorVector(benchmark::State& state) {
+  for (auto _ : state) {
+    std::vector<Operator> v;
+    for (int orbital = 0; orbital < state.range(0); orbital++) {
+      for (Operator::Type type : {Creation, Annihilation}) {
+        for (Operator::Statistics stats : {Boson, Fermion}) {
+          for (Operator::Spin spin : {Up, Down}) {
+            v.emplace_back(type, stats, spin, orbital % 32);
+          }
+        }
+      }
+    }
+  }
+}
+
+BENCHMARK(BM_CreateOperatorVector)->Range(8, 8 << 24);
