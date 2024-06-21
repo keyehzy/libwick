@@ -51,7 +51,7 @@ class Operator {
     return *this;
   }
 
-  constexpr ~Operator() {}
+  constexpr ~Operator() = default;
 
   constexpr Type type() const {
     return static_cast<Type>(m_data & Operator_Mask);
