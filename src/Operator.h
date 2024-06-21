@@ -24,14 +24,14 @@ class Operator {
   enum class Spin { Up = 0, Down = 1 };
 
   using UIntType = std::uint8_t;
-
-  static constexpr UIntType OPERATOR_MASK = 0x1;    // 0b00000001
-  static constexpr UIntType STATISTICS_MASK = 0x2;  // 0b00000010
-  static constexpr UIntType SPIN_MASK = 0x4;        // 0b00000100
-  static constexpr UIntType ORBITAL_MASK = ~0x7;    // 0b11111000
+  static constexpr UIntType Bits = 8 * sizeof(UIntType);
+  static constexpr UIntType Operator_Mask = 0x1;                // 0b00000001
+  static constexpr UIntType Statistics_Mask = 0x2;              // 0b00000010
+  static constexpr UIntType Spin_Mask = 0x4;                    // 0b00000100
+  static constexpr UIntType Orbital_Mask = (1 << Bits) - Bits;  // 0b11111000
 
   constexpr static UIntType max_orbital() {
-    return 1 << std::countl_one(ORBITAL_MASK);
+    return 1 << std::countl_one(Orbital_Mask);
   }
 
   constexpr Operator(
@@ -54,19 +54,19 @@ class Operator {
   constexpr ~Operator() {}
 
   constexpr Type type() const {
-    return static_cast<Type>(m_data & OPERATOR_MASK);
+    return static_cast<Type>(m_data & Operator_Mask);
   }
 
   constexpr Statistics statistics() const {
-    return static_cast<Statistics>((m_data & STATISTICS_MASK) >> 1);
+    return static_cast<Statistics>((m_data & Statistics_Mask) >> 1);
   }
 
   constexpr Spin spin() const {
-    return static_cast<Spin>((m_data & SPIN_MASK) >> 2);
+    return static_cast<Spin>((m_data & Spin_Mask) >> 2);
   }
 
   constexpr std::size_t orbital() const {
-    return static_cast<std::size_t>((m_data & ORBITAL_MASK) >> 3);
+    return static_cast<std::size_t>((m_data & Orbital_Mask) >> 3);
   }
 
   constexpr UIntType identifier() const { return m_data >> 1; }
