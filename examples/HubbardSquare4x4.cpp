@@ -51,8 +51,8 @@ int main() {
 
       arma::cx_vec eigval;
       arma::eigs_gen(eigval, mat, 1, "sr");
-      std::cout << std::fixed << eigval[0].real() << "   "
-                << hubbardModelTable[row][uidx] << std::endl;
+      std::cout << eigval[0].real() << "   " << hubbardModelTable[row][uidx]
+                << std::endl;
     }
   }
 

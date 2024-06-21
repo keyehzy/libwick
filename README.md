@@ -33,6 +33,7 @@ In the following example, we construct a Hubbard chain model and compute the gro
 #include <iostream>
 
 #include "Assert.h"
+#include "BasisFilter.h"
 #include "FermionicBasis.h"
 #include "Model.h"
 
@@ -47,34 +48,26 @@ class HubbardChain : public Model {
   ~HubbardChain() override {}
 
  private:
-  void hopping_term(std::vector<Term>& result) const {
+  void hopping_term(Expression& result) const {
     for (Operator::Spin spin : {Up, Down}) {
-      // chemical potential
       for (std::size_t i = 0; i < m_size; i++) {
-        result.push_back(one_body<Fermion>(-m_u, spin, i, spin, i));
+        // Chemical potential
+        result += one_body<Fermion>(-m_u, spin, i, spin, i);
+        // Hopping
+        result += hopping<Fermion>(-m_t, spin, i, (i + 1) % m_size);
       }
-
-      // hopping term
-      for (std::size_t i = 0; i < m_size - 1; i++) {
-        result.push_back(one_body<Fermion>(-m_t, spin, i, spin, i + 1));
-        result.push_back(
-            one_body<Fermion>(-m_t, spin, i, spin, i + 1).adjoint());
-      }
-      result.push_back(one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0));
-      result.push_back(
-          one_body<Fermion>(-m_t, spin, m_size - 1, spin, 0).adjoint());
     }
   }
 
-  void interaction_term(std::vector<Term>& result) const {
-    // interaction term
+  void interaction_term(Expression& result) const {
     for (size_t i = 0; i < m_size; i++) {
-      result.push_back(density_density<Fermion>(m_u, Up, i, Down, i));
+      // Hubbard U
+      result += density_density<Fermion>(m_u, Up, i, Down, i);
     }
   }
 
-  std::vector<Term> hamiltonian() const override {
-    std::vector<Term> result;
+  Expression hamiltonian() const override {
+    Expression result;
     hopping_term(result);
     interaction_term(result);
     return result;
@@ -85,18 +78,6 @@ class HubbardChain : public Model {
   size_t m_size;
 };
 
-// Construct a basis with total spin equal to zero
-class ZeroTotalSpinFilter : public BasisFilter {
- public:
-  bool filter(const BasisElement& element) const override {
-    int total_spin = 0;
-    for (const auto& op : element) {
-      total_spin += op.spin() == Up ? 1 : -1;
-    }
-    return total_spin == 0;
-  }
-};
-
 int main() {
   const std::size_t size = 8;
   const std::size_t particles = 8;
@@ -104,7 +85,9 @@ int main() {
   const double u = 2.0;
 
   HubbardChain model(t, u, size);
-  FermionicBasis basis(size, particles, new ZeroTotalSpinFilter);
+
+  // Construct a basis with total Spin_z equal to zero
+  FermionicBasis basis(size, particles, new TotalSpinFilter(0));
 
   // Compute matrix elements
   arma::SpMat<arma::cx_double> m(basis.size(), basis.size());
@@ -119,7 +102,7 @@ int main() {
 
   std::cout << "Eigenvalues:" << std::endl;
   for (std::size_t i = 0; i < eigval.size(); i++) {
-    std::cout << std::fixed << eigval(i).real() << std::endl;
+    std::cout << eigval(i).real() << std::endl;
   }
 
   // Perform some further analysis here...

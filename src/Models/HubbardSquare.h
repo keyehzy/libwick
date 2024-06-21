@@ -19,12 +19,12 @@ class HubbardSquare : public Model {
   std::size_t ny() const { return m_ny; }
 
  private:
-  void hopping_term(std::vector<Term>& result) const;
+  void hopping_term(Expression& result) const;
 
-  void interaction_term(std::vector<Term>& result) const;
+  void interaction_term(Expression& result) const;
 
-  std::vector<Term> hamiltonian() const override {
-    std::vector<Term> result;
+  Expression hamiltonian() const override {
+    Expression result;
     hopping_term(result);
     interaction_term(result);
     return result;

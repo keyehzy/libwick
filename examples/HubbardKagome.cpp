@@ -31,7 +31,7 @@ int main() {
   const std::size_t size = 12;
   const std::size_t particles = 12;
   const double t = -1.0;
-  const double u = 2.0;
+  const double u = 0.5;
 
   HubbardKagome model(t, u, /*periodic=*/false);
   FermionicBasis basis(size, particles, new TotalSpinFilter(0));
@@ -56,7 +56,9 @@ int main() {
     const std::size_t states_to_print = 10;
     for (std::size_t i = 0; i < states_to_print; i++) {
       std::cout << std::fixed
-                << sorted_terms[i].coefficient()
+                << std::real(
+                       sorted_terms[i].coefficient() *
+                       std::conj(sorted_terms[i].coefficient()))
                 << "   " << basis.state_string(sorted_terms[i].operators())
                 << std::endl;
     }

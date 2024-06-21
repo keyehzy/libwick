@@ -17,34 +17,19 @@ class HeisenbergChain : public Model {
   std::size_t size() const { return m_size; }
 
  private:
-  std::vector<Term> hamiltonian() const override {
-    // Not so efficient to use an Expression here, but constructing the
-    // Hamiltonian is a small part of the program. On the other hand, we can use
-    // some of the Expression methods to simplify the code, such as spin
-    // operators.
-    Expression e;
+  Expression hamiltonian() const override {
+    Expression result;
 
-    // Magnetic field term
     for (std::size_t i = 0; i < m_size; i++) {
-      e.insert(-m_h * spin_z(i));
+      result += -m_h * spin_z(i);
     }
 
-    // Heisenberg interaction term
-    for (std::size_t i = 0; i < m_size - 1; i++) {
-      e.insert(m_J * spin_x(i) * spin_x(i + 1));
-      e.insert(m_J * spin_y(i) * spin_y(i + 1));
-      e.insert(m_J * spin_z(i) * spin_z(i + 1));
+    for (std::size_t i = 0; i < m_size; i++) {
+      result += m_J * spin_x(i) * spin_x((i + 1) % m_size);
+      result += m_J * spin_y(i) * spin_y((i + 1) % m_size);
+      result += m_J * spin_z(i) * spin_z((i + 1) % m_size);
     }
-    e.insert(m_J * spin_x(m_size - 1) * spin_x(0));
-    e.insert(m_J * spin_y(m_size - 1) * spin_y(0));
-    e.insert(m_J * spin_z(m_size - 1) * spin_z(0));
-
-    std::vector<Term> terms;
-    for (const auto& [operators, coefficient] : e.terms()) {
-      terms.push_back(Term(coefficient, operators));
-    }
-
-    return terms;
+    return result;
   }
 
   std::size_t m_size;

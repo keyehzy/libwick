@@ -17,22 +17,19 @@ class Model {
 
   template <typename SpMat>
   void compute_matrix_elements(const Basis& basis, SpMat& mat) const {
-    const std::vector<Term>& hamilt = hamiltonian();
+    const Expression& hamilt = hamiltonian();
 #pragma omp parallel for schedule(dynamic)
-    for (const auto& basis_element : basis.elements()) {
+    for (const BasisElement& basis_element : basis.elements()) {
       std::size_t basis_index = basis.index(basis_element);
-      std::vector<Term> terms;
-      terms.reserve(hamilt.size());
-      for (const Term& hamilt_term : hamilt) {
-        terms.push_back(hamilt_term.product(basis_element));
-      }
-      for (const auto& [term, coeff] : NormalOrderer(terms).terms()) {
-        if (term.back().type() == Operator::Type::Creation &&
-            basis.contains(term)) {
-          std::size_t term_index = basis.index(term);
+      Expression::ExpressionMap product =
+          NormalOrderer(hamilt.product(basis_element)).terms();
+      std::erase_if(product, [&](const auto& item) {
+        return !basis.contains(item.first);
+      });
+      for (const auto& [term, coeff] : product) {
+        std::size_t term_index = basis.index(term);
 #pragma omp critical
-          mat(basis_index, term_index) = coeff;
-        }
+        mat(basis_index, term_index) = coeff;
       }
     }
   }
@@ -41,5 +38,5 @@ class Model {
   Model() = default;
 
  private:
-  virtual std::vector<Term> hamiltonian() const = 0;
+  virtual Expression hamiltonian() const = 0;
 };

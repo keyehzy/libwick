@@ -41,6 +41,13 @@ class Expression {
     return *this;
   }
 
+  Expression& operator+=(const Term& other) {
+    insert(other);
+    return *this;
+  }
+
+  std::size_t size() const { return m_terms.size(); }
+
   const ExpressionMap& terms() const { return m_terms; }
 
   ExpressionMap& terms() { return m_terms; }
@@ -59,12 +66,18 @@ class Expression {
     return result;
   }
 
-  friend Expression operator+(const Expression& lhs, const Expression& rhs) {
-    Expression result(lhs);
-    for (const auto& [operators, coefficient] : rhs.terms()) {
-      result.insert(Term(coefficient, operators));
-    }
+  Expression add(const Term& other) const {
+    Expression result(*this);
+    result.insert(other);
     return result;
+  }
+
+  friend Expression operator+(const Expression& lhs, const Expression& rhs) {
+    return lhs.add(rhs);
+  }
+
+  friend Expression operator+(const Expression& lhs, const Term& rhs) {
+    return lhs.add(rhs);
   }
 
   Expression product(const Expression& other) const {
@@ -78,23 +91,45 @@ class Expression {
     return result;
   }
 
-  friend Expression operator*(const Expression& lhs, const Expression& rhs) {
+  Expression product(const Term& other) const {
     Expression result;
-    for (const auto& [operators_a, coefficient_a] : lhs.terms()) {
-      for (const auto& [operators_b, coefficient_b] : rhs.terms()) {
-        result.insert(Term(coefficient_a, operators_a)
-                          .product(Term(coefficient_b, operators_b)));
-      }
+    for (const auto& [operators_a, coefficient_a] : terms()) {
+      result.insert(Term(coefficient_a, operators_a).product(other));
     }
     return result;
   }
 
-  friend Expression operator*(double coefficient, const Expression& other) {
+  Expression product(const std::vector<Operator>& other) const {
     Expression result;
-    for (const auto& [other_operators, other_coefficient] : other.terms()) {
-      result.insert(Term(coefficient * other_coefficient, other_operators));
+    for (const auto& [operators_a, coefficient_a] : terms()) {
+      result.insert(Term(coefficient_a, operators_a).product(other));
     }
     return result;
+  }
+
+  Expression product(double coefficient) const {
+    Expression result;
+    for (const auto& [operators_a, coefficient_a] : terms()) {
+      result.insert(Term(coefficient * coefficient_a, operators_a));
+    }
+    return result;
+  }
+
+  friend Expression operator*(const Expression& lhs, const Expression& rhs) {
+    return lhs.product(rhs);
+  }
+
+  friend Expression operator*(const Expression& lhs, const Term& rhs) {
+    return lhs.product(rhs);
+  }
+
+  friend Expression operator*(
+      const Expression& lhs, const std::vector<Operator>& rhs) {
+    return lhs.product(rhs);
+  }
+
+  friend Expression operator*(double coefficient, const Expression& other) {
+    return other.product(coefficient);
   }
 
   Expression adjoint() const {

@@ -12,7 +12,7 @@ class LinearChain : public Model {
   ~LinearChain() override {}
 
  private:
-  std::vector<Term> hamiltonian() const override;
+  Expression hamiltonian() const override;
 
   std::size_t m_size;
   double m_t;

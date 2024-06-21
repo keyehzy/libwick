@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../Model.h"
+#include "Model.h"
 
 class HubbardChainKSpace : public Model {
  public:
@@ -13,12 +13,12 @@ class HubbardChainKSpace : public Model {
   ~HubbardChainKSpace() override {}
 
  private:
-  void hopping_term(std::vector<Term>& result) const;
+  void hopping_term(Expression& result) const;
 
-  void interaction_term(std::vector<Term>& result) const;
+  void interaction_term(Expression& result) const;
 
-  std::vector<Term> hamiltonian() const override {
-    std::vector<Term> result;
+  Expression hamiltonian() const override {
+    Expression result;
     hopping_term(result);
     interaction_term(result);
     return result;
