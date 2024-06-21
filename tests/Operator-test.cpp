@@ -92,17 +92,6 @@ TEST(OperatorTest, EqualityAndInequalityFermionBoson) {
 
 TEST(OperatorTest, MaxOrbital) { EXPECT_EQ(Operator::max_orbital(), 32); }
 
-TEST(OperatorTest, ToString) {
-  Operator op1 = Operator::creation<Fermion>(Up, 31);
-  Operator op2 = Operator::annihilation<Fermion>(Down, 0);
-
-  EXPECT_EQ(
-      op1.toString(), "Operator { Type: Creation, Spin: Up, Orbital: 31 }");
-  EXPECT_EQ(
-      op2.toString(),
-      "Operator { Type: Annihilation, Spin: Down, Orbital: 0 }");
-}
-
 // test operator<<
 TEST(OperatorTest, OutputOperator) {
   Operator op1 = Operator::creation<Fermion>(Up, 15);

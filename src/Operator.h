@@ -91,7 +91,7 @@ class Operator {
     return statistics() == Statistics::Fermion;
   }
 
-  std::string toString() const {
+  friend std::ostream& operator<<(std::ostream& os, Operator op) {
     constexpr auto typeStr = [](Type type) {
       return type == Type::Creation ? "Creation" : "Annihilation";
     };
@@ -100,14 +100,10 @@ class Operator {
       return spin == Spin::Up ? "Up" : "Down";
     };
 
-    std::ostringstream oss;
-    oss << "Operator { Type: " << typeStr(type())
-        << ", Spin: " << spinStr(spin()) << ", Orbital: " << orbital() << " }";
-    return oss.str();
-  }
-
-  friend std::ostream& operator<<(std::ostream& os, Operator op) {
-    return os << op.toString();
+    os << "Operator { Type: " << typeStr(op.type())
+       << ", Spin: " << spinStr(op.spin()) << ", Orbital: " << op.orbital()
+       << " }";
+    return os;
   }
 
   constexpr Operator adjoint() const {

@@ -7,9 +7,9 @@ std::ostream& operator<<(std::ostream& os, const Term& term) {
   os << "Term { Coefficient: " << term.coefficient();
   os << ", Operators: [";
   for (size_t i = 0; i < term.operators().size() - 1; ++i) {
-    os << term.operators()[i].toString() << ", ";
+    os << term.operators()[i] << ", ";
   }
-  os << term.operators()[term.operators().size() - 1].toString();
+  os << term.operators()[term.operators().size() - 1];
   os << "]}";
   return os;
 }
