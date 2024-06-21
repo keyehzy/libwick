@@ -90,6 +90,8 @@ TEST(OperatorTest, EqualityAndInequalityFermionBoson) {
   EXPECT_NE(op2, op3);
 }
 
+TEST(OperatorTest, MaxOrbital) { EXPECT_EQ(Operator::max_orbital(), 32); }
+
 TEST(OperatorTest, ToString) {
   Operator op1 = Operator::creation<Fermion>(Up, 31);
   Operator op2 = Operator::annihilation<Fermion>(Down, 0);

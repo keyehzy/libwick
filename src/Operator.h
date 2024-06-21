@@ -10,6 +10,7 @@
 //        ^   0 = spin up, 1 = spin down
 //   ^^^^^      = orbital index (0-31)
 
+#include <bit>
 #include <cstdint>
 #include <functional>
 #include <sstream>
@@ -27,7 +28,11 @@ class Operator {
   static constexpr UIntType OPERATOR_MASK = 0x1;    // 0b00000001
   static constexpr UIntType STATISTICS_MASK = 0x2;  // 0b00000010
   static constexpr UIntType SPIN_MASK = 0x4;        // 0b00000100
-  static constexpr UIntType ORBITAL_MASK = 0xF8;    // 0b11111000
+  static constexpr UIntType ORBITAL_MASK = ~0x7;    // 0b11111000
+
+  constexpr static UIntType max_orbital() {
+    return 1 << std::countl_one(ORBITAL_MASK);
+  }
 
   constexpr Operator(
       Type type, Statistics stats, Spin spin, std::size_t orbital)

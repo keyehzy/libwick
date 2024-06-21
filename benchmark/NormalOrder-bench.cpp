@@ -8,7 +8,7 @@
 using enum Operator::Statistics;
 using enum Operator::Spin;
 
-static constexpr std::size_t max_orbital = 32;
+static constexpr std::size_t max_orbital = Operator::max_orbital();
 
 static void BM_NormalOrderTermEasy(benchmark::State& state) {
   for (auto _ : state) {

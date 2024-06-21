@@ -600,7 +600,7 @@ TEST(NormalOrderTest, NormalOrderAntiCommuteDifferentResultingInNonZero) {
 TEST(NormalOrderTest, NormalOrderOutofOrderCaseWithIndexEasy) {
   std::vector<Operator> operators;
   const std::size_t size = 32;
-  const std::size_t max_orbital = 32;
+  const std::size_t max_orbital = Operator::max_orbital();
   operators.reserve(size);
 
   for (std::size_t i = 0; i < size / 2; i++) {
@@ -632,7 +632,7 @@ TEST(NormalOrderTest, NormalOrderOutofOrderCaseWithoutIndexEasy) {
 TEST(DISABLED_NormalOrderTest, NormalOrderOutofOrderCaseWithIndex) {
   std::vector<Operator> operators;
   const std::size_t size = 64;
-  const std::size_t max_orbital = 32;
+  const std::size_t max_orbital = Operator::max_orbital();
   operators.reserve(size);
 
   for (std::size_t i = 0; i < size / 2; i++) {
