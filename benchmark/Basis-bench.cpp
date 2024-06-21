@@ -40,22 +40,11 @@ static void BM_CreateBosonicBasis(benchmark::State& state) {
 
 BENCHMARK(BM_CreateBosonicBasis)->ArgsProduct({basis_range, basis_range});
 
-class ZeroTotalSpinFilter : public BasisFilter {
- public:
-  bool filter(const BasisElement& element) const override {
-    int total_spin = 0;
-    for (const auto& op : element) {
-      total_spin += op.spin() == Operator::Spin::Up ? 1 : -1;
-    }
-    return total_spin == 0;
-  }
-};
-
 static void BM_CreateGenericBasisWithFilter(benchmark::State& state) {
   for (auto _ : state) {
     GenericBasis basis(
         /*orbitals*/ state.range(0), /*particles*/ state.range(1),
-        new ZeroTotalSpinFilter);
+        new TotalSpinFilter(0));
     benchmark::DoNotOptimize(basis);
   }
 }
@@ -67,7 +56,7 @@ static void BM_CreateFermionicBasisWithFilter(benchmark::State& state) {
   for (auto _ : state) {
     FermionicBasis basis(
         /*orbitals*/ state.range(0), /*particles*/ state.range(1),
-        new ZeroTotalSpinFilter);
+        new TotalSpinFilter(0));
     benchmark::DoNotOptimize(basis);
   }
 }
@@ -79,7 +68,7 @@ static void BM_CreateBosonicBasisWithFilter(benchmark::State& state) {
   for (auto _ : state) {
     BosonicBasis basis(
         /*orbitals*/ state.range(0), /*particles*/ state.range(1),
-        new ZeroTotalSpinFilter);
+        new TotalSpinFilter(0));
     benchmark::DoNotOptimize(basis);
   }
 }
