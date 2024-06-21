@@ -8,6 +8,7 @@ add_executable(
   Basis-bench.cpp
   Model-bench.cpp
   NormalOrder-bench.cpp
+  Operator-bench.cpp
 )
 
 target_include_directories(

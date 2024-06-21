@@ -12,13 +12,9 @@
 
 #include <cstdint>
 #include <functional>
+#include <sstream>
 #include <string>
 #include <vector>
-
-constexpr std::uint8_t OPERATOR_MASK = 0x1;    // 0b00000001
-constexpr std::uint8_t STATISTICS_MASK = 0x2;  // 0b00000010
-constexpr std::uint8_t SPIN_MASK = 0x4;        // 0b00000100
-constexpr std::uint8_t ORBITAL_MASK = 0xF8;    // 0b11111000
 
 class Operator {
  public:
@@ -26,93 +22,119 @@ class Operator {
   enum class Statistics { Boson = 0, Fermion = 1 };
   enum class Spin { Up = 0, Down = 1 };
 
-  Operator(Type type, Statistics stats, Spin spin, std::size_t orbital)
-      : m_data(static_cast<std::uint8_t>(
-            (static_cast<std::uint8_t>(type) << 0) |
-            (static_cast<std::uint8_t>(stats) << 1) |
-            (static_cast<std::uint8_t>(spin) << 2) |
-            (static_cast<std::uint8_t>(orbital) << 3))) {}
+  using UIntType = std::uint8_t;
 
-  Operator(const Operator& other) : m_data(other.m_data) {}
+  static constexpr UIntType OPERATOR_MASK = 0x1;    // 0b00000001
+  static constexpr UIntType STATISTICS_MASK = 0x2;  // 0b00000010
+  static constexpr UIntType SPIN_MASK = 0x4;        // 0b00000100
+  static constexpr UIntType ORBITAL_MASK = 0xF8;    // 0b11111000
 
-  Operator& operator=(const Operator& other) {
+  constexpr Operator(
+      Type type, Statistics stats, Spin spin, std::size_t orbital)
+      : m_data(static_cast<UIntType>(
+            (static_cast<UIntType>(type) << 0) |
+            (static_cast<UIntType>(stats) << 1) |
+            (static_cast<UIntType>(spin) << 2) |
+            (static_cast<UIntType>(orbital) << 3))) {}
+
+  constexpr Operator(const Operator& other) : m_data(other.m_data) {}
+
+  constexpr Operator& operator=(const Operator& other) {
     if (this != &other) {
       m_data = other.m_data;
     }
     return *this;
   }
 
-  ~Operator() {}
+  constexpr ~Operator() {}
 
-  Type type() const { return static_cast<Type>(m_data & OPERATOR_MASK); }
+  constexpr Type type() const {
+    return static_cast<Type>(m_data & OPERATOR_MASK);
+  }
 
-  Statistics statistics() const {
+  constexpr Statistics statistics() const {
     return static_cast<Statistics>((m_data & STATISTICS_MASK) >> 1);
   }
 
-  Spin spin() const { return static_cast<Spin>((m_data & SPIN_MASK) >> 2); }
+  constexpr Spin spin() const {
+    return static_cast<Spin>((m_data & SPIN_MASK) >> 2);
+  }
 
-  std::size_t orbital() const {
+  constexpr std::size_t orbital() const {
     return static_cast<std::size_t>((m_data & ORBITAL_MASK) >> 3);
   }
 
-  std::uint8_t identifier() const { return m_data >> 1; }
+  constexpr UIntType identifier() const { return m_data >> 1; }
 
-  std::uint8_t raw() const { return m_data; }
+  constexpr UIntType raw() const { return m_data; }
 
-  bool operator<(Operator other) const { return m_data < other.m_data; }
+  constexpr bool operator<(Operator other) const {
+    return m_data < other.m_data;
+  }
 
-  bool operator==(Operator other) const { return m_data == other.m_data; }
+  constexpr bool operator==(Operator other) const {
+    return m_data == other.m_data;
+  }
 
-  bool operator!=(Operator other) const { return m_data != other.m_data; }
+  constexpr bool operator!=(Operator other) const {
+    return m_data != other.m_data;
+  }
 
-  bool is_boson() const { return statistics() == Statistics::Boson; }
+  constexpr bool is_boson() const { return statistics() == Statistics::Boson; }
 
-  bool is_fermion() const { return statistics() == Statistics::Fermion; }
+  constexpr bool is_fermion() const {
+    return statistics() == Statistics::Fermion;
+  }
 
   std::string toString() const {
-    std::string typeStr =
-        (type() == Type::Creation) ? "Creation" : "Annihilation";
-    std::string spinStr = (spin() == Spin::Up) ? "Up" : "Down";
-    std::string orbitalStr = std::to_string(orbital());
-    return "Operator { Type: " + typeStr + ", Spin: " + spinStr +
-           ", Orbital: " + orbitalStr + " }";
+    constexpr auto typeStr = [](Type type) {
+      return type == Type::Creation ? "Creation" : "Annihilation";
+    };
+
+    constexpr auto spinStr = [](Spin spin) {
+      return spin == Spin::Up ? "Up" : "Down";
+    };
+
+    std::ostringstream oss;
+    oss << "Operator { Type: " << typeStr(type())
+        << ", Spin: " << spinStr(spin()) << ", Orbital: " << orbital() << " }";
+    return oss.str();
   }
 
   friend std::ostream& operator<<(std::ostream& os, Operator op) {
     return os << op.toString();
   }
 
-  Operator adjoint() const {
+  constexpr Operator adjoint() const {
     return Operator(
         type() == Type::Creation ? Type::Annihilation : Type::Creation,
         statistics(), spin(), orbital());
   }
 
   template <Statistics S>
-  static Operator creation(Spin spin, std::size_t orbital) {
+  static constexpr Operator creation(Spin spin, std::size_t orbital) {
     return Operator(Type::Creation, S, spin, orbital);
   }
 
   template <Statistics S>
-  static Operator annihilation(Spin spin, std::size_t orbital) {
+  static constexpr Operator annihilation(Spin spin, std::size_t orbital) {
     return Operator(Type::Annihilation, S, spin, orbital);
   }
 
  private:
-  std::uint8_t m_data;
+  UIntType m_data;
 };
 
 template <>
 struct std::hash<Operator> {
-  size_t operator()(Operator op) const {
-    return std::hash<std::uint8_t>()(op.raw());
+  constexpr size_t operator()(Operator op) const {
+    return std::hash<Operator::UIntType>()(op.raw());
   }
 };
 
 template <>
 struct std::hash<std::vector<Operator>> {
-  size_t operator()(const std::vector<Operator>& operators) const {
+  constexpr size_t operator()(const std::vector<Operator>& operators) const {
     size_t hash = 0;
     for (const auto& op : operators) {
       hash_combine(hash, std::hash<Operator>{}(op));
@@ -122,7 +144,7 @@ struct std::hash<std::vector<Operator>> {
 
  private:
   template <typename T>
-  void hash_combine(size_t& seed, const T& value) const {
+  constexpr void hash_combine(size_t& seed, const T& value) const {
     seed ^= std::hash<T>{}(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
   }
 };
