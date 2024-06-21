@@ -128,14 +128,14 @@ class Operator {
 
 template <>
 struct std::hash<Operator> {
-  constexpr size_t operator()(Operator op) const {
+  size_t operator()(Operator op) const {
     return std::hash<Operator::UIntType>()(op.raw());
   }
 };
 
 template <>
 struct std::hash<std::vector<Operator>> {
-  constexpr size_t operator()(const std::vector<Operator>& operators) const {
+  size_t operator()(const std::vector<Operator>& operators) const {
     size_t hash = 0;
     for (const auto& op : operators) {
       hash_combine(hash, std::hash<Operator>{}(op));
@@ -145,7 +145,7 @@ struct std::hash<std::vector<Operator>> {
 
  private:
   template <typename T>
-  constexpr void hash_combine(size_t& seed, const T& value) const {
+  void hash_combine(size_t& seed, const T& value) const {
     seed ^= std::hash<T>{}(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
   }
 };
